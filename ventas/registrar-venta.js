@@ -1,3 +1,5 @@
+import { convertirCriptoAFiat } from '../assets/utils.js';
+
 // registrar-venta.js - Lógica del formulario de registro de ventas
 // Maneja validaciones, persistencia, mensajes y conversión cripto.
 
@@ -38,31 +40,6 @@ function validarVenta(venta) {
     return 'Debe ingresar un monto válido en cripto.';
   }
   return true;
-}
-
-// Conversión cripto → fiat usando API real (CoinGecko)
-async function convertirCriptoAFiat(montoCripto) {
-  // Puedes cambiar 'bitcoin' y 'usd' por la cripto y moneda que desees
-  const cripto = 'bitcoin';
-  const fiat = 'ars';
-  try {
-    const resp = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${cripto}&vs_currencies=${fiat}`);
-    if (!resp.ok) throw new Error('API error');
-    const data = await resp.json();
-    const tasa = data[cripto][fiat];
-    // Guarda la última tasa exitosa en localStorage para fallback
-    localStorage.setItem('ultimaTasaCripto', tasa);
-    return montoCripto * tasa;
-  } catch (error) {
-    // Fallback: usar última tasa guardada
-    const ultimaTasa = Number(localStorage.getItem('ultimaTasaCripto'));
-    if (ultimaTasa > 0) {
-      return montoCripto * ultimaTasa;
-    } else {
-      alert('No se pudo obtener la tasa de cripto. Intente más tarde.');
-      return 0;
-    }
-  }
 }
 
 // Manejo del formulario

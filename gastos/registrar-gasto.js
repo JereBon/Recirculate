@@ -1,6 +1,8 @@
 // registrar-gasto.js - Lógica del formulario de registro de gastos
 // Maneja validaciones, persistencia, mensajes y conversión cripto.
 
+import { convertirCriptoAFiat } from '../assets/utils.js';
+
 function guardarDatos(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
@@ -35,11 +37,6 @@ function validarGasto(gasto) {
     return 'Debe ingresar un monto válido en cripto.';
   }
   return true;
-}
-
-async function convertirCriptoAFiat(montoCripto) {
-  const tasa = 500000; // Simulación
-  return montoCripto * tasa;
 }
 
 const form = document.getElementById('form-gasto');
