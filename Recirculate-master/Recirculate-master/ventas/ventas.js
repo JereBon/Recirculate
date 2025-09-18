@@ -31,21 +31,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const tbody = document.getElementById('ventas-body');
   const totalDiv = document.getElementById('ventas-total');
 
-  function renderVentas(filtro = "") {
+  function renderVentas() {
     tbody.innerHTML = '';
     let total = 0;
     const isMobile = window.matchMedia('(max-width: 600px)').matches;
     ventas.forEach((venta, idx) => {
-      // Filtrado por búsqueda
-      if (filtro && !venta.cliente.toLowerCase().includes(filtro) && !venta.producto.toLowerCase().includes(filtro)) {
-        return;
-      }
       const tr = document.createElement('tr');
       const idVisual = idx + 1;
       if (isMobile) {
+        // Fila extra para mobile: Venta #
         const trVenta = document.createElement('tr');
         trVenta.className = 'venta-num-mobile';
-        trVenta.innerHTML = `<td colspan="8" class="venta-num-mobile-td">Venta #${idVisual}</td>`;
+        trVenta.innerHTML = `<td colspan="7" class="venta-num-mobile-td">Venta #${idVisual}</td>`;
         tbody.appendChild(trVenta);
       }
       tr.innerHTML = `
@@ -57,47 +54,44 @@ document.addEventListener('DOMContentLoaded', () => {
         <td data-label="Total">${formatearMoneda(venta.total)}</td>
         <td data-label="Método de pago">${venta.metodoPago}</td>
         <td data-label="Acciones">
-          <button class="action-btn edit-btn" title="Editar" disabled>✏️</button>
-          <button class="action-btn archive-btn" title="Archivar" disabled>🗄️</button>
-          <button class="action-btn delete-btn" title="Borrar" data-idx="${idx}">🗑️</button>
-        </td>
+          <button class="btn borrar" data-idx="${idx}" title="Borrar venta">🗑️</button>
+          <button class="btn archivar" data-idx="${idx}" title ="Archivar venta">📁</button>
+          <button class="btn editar" data-idx="${idx}" title ="Editar venta">✏️</button>
+        </td>  
       `;
       tbody.appendChild(tr);
       total += Number(venta.total) || 0;
     });
     totalDiv.textContent = `Total vendido: ${formatearMoneda(total)}`;
-    // Asignar eventos a los botones de borrar
-    tbody.querySelectorAll('.delete-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const idx = btn.getAttribute('data-idx');
-        if (confirm('¿Seguro que deseas borrar esta venta?')) {
-          ventas.splice(idx, 1);
-          localStorage.setItem('ventas', JSON.stringify(ventas));
-          renderVentas(document.getElementById('search-input').value.trim().toLowerCase());
-        }
+
+    document.querySelectorAll('.borrar').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const idx = e.target.dataset.idx;
+        ventas.splice(idx, 1); // eliminamos la venta
+        localStorage.setItem('ventas', JSON.stringify(ventas));
+        renderVentas(); // refrescar tabla
+      });
+    });
+
+    document.querySelectorAll('.archivar').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const idx = e.target.dataset.idx;
+        alert(`Venta #${Number(idx)+1} archivada (aún no implementado).`);
+      });
+    });
+
+    document.querySelectorAll('.editar').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const idx = e.target.dataset.idx;
+        alert(`Editar venta #${Number(idx)+1} (llevar al formulario con datos precargados).`);
       });
     });
   }
 
-  // Búsqueda en vivo
-  const searchInput = document.getElementById('search-input');
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      const filtro = searchInput.value.trim().toLowerCase();
-      renderVentas(filtro);
-    });
-  }
-
-  // Botón de filtro (solo visual)
-  const filterBtn = document.getElementById('filter-btn');
-  if (filterBtn) {
-    filterBtn.addEventListener('click', () => {
-      alert('Función de filtro próximamente');
-    });
-  }
-
   renderVentas();
+
+  // Volver a renderizar si cambia el tamaño de pantalla
   window.addEventListener('resize', () => {
-    renderVentas(searchInput ? searchInput.value.trim().toLowerCase() : "");
+    renderVentas();
   });
 });
