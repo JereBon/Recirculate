@@ -52,9 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <td data-label="Monto">${formatearMoneda(gasto.total)}</td>
         <td data-label="Método de pago">${gasto.metodoPago}</td>
         <td data-label="Acciones">
-          <button class="action-btn edit-btn" title="Editar" disabled>✏️</button>
-          <button class="action-btn archive-btn" title="Archivar" disabled>🗄️</button>
-          <button class="action-btn delete-btn" title="Borrar" data-idx="${idx}">🗑️</button>
+          <div class="acciones-circulo">
+            <button class="action-btn edit-btn" title="Editar" disabled>✏️</button>
+            <button class="action-btn archive-btn" title="Archivar" disabled>🗄️</button>
+            <button class="action-btn delete-btn" title="Borrar" data-idx="${idx}">🗑️</button>
+          </div>
         </td>
       `;
       tbody.appendChild(tr);

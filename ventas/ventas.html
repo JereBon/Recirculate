@@ -17,14 +17,14 @@
       <a href="registrar-venta.html"><button class="primary">+ Registrar venta</button></a>
       <a href="../index.html"><button style="margin-left:12px;">Volver al panel</button></a>
     </div>
-    <div class="search-filter-bar">
-      <input type="text" id="search-input" placeholder="Buscar venta..." />
-      <button id="filter-btn" title="Filtrar" class="filter-btn">
-        <span>🔍</span> Filtrar
-      </button>
-    </div>
   </header>
   <main class="main">
+    <div class="search-filter-bar" style="display:flex; gap:10px; margin-bottom:16px; align-items:center;">
+      <input type="text" id="search-input" placeholder="Buscar venta..." style="flex:1; min-width:0; max-width:100%;" />
+      <button id="filter-btn" title="Filtrar" class="filter-btn" style="background:#e0e0e0; color:#222; border-radius:8px; height:40px; display:flex; align-items:center; justify-content:center; font-size:1.1em; border:none; cursor:pointer; font-weight:bold; gap:6px; padding:0 18px; box-shadow:0 2px 8px #0001;">
+        <span style="font-size:1.3em;">&#9906;</span> Filtrar
+      </button>
+    </div>
     <table class="ventas-table">
       <thead>
         <tr>
