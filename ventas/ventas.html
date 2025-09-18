@@ -1,0 +1,42 @@
+<!--
+  ventas.html - Listado de ventas registradas
+  Muestra la tabla de ventas y permite navegar al formulario de registro.
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ventas</title>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Ventas</h1>
+    <div style="margin-bottom: 18px;">
+      <a href="registrar-venta.html"><button class="primary">+ Registrar venta</button></a>
+      <a href="../index.html"><button style="margin-left:12px;">Volver al panel</button></a>
+    </div>
+  </header>
+  <main class="main">
+    <table class="ventas-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Fecha</th>
+          <th>Cliente</th>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Total</th>
+          <th>Método de pago</th>
+        </tr>
+      </thead>
+      <tbody id="ventas-body">
+        <!-- Las filas se llenan dinámicamente con JS -->
+      </tbody>
+    </table>
+    <div class="footer-info" id="ventas-total"></div>
+  </main>
+  <script src="ventas.js"></script>
+</body>
+</html>
