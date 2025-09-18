@@ -49,6 +49,7 @@ const grupoCripto = document.getElementById('grupo-cripto');
 const metodo = document.getElementById('metodo');
 const montoCriptoInput = document.getElementById('monto-cripto');
 const conversionCripto = document.getElementById('conversion-cripto');
+const criptoTipoInput = document.getElementById('cripto-tipo');
 
 // Mostrar/ocultar campo cripto según método de pago
 metodo.addEventListener('change', () => {
@@ -63,8 +64,19 @@ metodo.addEventListener('change', () => {
 // Mostrar conversión cripto en tiempo real
 montoCriptoInput.addEventListener('input', async () => {
   const monto = Number(montoCriptoInput.value);
+  const cripto = criptoTipoInput.value;
   if (monto > 0) {
-    const fiat = await convertirCriptoAFiat(monto);
+    const fiat = await convertirCriptoAFiat(monto, cripto);
+    conversionCripto.textContent = `Equivale a $${fiat.toLocaleString('es-AR')}`;
+  } else {
+    conversionCripto.textContent = '';
+  }
+});
+criptoTipoInput.addEventListener('change', async () => {
+  const monto = Number(montoCriptoInput.value);
+  const cripto = criptoTipoInput.value;
+  if (monto > 0) {
+    const fiat = await convertirCriptoAFiat(monto, cripto);
     conversionCripto.textContent = `Equivale a $${fiat.toLocaleString('es-AR')}`;
   } else {
     conversionCripto.textContent = '';
@@ -103,7 +115,8 @@ form.addEventListener('submit', async (e) => {
 
   // Calcular total
   if (venta.metodoPago === 'Cripto') {
-    venta.total = await convertirCriptoAFiat(venta.montoCripto);
+    const cripto = criptoTipoInput.value;
+    venta.total = await convertirCriptoAFiat(venta.montoCripto, cripto);
   } else {
     // Para el sprint, el monto se calcula como cantidad * 10000 (ejemplo)
     venta.total = venta.cantidad * 10000;

@@ -42,23 +42,39 @@ function validarGasto(gasto) {
 const form = document.getElementById('form-gasto');
 const successMsg = document.getElementById('success-msg');
 const grupoCripto = document.getElementById('grupo-cripto');
+const criptoTipoGroup = document.getElementById('cripto-tipo-group');
 const metodo = document.getElementById('metodo');
 const montoCriptoInput = document.getElementById('monto-cripto');
 const conversionCripto = document.getElementById('conversion-cripto');
+const criptoTipoInput = document.getElementById('cripto-tipo');
 
 metodo.addEventListener('change', () => {
   if (metodo.value === 'Cripto') {
     grupoCripto.style.display = '';
+    criptoTipoGroup.style.display = '';
   } else {
     grupoCripto.style.display = 'none';
+    criptoTipoGroup.style.display = 'none';
     conversionCripto.textContent = '';
   }
 });
 
 montoCriptoInput.addEventListener('input', async () => {
   const monto = Number(montoCriptoInput.value);
+  const cripto = criptoTipoInput.value;
   if (monto > 0) {
-    const fiat = await convertirCriptoAFiat(monto);
+    const fiat = await convertirCriptoAFiat(monto, cripto);
+    conversionCripto.textContent = `Equivale a $${fiat.toLocaleString('es-AR')}`;
+  } else {
+    conversionCripto.textContent = '';
+  }
+});
+
+criptoTipoInput.addEventListener('change', async () => {
+  const monto = Number(montoCriptoInput.value);
+  const cripto = criptoTipoInput.value;
+  if (monto > 0) {
+    const fiat = await convertirCriptoAFiat(monto, cripto);
     conversionCripto.textContent = `Equivale a $${fiat.toLocaleString('es-AR')}`;
   } else {
     conversionCripto.textContent = '';
@@ -92,7 +108,8 @@ form.addEventListener('submit', async (e) => {
   }
 
   if (gasto.metodoPago === 'Cripto') {
-    gasto.total = await convertirCriptoAFiat(gasto.montoCripto);
+    const cripto = criptoTipoInput.value;
+    gasto.total = await convertirCriptoAFiat(gasto.montoCripto, cripto);
   } else {
     gasto.total = gasto.monto;
   }
@@ -104,5 +121,6 @@ form.addEventListener('submit', async (e) => {
   successMsg.textContent = '✅ Gasto registrado con éxito';
   form.reset();
   grupoCripto.style.display = 'none';
+  criptoTipoGroup.style.display = 'none';
   conversionCripto.textContent = '';
 });

@@ -20,18 +20,17 @@ export function leerDatos(key) {
 }
 
 // Conversión cripto → fiat usando API real (CoinGecko), con fallback a última tasa
-export async function convertirCriptoAFiat(montoCripto) {
-  const cripto = 'bitcoin';
+export async function convertirCriptoAFiat(montoCripto, cripto = 'bitcoin') {
   const fiat = 'ars';
   try {
     const resp = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${cripto}&vs_currencies=${fiat}`);
     if (!resp.ok) throw new Error('API error');
     const data = await resp.json();
     const tasa = data[cripto][fiat];
-    localStorage.setItem('ultimaTasaCripto', tasa);
+    localStorage.setItem('ultimaTasaCripto_' + cripto, tasa);
     return montoCripto * tasa;
   } catch (error) {
-    const ultimaTasa = Number(localStorage.getItem('ultimaTasaCripto'));
+    const ultimaTasa = Number(localStorage.getItem('ultimaTasaCripto_' + cripto));
     if (ultimaTasa > 0) {
       return montoCripto * ultimaTasa;
     } else {
