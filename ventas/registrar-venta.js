@@ -1,4 +1,4 @@
-import { convertirCriptoAFiat } from '../assets/utils.js';
+import { convertirCriptoAFiat, convertirFiatACripto } from '../assets/utils.js';
 
 // registrar-venta.js - Lógica del formulario de registro de ventas
 // Maneja validaciones, persistencia, mensajes y conversión cripto.
@@ -37,7 +37,7 @@ function validarVenta(venta) {
     return 'Debe seleccionar un método de pago.';
   }
   if (venta.metodoPago === 'Cripto' && (!venta.montoCripto || venta.montoCripto <= 0)) {
-    return 'Debe ingresar un monto válido en cripto.';
+    return 'Debe ingresar un monto válido en $ (fiat) para cripto.';
   }
   return true;
 }
@@ -63,21 +63,23 @@ metodo.addEventListener('change', () => {
 
 // Mostrar conversión cripto en tiempo real
 montoCriptoInput.addEventListener('input', async () => {
-  const monto = Number(montoCriptoInput.value);
+  // Ahora el input es un monto en fiat: mostramos cuánto cripto equivale
+  const montoFiat = Number(montoCriptoInput.value);
   const cripto = criptoTipoInput.value;
-  if (monto > 0) {
-    const fiat = await convertirCriptoAFiat(monto, cripto);
-    conversionCripto.textContent = `Equivale a $${fiat.toLocaleString('es-AR')}`;
+  if (montoFiat > 0) {
+    const cantidadCripto = await convertirFiatACripto(montoFiat, cripto);
+    // Mostrar con 6-8 decimales según la moneda
+    conversionCripto.textContent = `Equivale a ${cantidadCripto.toFixed(8)} ${cripto.toUpperCase()}`;
   } else {
     conversionCripto.textContent = '';
   }
 });
 criptoTipoInput.addEventListener('change', async () => {
-  const monto = Number(montoCriptoInput.value);
+  const montoFiat = Number(montoCriptoInput.value);
   const cripto = criptoTipoInput.value;
-  if (monto > 0) {
-    const fiat = await convertirCriptoAFiat(monto, cripto);
-    conversionCripto.textContent = `Equivale a $${fiat.toLocaleString('es-AR')}`;
+  if (montoFiat > 0) {
+    const cantidadCripto = await convertirFiatACripto(montoFiat, cripto);
+    conversionCripto.textContent = `Equivale a ${cantidadCripto.toFixed(8)} ${cripto.toUpperCase()}`;
   } else {
     conversionCripto.textContent = '';
   }
@@ -97,6 +99,7 @@ form.addEventListener('submit', async (e) => {
     producto: document.getElementById('producto').value,
     cantidad: Number(document.getElementById('cantidad').value),
     metodoPago: metodo.value,
+    // montoCripto se calculará a partir del monto en fiat cuando el método sea Cripto
     montoCripto: metodo.value === 'Cripto' ? Number(montoCriptoInput.value) : null,
     total: 0 // Se calcula abajo
   };
@@ -116,7 +119,13 @@ form.addEventListener('submit', async (e) => {
   // Calcular total
   if (venta.metodoPago === 'Cripto') {
     const cripto = criptoTipoInput.value;
-    venta.total = await convertirCriptoAFiat(venta.montoCripto, cripto);
+    // Aquí montoCripto en el objeto es el monto en fiat ingresado por el usuario
+    const montoFiat = Number(montoCriptoInput.value);
+    // Calcular cantidad de cripto equivalente
+    const cantidadCripto = await convertirFiatACripto(montoFiat, cripto);
+    venta.montoCripto = cantidadCripto;
+    // El total que se registra es el monto en fiat que pagó el cliente
+    venta.total = montoFiat;
   } else {
     // Para el sprint, el monto se calcula como cantidad * 10000 (ejemplo)
     venta.total = venta.cantidad * 10000;

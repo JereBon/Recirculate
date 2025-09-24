@@ -39,3 +39,25 @@ export async function convertirCriptoAFiat(montoCripto, cripto = 'bitcoin') {
     }
   }
 }
+
+// Conversión fiat -> cripto usando la misma lógica (CoinGecko) con fallback a la última tasa
+export async function convertirFiatACripto(montoFiat, cripto = 'bitcoin') {
+  const fiat = 'ars';
+  try {
+    const resp = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${cripto}&vs_currencies=${fiat}`);
+    if (!resp.ok) throw new Error('API error');
+    const data = await resp.json();
+    const tasa = data[cripto][fiat]; // precio de 1 unidad de cripto en fiat
+    localStorage.setItem('ultimaTasaCripto_' + cripto, tasa);
+    // cantidad de cripto = monto fiat / tasa (fiat por 1 cripto)
+    return montoFiat / tasa;
+  } catch (error) {
+    const ultimaTasa = Number(localStorage.getItem('ultimaTasaCripto_' + cripto));
+    if (ultimaTasa > 0) {
+      return montoFiat / ultimaTasa;
+    } else {
+      alert('No se pudo obtener la tasa de cripto. Intente más tarde.');
+      return 0;
+    }
+  }
+}

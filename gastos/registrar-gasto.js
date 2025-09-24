@@ -1,7 +1,7 @@
 // registrar-gasto.js - Lógica del formulario de registro de gastos
 // Maneja validaciones, persistencia, mensajes y conversión cripto.
 
-import { convertirCriptoAFiat } from '../assets/utils.js';
+import { convertirCriptoAFiat, convertirFiatACripto } from '../assets/utils.js';
 
 function guardarDatos(key, value) {
   try {
@@ -34,7 +34,7 @@ function validarGasto(gasto) {
     return 'Debe seleccionar un método de pago.';
   }
   if (gasto.metodoPago === 'Cripto' && (!gasto.montoCripto || gasto.montoCripto <= 0)) {
-    return 'Debe ingresar un monto válido en cripto.';
+    return 'Debe ingresar un monto válido en $ (fiat) para cripto.';
   }
   return true;
 }
@@ -59,23 +59,24 @@ metodo.addEventListener('change', () => {
   }
 });
 
+// Ahora el input es un monto en fiat: mostramos cuánto cripto equivale
 montoCriptoInput.addEventListener('input', async () => {
-  const monto = Number(montoCriptoInput.value);
+  const montoFiat = Number(montoCriptoInput.value);
   const cripto = criptoTipoInput.value;
-  if (monto > 0) {
-    const fiat = await convertirCriptoAFiat(monto, cripto);
-    conversionCripto.textContent = `Equivale a $${fiat.toLocaleString('es-AR')}`;
+  if (montoFiat > 0) {
+    const cantidadCripto = await convertirFiatACripto(montoFiat, cripto);
+    conversionCripto.textContent = `Equivale a ${cantidadCripto.toFixed(8)} ${cripto.toUpperCase()}`;
   } else {
     conversionCripto.textContent = '';
   }
 });
 
 criptoTipoInput.addEventListener('change', async () => {
-  const monto = Number(montoCriptoInput.value);
+  const montoFiat = Number(montoCriptoInput.value);
   const cripto = criptoTipoInput.value;
-  if (monto > 0) {
-    const fiat = await convertirCriptoAFiat(monto, cripto);
-    conversionCripto.textContent = `Equivale a $${fiat.toLocaleString('es-AR')}`;
+  if (montoFiat > 0) {
+    const cantidadCripto = await convertirFiatACripto(montoFiat, cripto);
+    conversionCripto.textContent = `Equivale a ${cantidadCripto.toFixed(8)} ${cripto.toUpperCase()}`;
   } else {
     conversionCripto.textContent = '';
   }
@@ -93,6 +94,7 @@ form.addEventListener('submit', async (e) => {
     concepto: document.getElementById('concepto').value,
     monto: Number(document.getElementById('monto').value),
     metodoPago: metodo.value,
+    // montoCripto se calculará a partir del monto en fiat cuando el método sea Cripto
     montoCripto: metodo.value === 'Cripto' ? Number(montoCriptoInput.value) : null,
     total: 0
   };
@@ -109,7 +111,10 @@ form.addEventListener('submit', async (e) => {
 
   if (gasto.metodoPago === 'Cripto') {
     const cripto = criptoTipoInput.value;
-    gasto.total = await convertirCriptoAFiat(gasto.montoCripto, cripto);
+    const montoFiat = Number(montoCriptoInput.value);
+    const cantidadCripto = await convertirFiatACripto(montoFiat, cripto);
+    gasto.montoCripto = cantidadCripto;
+    gasto.total = montoFiat;
   } else {
     gasto.total = gasto.monto;
   }
