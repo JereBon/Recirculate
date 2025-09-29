@@ -1,21 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+body, html {
+  height: 100%;
+  margin: 0;
+  background: #fafafa;
+  color: #222;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Menú lateral de filtros */
+.container-filtros {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.15);
+  z-index: 200;
+  display: none;
+}
+.container-filtros.show {
+  display: block;
+}
+.cont-filtros {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 320px;
+  height: 100vh;
+  background: #fff;
+  box-shadow: -2px 0 12px #0002;
+  padding: 32px 24px 24px 24px;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+}
+.cont-filtros.slide {
+  transform: translateX(0);
+}
+.cont-filtros h2 {
+  margin-top: 0;
+  margin-bottom: 18px;
+  font-size: 1.3rem;
+}
+.cont-filtros label {
+  font-size: 1rem;
+  margin-bottom: 2px;
+}
+.cont-filtros input {
+  margin-bottom: 8px;
+}
+.cont-filtros button {
+  margin-left: 4px;
+  cursor: pointer;
+  background: #ffd84d;
+  border: none;
+  font-weight: bold;
+  transition: background 0.2s;
+  padding: 8px 24px;
+  border-radius: 8px;
+  margin-right: 8px;
+}
+#cerrar-filtros {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  color: #000;
+  background: none;
+  font-size: 22px;
+  border: none;
+}
 /*
   style.css - Estilos globales para la aplicación de ventas de ropa usada.
   Incluye responsividad, accesibilidad y estilos para formularios, tablas y mensajes.
   Se aplica la regla del 8 para márgenes, paddings y gaps.
 */
 
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+
+.cont-filtros button {
+  background: #ffd84d;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+  padding: 8px 24px;
+  border-radius: 8px;
+  margin-right: 8px;
+}
+
+.Filtrar {
+  background: #ffd84d;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+  padding: 8px 24px;
+  border-radius: 8px;
+  margin-right: 8px;
+}
+
+.Filtrar:hover {
+  background: #ffe98a;
+}
+
+.cont-filtros button:hover {
+  background: #ffe98a;
+}
+
+/* Cursor pointer para botones específicos */
+a[href] > button,
+#btn-ordenar {
+  cursor: pointer !important;
+}
+
+/* Estilos para menú de ordenación */
+#menu-ordenar {
+  padding: 8px 0;
+}
+.ordenar-opcion {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.ordenar-opcion:hover {
+  background: #f0f0f0;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
 body, html {
   height: 100%;
   margin: 0;
-  font-family: Arial, sans-serif;
   background: #fafafa;
   color: #222;
+  font-family: "Poppins", sans-serif;
 }
 
 header {
   text-align: center;
   margin-bottom: 32px;
 }
+
 
 h1 {
   font-size: 2.2rem;
@@ -91,6 +226,19 @@ button.primary:hover {
   background: #fff;
   table-layout: fixed;
 }
+
+.search-bar {
+  display: flex;
+  gap: 8px;
+  margin: 16px;
+}
+.search-bar input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+
 .ventas-table th, .gastos-table th {
   background: #ffd84d;
   border-radius: 8px 8px 0 0;
@@ -120,38 +268,6 @@ button.primary:hover {
 }
 .ventas-table tbody tr:hover {
   background: #fffbe6;
-}
-
-/* Acciones en círculo */
-.acciones-circulo {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  justify-content: center;
-  align-items: center;
-}
-.acciones-circulo .action-btn {
-  background: #ffe066;
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2em;
-  box-shadow: 0 2px 6px #0001;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-  padding: 0;
-}
-.acciones-circulo .action-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-.acciones-circulo .action-btn:hover:not(:disabled) {
-  background: #ffe98a;
-  transform: scale(1.08);
 }
 
 /* Responsive: Regla del 8 y mobile first */
@@ -272,4 +388,32 @@ button.primary:hover {
 .home-btn:hover {
   background: #ffe98a;
   transform: scale(1.04);
+}
+
+td[data-label="Acciones"] {
+  justify-content: center; /* centrados */
+  align-items: center;
+  vertical-align: middle;
+  gap: 6px;               /* espacio entre botones */
+}
+
+.btn {
+  font-family: inherit;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  margin: 2px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.archivar { background-color: #ffeba2; color: #fff; }
+.editar { background-color: #ffeba2; color: #fff; }
+
+.btn:hover {
+  opacity: 0.8;
 }

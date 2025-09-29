@@ -27,7 +27,94 @@ function formatearMoneda(valor) {
 
 // Cargar y mostrar ventas al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
-  const ventas = leerDatos('ventas');
+  const btnLimpiarFiltros = document.getElementById('limpiar-filtros');
+  // Filtros
+  const btnFiltros = document.getElementById('btn-filtros');
+  const containerFiltros = document.querySelector('.container-filtros');
+  const contFiltros = document.querySelector('.cont-filtros');
+  const formFiltros = document.getElementById('form-filtros');
+  const btnCerrarFiltros = document.getElementById('cerrar-filtros');
+  let filtros = { cliente: '', fechaDesde: '', fechaHasta: '', metodo: '' };
+
+  // Mostrar panel lateral al click en label Filtrar
+  document.querySelector('.filter-btn .Filtrar').addEventListener('click', () => {
+    containerFiltros.classList.add('show');
+    setTimeout(() => {
+      contFiltros.classList.add('slide');
+    }, 10);
+  });
+  // Cerrar panel lateral
+  btnCerrarFiltros.addEventListener('click', () => {
+    contFiltros.classList.remove('slide');
+    setTimeout(() => {
+      containerFiltros.classList.remove('show');
+    }, 300);
+  });
+  // Aplicar filtros
+  formFiltros.addEventListener('submit', e => {
+    e.preventDefault();
+    const fd = new FormData(formFiltros);
+    filtros.cliente = fd.get('cliente').toLowerCase();
+    filtros.fechaDesde = fd.get('fechaDesde');
+    filtros.fechaHasta = fd.get('fechaHasta');
+    filtros.metodo = fd.get('metodo').toLowerCase();
+    filtrarVentas();
+    contFiltros.classList.remove('slide');
+    setTimeout(() => {
+      containerFiltros.classList.remove('show');
+    }, 300);
+  });
+
+  // Limpiar filtros y refrescar la tabla
+  btnLimpiarFiltros.addEventListener('click', () => {
+    filtros = { cliente: '', fechaDesde: '', fechaHasta: '', metodo: '' };
+    formFiltros.reset();
+    ventasOrdenadas = [...ventas];
+    renderVentas();
+    contFiltros.classList.remove('slide');
+    setTimeout(() => {
+      containerFiltros.classList.remove('show');
+    }, 300);
+  });
+
+  function filtrarVentas() {
+    ventasOrdenadas = ventas.filter(v => {
+      let ok = true;
+      if (filtros.cliente) ok = ok && v.cliente.toLowerCase().includes(filtros.cliente);
+      if (filtros.fechaDesde) ok = ok && v.fecha >= filtros.fechaDesde;
+      if (filtros.fechaHasta) ok = ok && v.fecha <= filtros.fechaHasta;
+      if (filtros.metodo) ok = ok && v.metodoPago.toLowerCase().includes(filtros.metodo);
+      return ok;
+    });
+    renderVentas();
+  }
+  let ventas = leerDatos('ventas');
+  let ventasOrdenadas = [...ventas];
+  // Ordenar
+  const btnOrdenar = document.getElementById('btn-ordenar');
+  const menuOrdenar = document.getElementById('menu-ordenar');
+  btnOrdenar.addEventListener('click', () => {
+    menuOrdenar.style.display = menuOrdenar.style.display === 'block' ? 'none' : 'block';
+  });
+  document.addEventListener('click', (e) => {
+    if (!btnOrdenar.contains(e.target) && !menuOrdenar.contains(e.target)) {
+      menuOrdenar.style.display = 'none';
+    }
+  });
+  menuOrdenar.querySelectorAll('.ordenar-opcion').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const tipo = btn.dataset.orden;
+      if (tipo === 'monto') {
+        ventasOrdenadas.sort((a, b) => Number(b.total) - Number(a.total));
+      } else if (tipo === 'fecha') {
+        ventasOrdenadas.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+      } else if (tipo === 'metodo') {
+        ventasOrdenadas.sort((a, b) => a.metodoPago.localeCompare(b.metodoPago));
+      }
+      renderVentas();
+      menuOrdenar.style.display = 'none';
+    });
+  });
   const tbody = document.getElementById('ventas-body');
   const totalDiv = document.getElementById('ventas-total');
 
@@ -35,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tbody.innerHTML = '';
     let total = 0;
     const isMobile = window.matchMedia('(max-width: 600px)').matches;
-    ventas.forEach((venta, idx) => {
+    ventasOrdenadas.forEach((venta, idx) => {
       const tr = document.createElement('tr');
       const idVisual = idx + 1;
       if (isMobile) {

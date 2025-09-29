@@ -1,8 +1,6 @@
 // registrar-gasto.js - Lógica del formulario de registro de gastos
 // Maneja validaciones, persistencia, mensajes y conversión cripto.
 
-import { convertirCriptoAFiat, convertirFiatACripto } from '../assets/utils.js';
-
 function guardarDatos(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
@@ -34,49 +32,37 @@ function validarGasto(gasto) {
     return 'Debe seleccionar un método de pago.';
   }
   if (gasto.metodoPago === 'Cripto' && (!gasto.montoCripto || gasto.montoCripto <= 0)) {
-    return 'Debe ingresar un monto válido en $ (fiat) para cripto.';
+    return 'Debe ingresar un monto válido en cripto.';
   }
   return true;
+}
+
+async function convertirCriptoAFiat(montoCripto) {
+  const tasa = 500000; // Simulación
+  return montoCripto * tasa;
 }
 
 const form = document.getElementById('form-gasto');
 const successMsg = document.getElementById('success-msg');
 const grupoCripto = document.getElementById('grupo-cripto');
-const criptoTipoGroup = document.getElementById('cripto-tipo-group');
 const metodo = document.getElementById('metodo');
 const montoCriptoInput = document.getElementById('monto-cripto');
 const conversionCripto = document.getElementById('conversion-cripto');
-const criptoTipoInput = document.getElementById('cripto-tipo');
 
 metodo.addEventListener('change', () => {
   if (metodo.value === 'Cripto') {
     grupoCripto.style.display = '';
-    criptoTipoGroup.style.display = '';
   } else {
     grupoCripto.style.display = 'none';
-    criptoTipoGroup.style.display = 'none';
     conversionCripto.textContent = '';
   }
 });
 
-// Ahora el input es un monto en fiat: mostramos cuánto cripto equivale
 montoCriptoInput.addEventListener('input', async () => {
-  const montoFiat = Number(montoCriptoInput.value);
-  const cripto = criptoTipoInput.value;
-  if (montoFiat > 0) {
-    const cantidadCripto = await convertirFiatACripto(montoFiat, cripto);
-    conversionCripto.textContent = `Equivale a ${cantidadCripto.toFixed(8)} ${cripto.toUpperCase()}`;
-  } else {
-    conversionCripto.textContent = '';
-  }
-});
-
-criptoTipoInput.addEventListener('change', async () => {
-  const montoFiat = Number(montoCriptoInput.value);
-  const cripto = criptoTipoInput.value;
-  if (montoFiat > 0) {
-    const cantidadCripto = await convertirFiatACripto(montoFiat, cripto);
-    conversionCripto.textContent = `Equivale a ${cantidadCripto.toFixed(8)} ${cripto.toUpperCase()}`;
+  const monto = Number(montoCriptoInput.value);
+  if (monto > 0) {
+    const fiat = await convertirCriptoAFiat(monto);
+    conversionCripto.textContent = `Equivale a $${fiat.toLocaleString('es-AR')}`;
   } else {
     conversionCripto.textContent = '';
   }
@@ -94,7 +80,6 @@ form.addEventListener('submit', async (e) => {
     concepto: document.getElementById('concepto').value,
     monto: Number(document.getElementById('monto').value),
     metodoPago: metodo.value,
-    // montoCripto se calculará a partir del monto en fiat cuando el método sea Cripto
     montoCripto: metodo.value === 'Cripto' ? Number(montoCriptoInput.value) : null,
     total: 0
   };
@@ -110,11 +95,7 @@ form.addEventListener('submit', async (e) => {
   }
 
   if (gasto.metodoPago === 'Cripto') {
-    const cripto = criptoTipoInput.value;
-    const montoFiat = Number(montoCriptoInput.value);
-    const cantidadCripto = await convertirFiatACripto(montoFiat, cripto);
-    gasto.montoCripto = cantidadCripto;
-    gasto.total = montoFiat;
+    gasto.total = await convertirCriptoAFiat(gasto.montoCripto);
   } else {
     gasto.total = gasto.monto;
   }
@@ -126,6 +107,5 @@ form.addEventListener('submit', async (e) => {
   successMsg.textContent = '✅ Gasto registrado con éxito';
   form.reset();
   grupoCripto.style.display = 'none';
-  criptoTipoGroup.style.display = 'none';
   conversionCripto.textContent = '';
 });

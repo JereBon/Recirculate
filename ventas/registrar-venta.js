@@ -1,5 +1,3 @@
-import { convertirCriptoAFiat, convertirFiatACripto } from '../assets/utils.js';
-
 // registrar-venta.js - Lógica del formulario de registro de ventas
 // Maneja validaciones, persistencia, mensajes y conversión cripto.
 
@@ -37,9 +35,34 @@ function validarVenta(venta) {
     return 'Debe seleccionar un método de pago.';
   }
   if (venta.metodoPago === 'Cripto' && (!venta.montoCripto || venta.montoCripto <= 0)) {
-    return 'Debe ingresar un monto válido en $ (fiat) para cripto.';
+    return 'Debe ingresar un monto válido en cripto.';
   }
   return true;
+}
+
+// Conversión cripto → fiat usando API real (CoinGecko)
+async function convertirCriptoAFiat(montoCripto) {
+  // Puedes cambiar 'bitcoin' y 'usd' por la cripto y moneda que desees
+  const cripto = 'bitcoin';
+  const fiat = 'ars';
+  try {
+    const resp = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${cripto}&vs_currencies=${fiat}`);
+    if (!resp.ok) throw new Error('API error');
+    const data = await resp.json();
+    const tasa = data[cripto][fiat];
+    // Guarda la última tasa exitosa en localStorage para fallback
+    localStorage.setItem('ultimaTasaCripto', tasa);
+    return montoCripto * tasa;
+  } catch (error) {
+    // Fallback: usar última tasa guardada
+    const ultimaTasa = Number(localStorage.getItem('ultimaTasaCripto'));
+    if (ultimaTasa > 0) {
+      return montoCripto * ultimaTasa;
+    } else {
+      alert('No se pudo obtener la tasa de cripto. Intente más tarde.');
+      return 0;
+    }
+  }
 }
 
 // Manejo del formulario
@@ -49,7 +72,6 @@ const grupoCripto = document.getElementById('grupo-cripto');
 const metodo = document.getElementById('metodo');
 const montoCriptoInput = document.getElementById('monto-cripto');
 const conversionCripto = document.getElementById('conversion-cripto');
-const criptoTipoInput = document.getElementById('cripto-tipo');
 
 // Mostrar/ocultar campo cripto según método de pago
 metodo.addEventListener('change', () => {
@@ -63,23 +85,10 @@ metodo.addEventListener('change', () => {
 
 // Mostrar conversión cripto en tiempo real
 montoCriptoInput.addEventListener('input', async () => {
-  // Ahora el input es un monto en fiat: mostramos cuánto cripto equivale
-  const montoFiat = Number(montoCriptoInput.value);
-  const cripto = criptoTipoInput.value;
-  if (montoFiat > 0) {
-    const cantidadCripto = await convertirFiatACripto(montoFiat, cripto);
-    // Mostrar con 6-8 decimales según la moneda
-    conversionCripto.textContent = `Equivale a ${cantidadCripto.toFixed(8)} ${cripto.toUpperCase()}`;
-  } else {
-    conversionCripto.textContent = '';
-  }
-});
-criptoTipoInput.addEventListener('change', async () => {
-  const montoFiat = Number(montoCriptoInput.value);
-  const cripto = criptoTipoInput.value;
-  if (montoFiat > 0) {
-    const cantidadCripto = await convertirFiatACripto(montoFiat, cripto);
-    conversionCripto.textContent = `Equivale a ${cantidadCripto.toFixed(8)} ${cripto.toUpperCase()}`;
+  const monto = Number(montoCriptoInput.value);
+  if (monto > 0) {
+    const fiat = await convertirCriptoAFiat(monto);
+    conversionCripto.textContent = `Equivale a $${fiat.toLocaleString('es-AR')}`;
   } else {
     conversionCripto.textContent = '';
   }
@@ -99,7 +108,6 @@ form.addEventListener('submit', async (e) => {
     producto: document.getElementById('producto').value,
     cantidad: Number(document.getElementById('cantidad').value),
     metodoPago: metodo.value,
-    // montoCripto se calculará a partir del monto en fiat cuando el método sea Cripto
     montoCripto: metodo.value === 'Cripto' ? Number(montoCriptoInput.value) : null,
     total: 0 // Se calcula abajo
   };
@@ -118,14 +126,7 @@ form.addEventListener('submit', async (e) => {
 
   // Calcular total
   if (venta.metodoPago === 'Cripto') {
-    const cripto = criptoTipoInput.value;
-    // Aquí montoCripto en el objeto es el monto en fiat ingresado por el usuario
-    const montoFiat = Number(montoCriptoInput.value);
-    // Calcular cantidad de cripto equivalente
-    const cantidadCripto = await convertirFiatACripto(montoFiat, cripto);
-    venta.montoCripto = cantidadCripto;
-    // El total que se registra es el monto en fiat que pagó el cliente
-    venta.total = montoFiat;
+    venta.total = await convertirCriptoAFiat(venta.montoCripto);
   } else {
     // Para el sprint, el monto se calcula como cantidad * 10000 (ejemplo)
     venta.total = venta.cantidad * 10000;
