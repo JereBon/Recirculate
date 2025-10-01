@@ -1,0 +1,143 @@
+<!-- ver-productos.html - Visualización de todos los productos con todos sus atributos -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ver Productos</title>
+  <link rel="stylesheet" href="../assets/style.css" />
+  <style>
+    /* Espaciado y ancho mínimo para columnas */
+    .gastos-table th, .gastos-table td {
+      min-width: 110px;
+      max-width: 220px;
+      word-break: break-word;
+      white-space: pre-line;
+    }
+    .gastos-table th:first-child, .gastos-table td:first-child {
+      min-width: 140px;
+      max-width: 180px;
+    }
+    .gastos-table {
+      table-layout: fixed;
+    }
+    .producto-img {
+      width: 120px;
+      height: 120px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 2px solid #bbb;
+      background: #f8f8f8;
+      display: block;
+      margin: 0 auto;
+      box-shadow: 0 2px 8px #0001;
+    }
+    .gastos-table th, .gastos-table td {
+      text-align: center;
+      vertical-align: middle;
+      padding: 18px 14px;
+      font-size: 1.08em;
+    }
+    .gastos-table td {
+      background: #fff;
+      border-bottom: 1.5px solid #f0f0f0;
+      letter-spacing: 0.5px;
+    }
+    .gastos-table th {
+      background: #ffe066;
+      border-bottom: 2.5px solid #fffbe6;
+    }
+    .gastos-table tr {
+      box-shadow: 0 2px 8px #0001;
+      border-radius: 12px;
+      margin-bottom: 18px;
+    }
+    .gastos-table tbody tr:hover {
+      background: #fffbe6;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Productos</h1>
+    <div style="margin-bottom: 18px;">
+  <a href="productos.html"><button class="primary">+ Añadir producto</button></a>
+      <a href="../index.html"><button style="margin-left:12px;">Volver al panel</button></a>
+    </div>
+  </header>
+  <main class="main" style="max-width:1800px; min-width:1200px;">
+    <div class="search-filter-bar" style="display:flex; gap:10px; margin-bottom:16px; align-items:center;">
+      <input type="text" id="search-input" placeholder="Buscar producto..." style="flex:1; min-width:0; max-width:100%;" />
+      <button id="filter-btn" title="Filtrar" class="filter-btn" style="background:#e0e0e0; color:#222; border-radius:8px; height:40px; display:flex; align-items:center; justify-content:center; font-size:1.1em; border:none; cursor:pointer; font-weight:bold; gap:6px; padding:0 18px; box-shadow:0 2px 8px #0001;">
+        <span style="font-size:1.3em;">&#9906;</span> Filtrar
+      </button>
+    </div>
+    <table class="gastos-table" id="tabla-todos-productos">
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Categoría</th>
+          <th>Talle</th>
+          <th>Color</th>
+          <th>Marca</th>
+          <th>Estado</th>
+          <th>Precio</th>
+          <th>Moneda</th>
+          <th>Proveedor</th>
+          <th>Stock</th>
+          <th>Activo</th>
+          <th>Creado</th>
+          <th>Actualizado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Productos se insertan aquí dinámicamente -->
+      </tbody>
+    </table>
+    <div id="errorProductos" class="error"></div>
+    <div class="footer-info" id="productos-total"></div>
+  </main>
+  <style>
+    .producto-img {
+      width: 120px;
+      height: 120px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 2px solid #bbb;
+      background: #f8f8f8;
+      display: block;
+      margin: 0 auto;
+      box-shadow: 0 2px 8px #0001;
+    }
+    .gastos-table th, .gastos-table td {
+      min-width: 150px;
+      max-width: 340px;
+      word-break: normal;
+      white-space: normal;
+      padding: 22px 18px;
+      font-size: 1.08em;
+    }
+    .gastos-table th:first-child, .gastos-table td:first-child {
+      min-width: 180px;
+      max-width: 220px;
+    }
+    .gastos-table {
+      table-layout: auto;
+      width: 100%;
+    }
+    .producto-num-mobile {
+      background: #ffe066;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+    .producto-num-mobile-td {
+      padding: 12px 16px;
+      text-align: center;
+    }
+  </style>
+  <script src="ver-productos.js"></script>
+</body>
+</html>

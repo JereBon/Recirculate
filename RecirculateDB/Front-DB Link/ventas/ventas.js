@@ -1,0 +1,196 @@
+// ventas.js - Lógica mejorada para mostrar y gestionar el listado de ventas
+// Incluye búsqueda, filtros, ordenamiento y conexión a API
+
+const API_BASE_URL = 'http://localhost:3001/api';
+
+// Función para cargar ventas desde la API
+async function cargarVentas() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/ventas`);
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error al cargar ventas:', error);
+    return [];
+  }
+}
+
+function formatearFecha(iso) { 
+  return iso ? new Date(iso).toLocaleDateString('es-AR') : ''; 
+}
+
+function formatearMoneda(v) { 
+  const n = Number(v); 
+  return "$ " + (isNaN(n) ? 0 : n).toLocaleString('es-AR', {minimumFractionDigits: 2}); 
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  let ventas = await cargarVentas();
+  let ventasOrdenadas = [...ventas];
+  let filtros = { cliente: '', producto: '', fechaDesde: '', fechaHasta: '', metodo: '' };
+
+  const tbody = document.getElementById('ventas-body');
+  const totalDiv = document.getElementById('ventas-total');
+
+  // Controles
+  const inputBuscar = document.getElementById('q');
+  const btnOrdenar = document.getElementById('btn-ordenar');
+  const menuOrdenar = document.getElementById('menu-ordenar');
+
+  const btnFiltrar = document.getElementById('btn-filtrar');
+  const containerFiltros = document.querySelector('.container-filtros');
+  const contFiltros = document.querySelector('.cont-filtros');
+  const btnCerrarFiltros = document.getElementById('cerrar-filtros');
+  const formFiltros = document.getElementById('form-filtros');
+
+  function pasaFiltros(v) {
+    if (filtros.cliente && !(v.cliente || '').toLowerCase().includes(filtros.cliente)) return false;
+    if (filtros.producto && !(v.producto || '').toLowerCase().includes(filtros.producto)) return false;
+    if (filtros.fechaDesde && new Date(v.createdAt || v.fecha) < new Date(filtros.fechaDesde)) return false;
+    if (filtros.fechaHasta && new Date(v.createdAt || v.fecha) > new Date(filtros.fechaHasta)) return false;
+    if (filtros.metodo && !(v.metodoPago || '').toLowerCase().includes(filtros.metodo)) return false;
+    return true;
+  }
+
+  function renderVentas() {
+    tbody.innerHTML = '';
+    let total = 0;
+    const isMobile = window.matchMedia('(max-width: 600px)').matches;
+
+    ventasOrdenadas.forEach((venta, i) => {
+      if (!pasaFiltros(venta)) return;
+
+      const idx = i + 1;
+      const val = Number(venta.total) || 0;
+
+      if (isMobile) {
+        const trNum = document.createElement('tr');
+        trNum.className = 'venta-num-mobile';
+        trNum.innerHTML = `<td colspan="8" class="venta-num-mobile-td">Venta #${idx}</td>`;
+        tbody.appendChild(trNum);
+      }
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td data-label="ID">${idx}</td>
+        <td data-label="Fecha">${formatearFecha(venta.createdAt || venta.fecha)}</td>
+        <td data-label="Cliente">${venta.cliente || ''}</td>
+        <td data-label="Producto">${venta.producto || ''}</td>
+        <td data-label="Cantidad">${venta.cantidad || 0}</td>
+        <td data-label="Total">${formatearMoneda(val)}</td>
+        <td data-label="Método de pago">${venta.metodoPago || ''}</td>
+        <td data-label="Acciones">
+          <button class="btn archivar" data-id="${venta._id}" title="Archivar venta">📁</button>
+          <button class="btn editar" data-id="${venta._id}" title="Editar venta">✏️</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+      total += val;
+    });
+
+    totalDiv.textContent = `Total ventas: ${formatearMoneda(total)}`;
+
+    // Eventos para botones de acción
+    document.querySelectorAll('.archivar').forEach(b => b.onclick = async e => {
+      const id = e.currentTarget.dataset.id;
+      if (confirm('¿Seguro que deseas archivar esta venta?')) {
+        try {
+          const res = await fetch(`${API_BASE_URL}/ventas/${id}`, { method: 'DELETE' });
+          if (!res.ok) throw new Error('Error al archivar');
+          ventas = await cargarVentas();
+          ventasOrdenadas = [...ventas];
+          renderVentas();
+        } catch (err) {
+          alert(err.message);
+        }
+      }
+    });
+
+    document.querySelectorAll('.editar').forEach(b => b.onclick = e => {
+      const id = e.currentTarget.dataset.id;
+      alert(`Editar venta ID: ${id} (funcionalidad por implementar)`);
+    });
+  }
+
+  // Búsqueda
+  inputBuscar.addEventListener('input', () => {
+    const q = inputBuscar.value.trim().toLowerCase();
+    ventasOrdenadas = ventas.filter(v =>
+      !q || [v.cliente, v.producto, v.metodoPago].some(x => (x || '').toLowerCase().includes(q))
+    );
+    renderVentas();
+  });
+
+  // Ordenamiento
+  btnOrdenar.addEventListener('click', () => {
+    menuOrdenar.style.display = menuOrdenar.style.display === 'block' ? 'none' : 'block';
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!btnOrdenar.contains(e.target) && !menuOrdenar.contains(e.target)) {
+      menuOrdenar.style.display = 'none';
+    }
+  });
+
+  menuOrdenar.querySelectorAll('.ordenar-opcion').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tipo = btn.dataset.orden;
+      if (tipo === 'monto') {
+        ventasOrdenadas.sort((a, b) => (Number(b.total) || 0) - (Number(a.total) || 0));
+      } else if (tipo === 'fecha') {
+        ventasOrdenadas.sort((a, b) => new Date(b.createdAt || b.fecha) - new Date(a.createdAt || a.fecha));
+      } else if (tipo === 'metodo') {
+        ventasOrdenadas.sort((a, b) => (a.metodoPago || '').localeCompare(b.metodoPago || ''));
+      } else if (tipo === 'cliente') {
+        ventasOrdenadas.sort((a, b) => (a.cliente || '').localeCompare(b.cliente || ''));
+      }
+      menuOrdenar.style.display = 'none';
+      renderVentas();
+    });
+  });
+
+  // Filtros
+  btnFiltrar.addEventListener('click', () => {
+    containerFiltros.classList.add('show');
+    setTimeout(() => contFiltros.classList.add('slide'), 10);
+  });
+
+  btnCerrarFiltros.addEventListener('click', () => {
+    contFiltros.classList.remove('slide');
+    setTimeout(() => containerFiltros.classList.remove('show'), 300);
+  });
+
+  // Cerrar panel al hacer clic en el overlay
+  containerFiltros.addEventListener('click', (e) => {
+    if (e.target === containerFiltros) {
+      contFiltros.classList.remove('slide');
+      setTimeout(() => containerFiltros.classList.remove('show'), 300);
+    }
+  });
+
+  formFiltros.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fd = new FormData(formFiltros);
+    filtros.cliente = (fd.get('cliente') || '').toLowerCase();
+    filtros.producto = (fd.get('producto') || '').toLowerCase();
+    filtros.fechaDesde = (fd.get('fechaDesde') || '');
+    filtros.fechaHasta = (fd.get('fechaHasta') || '');
+    filtros.metodo = (fd.get('metodo') || '').toLowerCase();
+    
+    contFiltros.classList.remove('slide');
+    setTimeout(() => containerFiltros.classList.remove('show'), 300);
+    renderVentas();
+  });
+
+  document.getElementById('limpiar-filtros').addEventListener('click', () => {
+    filtros = { cliente: '', producto: '', fechaDesde: '', fechaHasta: '', metodo: '' };
+    formFiltros.reset();
+    renderVentas();
+  });
+
+  // Render inicial y al redimensionar
+  renderVentas();
+  window.addEventListener('resize', renderVentas);
+});
