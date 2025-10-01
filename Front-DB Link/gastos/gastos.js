@@ -53,6 +53,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   let gastosOrdenados = [...gastos];
 
   function formatSeqNumG(n) { return '#' + String(n).padStart(4, '0'); }
+  // Estado de ordenamiento: campo actual y dirección (true = asc, false = desc)
+  let sortState = { campo: null, asc: null };
+  function updateOrdenButton() {
+    const labels = { monto: 'monto', fecha: 'fecha', metodo: 'método' };
+    if (!sortState.campo) {
+      btnOrdenar.textContent = '⇅ Ordenar';
+      return;
+    }
+    const dir = sortState.asc ? '↑' : '↓';
+    const label = labels[sortState.campo] || sortState.campo;
+    btnOrdenar.textContent = `⇅ Ordenar (${label} ${dir})`;
+  }
   let filtros = { proveedor: '', fechaDesde: '', fechaHasta: '', metodo: '' };
 
   const tbody = document.getElementById('gastos-body');
@@ -162,17 +174,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   menuOrdenar.querySelectorAll('.ordenar-opcion').forEach(btn => {
     btn.addEventListener('click', () => {
       const tipo = btn.dataset.orden;
+      if (sortState.campo === tipo) {
+        sortState.asc = !sortState.asc;
+      } else {
+        sortState.campo = tipo;
+        if (tipo === 'monto' || tipo === 'fecha') sortState.asc = false;
+        else sortState.asc = true;
+      }
+      const asc = sortState.asc ? 1 : -1;
       if (tipo === 'monto') {
-        gastosOrdenados.sort((a, b) => (Number(b.total) || 0) - (Number(a.total) || 0));
+        gastosOrdenados.sort((a, b) => asc * ((Number(a.total) || 0) - (Number(b.total) || 0)));
       } else if (tipo === 'fecha') {
-        gastosOrdenados.sort((a, b) => new Date(b.createdAt || b.fecha) - new Date(a.createdAt || a.fecha));
+        gastosOrdenados.sort((a, b) => asc * ((new Date(a.createdAt || a.fecha)).getTime() - (new Date(b.createdAt || b.fecha)).getTime()));
       } else if (tipo === 'metodo') {
-        gastosOrdenados.sort((a, b) => (a.metodoPago || '').localeCompare(b.metodoPago || ''));
+        gastosOrdenados.sort((a, b) => asc * ((a.metodoPago || '').localeCompare(b.metodoPago || '')));
       }
       menuOrdenar.style.display = 'none';
+      updateOrdenButton();
       renderGastos();
     });
   });
+  // Inicializar texto del botón
+  updateOrdenButton();
 
   // Filtros
   btnFiltrar.addEventListener('click', () => {

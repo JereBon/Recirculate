@@ -52,8 +52,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   try { localStorage.setItem(SEQ_KEY, JSON.stringify(seqMap)); } catch(e){}
 
   let ventasOrdenadas = [...ventas];
-
   function formatSeqNum(n) { return '#' + String(n).padStart(4, '0'); }
+  // Estado de ordenamiento: campo actual y dirección (true = asc, false = desc)
+  let sortState = { campo: null, asc: null };
+  function updateOrdenButton() {
+    const labels = { monto: 'monto', fecha: 'fecha', metodo: 'método', cliente: 'cliente' };
+    if (!sortState.campo) {
+      btnOrdenar.textContent = '⇅ Ordenar';
+      return;
+    }
+    const dir = sortState.asc ? '↑' : '↓';
+    const label = labels[sortState.campo] || sortState.campo;
+    btnOrdenar.textContent = `⇅ Ordenar (${label} ${dir})`;
+  }
   let filtros = { cliente: '', producto: '', fechaDesde: '', fechaHasta: '', metodo: '' };
 
   const tbody = document.getElementById('ventas-body');
@@ -165,19 +176,33 @@ document.addEventListener('DOMContentLoaded', async () => {
   menuOrdenar.querySelectorAll('.ordenar-opcion').forEach(btn => {
     btn.addEventListener('click', () => {
       const tipo = btn.dataset.orden;
+      // determinar dirección: si se clickeó el mismo campo, invertimos; si no, usamos el default
+      if (sortState.campo === tipo) {
+        sortState.asc = !sortState.asc;
+      } else {
+        sortState.campo = tipo;
+        // defaults: monto/fecha -> desc, metodo/cliente -> asc
+        if (tipo === 'monto' || tipo === 'fecha') sortState.asc = false;
+        else sortState.asc = true;
+      }
+
+      const asc = sortState.asc ? 1 : -1;
       if (tipo === 'monto') {
-        ventasOrdenadas.sort((a, b) => (Number(b.total) || 0) - (Number(a.total) || 0));
+        ventasOrdenadas.sort((a, b) => asc * ((Number(a.total) || 0) - (Number(b.total) || 0)));
       } else if (tipo === 'fecha') {
-        ventasOrdenadas.sort((a, b) => new Date(b.createdAt || b.fecha) - new Date(a.createdAt || a.fecha));
+        ventasOrdenadas.sort((a, b) => asc * ((new Date(a.createdAt || a.fecha)).getTime() - (new Date(b.createdAt || b.fecha)).getTime()));
       } else if (tipo === 'metodo') {
-        ventasOrdenadas.sort((a, b) => (a.metodoPago || '').localeCompare(b.metodoPago || ''));
+        ventasOrdenadas.sort((a, b) => asc * ((a.metodoPago || '').localeCompare(b.metodoPago || '')));
       } else if (tipo === 'cliente') {
-        ventasOrdenadas.sort((a, b) => (a.cliente || '').localeCompare(b.cliente || ''));
+        ventasOrdenadas.sort((a, b) => asc * ((a.cliente || '').localeCompare(b.cliente || '')));
       }
       menuOrdenar.style.display = 'none';
+      updateOrdenButton();
       renderVentas();
     });
   });
+  // Inicializar texto del botón
+  updateOrdenButton();
 
   // Filtros
   btnFiltrar.addEventListener('click', () => {
