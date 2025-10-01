@@ -28,7 +28,31 @@ function formatearMoneda(v) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   let gastos = await cargarGastos();
+  // Asegurar ID persistente para items que no provengan del backend
+  gastos = gastos.map(g => {
+    if (!g._id && !g.id && !g._generatedId) {
+      g._generatedId = 'local-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8);
+    }
+    return g;
+  });
+
+  // Mapear a números secuenciales persistentes (cliente) para mostrar como #0001, #0002...
+  const SEQ_KEY_G = 'gastos_seq_map';
+  let seqMapG = {};
+  try { seqMapG = JSON.parse(localStorage.getItem(SEQ_KEY_G)) || {}; } catch(e) { seqMapG = {}; }
+  let usedNumsG = Object.values(seqMapG).map(n => Number(n)).filter(n => !isNaN(n));
+  let nextNumG = usedNumsG.length ? Math.max(...usedNumsG) + 1 : 1;
+  gastos.forEach(g => {
+    const pid = g._id || g.id || g._generatedId;
+    if (!seqMapG[pid]) {
+      seqMapG[pid] = nextNumG++;
+    }
+  });
+  try { localStorage.setItem(SEQ_KEY_G, JSON.stringify(seqMapG)); } catch(e){}
+
   let gastosOrdenados = [...gastos];
+
+  function formatSeqNumG(n) { return '#' + String(n).padStart(4, '0'); }
   let filtros = { proveedor: '', fechaDesde: '', fechaHasta: '', metodo: '' };
 
   const tbody = document.getElementById('gastos-body');
@@ -61,8 +85,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     gastosOrdenados.forEach((gasto, i) => {
       if (!pasaFiltros(gasto)) return;
 
-      const idx = i + 1;
-      const val = Number(gasto.total) || 0;
+  const idx = i + 1;
+  const val = Number(gasto.total) || 0;
+  const persistentId = gasto._id || gasto.id || gasto._generatedId || idx;
+  const seqNumG = (function() { try { const m = JSON.parse(localStorage.getItem('gastos_seq_map')||'{}'); return m[persistentId]; } catch(e){return null;} })();
+  const displayId = seqNumG ? formatSeqNumG(seqNumG) : persistentId;
 
       if (isMobile) {
         const trNum = document.createElement('tr');
@@ -73,15 +100,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td data-label="ID">${idx}</td>
+  <td data-label="ID">${displayId}</td>
         <td data-label="Fecha">${formatearFecha(gasto.createdAt || gasto.fecha)}</td>
         <td data-label="Proveedor">${gasto.proveedor || ''}</td>
         <td data-label="Concepto">${gasto.concepto || ''}</td>
         <td data-label="Monto">${formatearMoneda(val)}</td>
         <td data-label="Método de pago">${gasto.metodoPago || ''}</td>
         <td data-label="Acciones">
-          <button class="btn archivar" data-id="${gasto._id}" title="Archivar gasto">📁</button>
-          <button class="btn editar" data-id="${gasto._id}" title="Editar gasto">✏️</button>
+          <button class="btn archivar" data-id="${persistentId}" title="Archivar gasto">📁</button>
+          <button class="btn editar" data-id="${persistentId}" title="Editar gasto">✏️</button>
         </td>
       `;
       tbody.appendChild(tr);

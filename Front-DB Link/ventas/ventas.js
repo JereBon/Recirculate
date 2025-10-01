@@ -28,7 +28,32 @@ function formatearMoneda(v) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   let ventas = await cargarVentas();
+  // Asegurar ID persistente para items que no provengan del backend
+  ventas = ventas.map(v => {
+    if (!v._id && !v.id && !v._generatedId) {
+      v._generatedId = 'local-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8);
+    }
+    return v;
+  });
+
+  // Mapear a números secuenciales persistentes (cliente) para mostrar como #0001, #0002...
+  const SEQ_KEY = 'ventas_seq_map';
+  let seqMap = {};
+  try { seqMap = JSON.parse(localStorage.getItem(SEQ_KEY)) || {}; } catch(e) { seqMap = {}; }
+  // Calcular el siguiente número disponible
+  let usedNums = Object.values(seqMap).map(n => Number(n)).filter(n => !isNaN(n));
+  let nextNum = usedNums.length ? Math.max(...usedNums) + 1 : 1;
+  ventas.forEach(v => {
+    const pid = v._id || v.id || v._generatedId;
+    if (!seqMap[pid]) {
+      seqMap[pid] = nextNum++;
+    }
+  });
+  try { localStorage.setItem(SEQ_KEY, JSON.stringify(seqMap)); } catch(e){}
+
   let ventasOrdenadas = [...ventas];
+
+  function formatSeqNum(n) { return '#' + String(n).padStart(4, '0'); }
   let filtros = { cliente: '', producto: '', fechaDesde: '', fechaHasta: '', metodo: '' };
 
   const tbody = document.getElementById('ventas-body');
@@ -62,8 +87,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     ventasOrdenadas.forEach((venta, i) => {
       if (!pasaFiltros(venta)) return;
 
-      const idx = i + 1;
-      const val = Number(venta.total) || 0;
+  const idx = i + 1;
+  const val = Number(venta.total) || 0;
+  const persistentId = venta._id || venta.id || venta._generatedId || idx;
+  const seqNum = (function() { try { const m = JSON.parse(localStorage.getItem('ventas_seq_map')||'{}'); return m[persistentId]; } catch(e){return null;} })();
+  const displayId = seqNum ? formatSeqNum(seqNum) : persistentId;
 
       if (isMobile) {
         const trNum = document.createElement('tr');
@@ -74,7 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td data-label="ID">${idx}</td>
+  <td data-label="ID">${displayId}</td>
         <td data-label="Fecha">${formatearFecha(venta.createdAt || venta.fecha)}</td>
         <td data-label="Cliente">${venta.cliente || ''}</td>
         <td data-label="Producto">${venta.producto || ''}</td>
@@ -82,8 +110,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td data-label="Total">${formatearMoneda(val)}</td>
         <td data-label="Método de pago">${venta.metodoPago || ''}</td>
         <td data-label="Acciones">
-          <button class="btn archivar" data-id="${venta._id}" title="Archivar venta">📁</button>
-          <button class="btn editar" data-id="${venta._id}" title="Editar venta">✏️</button>
+          <button class="btn archivar" data-id="${persistentId}" title="Archivar venta">📁</button>
+          <button class="btn editar" data-id="${persistentId}" title="Editar venta">✏️</button>
         </td>
       `;
       tbody.appendChild(tr);
