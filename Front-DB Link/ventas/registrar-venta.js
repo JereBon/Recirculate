@@ -153,7 +153,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const successMsg = document.getElementById('success-msg');
   const grupoCripto = document.getElementById('grupo-cripto');
   const metodo = document.getElementById('metodo');
-  const montoCriptoInput = document.getElementById('monto-cripto');
+  const tipoCripto = document.getElementById('tipo-cripto');
+  const montoPesosInput = document.getElementById('monto-pesos');
   const conversionCripto = document.getElementById('conversion-cripto');
 
   // Mostrar/ocultar campo cripto según método de pago
@@ -166,14 +167,44 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Mostrar conversión cripto en tiempo real
-  montoCriptoInput.addEventListener('input', async () => {
-    const monto = Number(montoCriptoInput.value);
-    if (monto > 0) {
-      const fiat = await convertirCriptoAFiat(monto);
-      conversionCripto.textContent = `Equivale a $${fiat.toLocaleString('es-AR')}`;
+  // Mostrar conversión pesos -> cripto en tiempo real
+  async function calcularConversionPesosAPrecio(pesos) {
+    const criptoId = tipoCripto.value || 'bitcoin';
+    // Obtener precio (1 cripto -> ARS) y mostrar monto en cripto
+    try {
+      const fiat = 'ars';
+      const resp = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${criptoId}&vs_currencies=${fiat}`);
+      if (!resp.ok) throw new Error('API error');
+      const data = await resp.json();
+      const tasa = data[criptoId][fiat];
+      localStorage.setItem('ultimaTasaCripto_'+criptoId, tasa);
+      const montoCripto = pesos / tasa;
+      return { tasa, montoCripto };
+    } catch (err) {
+      const tasa = Number(localStorage.getItem('ultimaTasaCripto_'+(tipoCripto.value||'bitcoin')));
+      if (tasa > 0) {
+        return { tasa, montoCripto: pesos / tasa };
+      }
+      return { tasa: 0, montoCripto: 0 };
+    }
+  }
+
+  montoPesosInput.addEventListener('input', async () => {
+    const pesos = Number(montoPesosInput.value);
+    if (pesos > 0) {
+      const { montoCripto } = await calcularConversionPesosAPrecio(pesos);
+      conversionCripto.textContent = `Equivale a ${montoCripto.toFixed(6)} ${tipoCripto.value === 'ethereum' ? 'ETH' : 'BTC'}`;
     } else {
       conversionCripto.textContent = '';
+    }
+  });
+
+  // Recalcular conversión al cambiar el tipo de cripto sin necesidad de tocar el monto
+  tipoCripto.addEventListener('change', async () => {
+    const pesos = Number(montoPesosInput.value);
+    if (pesos > 0) {
+      const { montoCripto } = await calcularConversionPesosAPrecio(pesos);
+      conversionCripto.textContent = `Equivale a ${montoCripto.toFixed(6)} ${tipoCripto.value === 'ethereum' ? 'ETH' : 'BTC'}`;
     }
   });
 
@@ -188,7 +219,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       producto: document.getElementById('producto').value,
       cantidad: Number(document.getElementById('cantidad').value),
       metodoPago: metodo.value,
-      montoCripto: metodo.value === 'Cripto' ? Number(montoCriptoInput.value) : null,
+      montoPesos: metodo.value === 'Cripto' ? Number(montoPesosInput.value) : null,
+      montoCripto: null,
       total: 0, // Se calcula abajo
       fecha: new Date().toISOString() // Fecha de la venta
     };
@@ -206,7 +238,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Calcular total
     if (venta.metodoPago === 'Cripto') {
-      venta.total = await convertirCriptoAFiat(venta.montoCripto);
+      if (!venta.montoPesos || venta.montoPesos <= 0) {
+        document.getElementById('e-cripto').textContent = 'Debe ingresar un monto en pesos.';
+        return;
+      }
+      // calcular monto en cripto a partir de pesos
+      const { montoCripto } = await calcularConversionPesosAPrecio(venta.montoPesos);
+      venta.montoCripto = Number(montoCripto.toFixed(8));
+      venta.total = venta.montoPesos;
+      venta.criptoTipo = tipoCripto.value || 'bitcoin';
     } else {
       venta.total = venta.cantidad * 10000;
     }
