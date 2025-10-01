@@ -33,8 +33,14 @@ function validarGasto(gasto) {
   if (!gasto.metodoPago || gasto.metodoPago === '') {
     return 'Debe seleccionar un método de pago.';
   }
-  if (gasto.metodoPago === 'Cripto' && (!gasto.montoCripto || gasto.montoCripto <= 0)) {
-    return 'Debe ingresar un monto válido en cripto.';
+  // Si el método es Cripto aceptamos que el usuario ingrese monto en pesos (montoPesos)
+  // o directamente en cripto (montoCripto). Requerimos al menos uno válido.
+  if (gasto.metodoPago === 'Cripto') {
+    const aceptaPesos = typeof gasto.montoPesos === 'number' && gasto.montoPesos > 0;
+    const aceptaCripto = typeof gasto.montoCripto === 'number' && gasto.montoCripto > 0;
+    if (!aceptaPesos && !aceptaCripto) {
+      return 'Debe ingresar un monto válido (pesos o cripto).';
+    }
   }
   return true;
 }

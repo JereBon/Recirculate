@@ -34,8 +34,14 @@ function validarVenta(venta) {
   if (!venta.metodoPago || venta.metodoPago === '') {
     return 'Debe seleccionar un método de pago.';
   }
-  if (venta.metodoPago === 'Cripto' && (!venta.montoCripto || venta.montoCripto <= 0)) {
-    return 'Debe ingresar un monto válido en cripto.';
+  // Si el método es Cripto aceptamos que el usuario ingrese monto en pesos (montoPesos)
+  // o directamente en cripto (montoCripto). Requerimos al menos uno válido.
+  if (venta.metodoPago === 'Cripto') {
+    const aceptaPesos = typeof venta.montoPesos === 'number' && venta.montoPesos > 0;
+    const aceptaCripto = typeof venta.montoCripto === 'number' && venta.montoCripto > 0;
+    if (!aceptaPesos && !aceptaCripto) {
+      return 'Debe ingresar un monto válido (pesos o cripto).';
+    }
   }
   return true;
 }
