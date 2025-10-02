@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let allProductos = []; // Cache de todos los productos
   let searchTerm = ''; // Término de búsqueda actual
+  let filtros = { nombre: '', categoria: '', marca: '', proveedor: '', precioDesde: '', precioHasta: '', stockDesde: '', stockHasta: '', fechaDesde: '', fechaHasta: '', activo: true };
 
   // Función asíncrona para obtener productos desde la API
   async function fetchProductos() {
@@ -25,17 +26,58 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // Función para filtrar productos según término de búsqueda (por nombre, categoría, marca, proveedor)
+  // Función para filtrar productos según término de búsqueda y filtros aplicados
   function filtrarProductos(productos) {
-    if (!searchTerm.trim()) return productos;
-    const term = searchTerm.toLowerCase();
-    return productos.filter(prod =>
-      (prod.nombre && prod.nombre.toLowerCase().includes(term)) ||
-      (prod.categoria && prod.categoria.toLowerCase().includes(term)) ||
-      (prod.marca && prod.marca.toLowerCase().includes(term)) ||
-      (prod.proveedor && prod.proveedor.nombre && prod.proveedor.nombre.toLowerCase().includes(term)) ||
-      (prod._id && prod._id.toLowerCase().includes(term))
-    );
+    let filtered = productos;
+
+    // Filtro por término de búsqueda
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(prod =>
+        (prod.nombre && prod.nombre.toLowerCase().includes(term)) ||
+        (prod.categoria && prod.categoria.toLowerCase().includes(term)) ||
+        (prod.marca && prod.marca.toLowerCase().includes(term)) ||
+        (prod.proveedor && prod.proveedor.nombre && prod.proveedor.nombre.toLowerCase().includes(term)) ||
+        (prod._id && prod._id.toLowerCase().includes(term))
+      );
+    }
+
+    // Filtros específicos
+    if (filtros.nombre) {
+      filtered = filtered.filter(p => p.nombre && p.nombre.toLowerCase().includes(filtros.nombre.toLowerCase()));
+    }
+    if (filtros.categoria) {
+      filtered = filtered.filter(p => p.categoria && p.categoria.toLowerCase().includes(filtros.categoria.toLowerCase()));
+    }
+    if (filtros.marca) {
+      filtered = filtered.filter(p => p.marca && p.marca.toLowerCase().includes(filtros.marca.toLowerCase()));
+    }
+    if (filtros.proveedor) {
+      filtered = filtered.filter(p => p.proveedor && p.proveedor.nombre && p.proveedor.nombre.toLowerCase().includes(filtros.proveedor.toLowerCase()));
+    }
+    if (filtros.precioDesde) {
+      filtered = filtered.filter(p => p.precio != null && p.precio >= parseFloat(filtros.precioDesde));
+    }
+    if (filtros.precioHasta) {
+      filtered = filtered.filter(p => p.precio != null && p.precio <= parseFloat(filtros.precioHasta));
+    }
+    if (filtros.stockDesde) {
+      filtered = filtered.filter(p => p.stock != null && p.stock >= parseInt(filtros.stockDesde));
+    }
+    if (filtros.stockHasta) {
+      filtered = filtered.filter(p => p.stock != null && p.stock <= parseInt(filtros.stockHasta));
+    }
+    if (filtros.fechaDesde) {
+      filtered = filtered.filter(p => p.createdAt && new Date(p.createdAt) >= new Date(filtros.fechaDesde));
+    }
+    if (filtros.fechaHasta) {
+      filtered = filtered.filter(p => p.createdAt && new Date(p.createdAt) <= new Date(filtros.fechaHasta));
+    }
+    if (filtros.activo !== undefined) {
+      filtered = filtered.filter(p => p.activo === filtros.activo);
+    }
+
+    return filtered;
   }
 
   // Función asíncrona para cargar y renderizar productos desde API
@@ -118,6 +160,56 @@ document.addEventListener('DOMContentLoaded', async () => {
   searchInput.addEventListener('input', (e) => {
     searchTerm = e.target.value;
     cargarProductos(); // Re-renderiza con filtro
+  });
+
+  // Manejo del botón filtrar para mostrar panel lateral
+  const btnFiltrar = document.getElementById('btn-filtrar');
+  const containerFiltros = document.querySelector('.container-filtros');
+  const contFiltros = document.querySelector('.cont-filtros');
+  const btnCerrarFiltros = document.getElementById('cerrar-filtros');
+  const formFiltros = document.getElementById('form-filtros');
+  const btnLimpiarFiltros = document.getElementById('limpiar-filtros');
+
+  btnFiltrar.addEventListener('click', () => {
+    containerFiltros.classList.add('show');
+    setTimeout(() => contFiltros.classList.add('slide'), 10);
+  });
+
+  btnCerrarFiltros.addEventListener('click', () => {
+    contFiltros.classList.remove('slide');
+    setTimeout(() => containerFiltros.classList.remove('show'), 300);
+  });
+
+  containerFiltros.addEventListener('click', (e) => {
+    if (e.target === containerFiltros) {
+      contFiltros.classList.remove('slide');
+      setTimeout(() => containerFiltros.classList.remove('show'), 300);
+    }
+  });
+
+  formFiltros.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fd = new FormData(formFiltros);
+    filtros.nombre = (fd.get('nombre') || '').trim();
+    filtros.categoria = (fd.get('categoria') || '').trim();
+    filtros.marca = (fd.get('marca') || '').trim();
+    filtros.proveedor = (fd.get('proveedor') || '').trim();
+    filtros.precioDesde = fd.get('precioDesde') || '';
+    filtros.precioHasta = fd.get('precioHasta') || '';
+    filtros.stockDesde = fd.get('stockDesde') || '';
+    filtros.stockHasta = fd.get('stockHasta') || '';
+    filtros.fechaDesde = fd.get('fechaDesde') || '';
+    filtros.fechaHasta = fd.get('fechaHasta') || '';
+    filtros.activo = fd.get('activo') !== null;
+    contFiltros.classList.remove('slide');
+    setTimeout(() => containerFiltros.classList.remove('show'), 300);
+    cargarProductos();
+  });
+
+  btnLimpiarFiltros.addEventListener('click', () => {
+    filtros = { nombre: '', categoria: '', marca: '', proveedor: '', precioDesde: '', precioHasta: '', stockDesde: '', stockHasta: '', fechaDesde: '', fechaHasta: '', activo: true };
+    formFiltros.reset();
+    cargarProductos();
   });
 
   // Carga inicial de productos

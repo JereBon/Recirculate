@@ -68,9 +68,34 @@
   <main class="main" style="max-width:1800px; min-width:1200px;">
     <div class="search-filter-bar" style="display:flex; gap:10px; margin-bottom:16px; align-items:center;">
       <input type="text" id="search-input" placeholder="Buscar producto..." style="flex:1; min-width:0; max-width:100%;" />
-      <button id="filter-btn" title="Filtrar" class="filter-btn" style="background:#e0e0e0; color:#222; border-radius:8px; height:40px; display:flex; align-items:center; justify-content:center; font-size:1.1em; border:none; cursor:pointer; font-weight:bold; gap:6px; padding:0 18px; box-shadow:0 2px 8px #0001;">
-        <span style="font-size:1.3em;">&#9906;</span> Filtrar
-      </button>
+      <button id="btn-filtrar" class="primary" style="padding: 8px 12px;">🔍 Filtrar</button>
+    </div>
+
+    <!-- Panel lateral de filtros -->
+    <div class="container-filtros">
+      <div class="cont-filtros">
+        <button type="button" id="cerrar-filtros">✕</button>
+        <h2>Filtrar productos</h2>
+        <form id="form-filtros">
+          <label>Nombre:<br><input type="text" name="nombre"></label><br>
+          <label>Categoría:<br><input type="text" name="categoria"></label><br>
+          <label>Marca:<br><input type="text" name="marca"></label><br>
+          <label>Proveedor:<br><input type="text" name="proveedor"></label><br>
+          <label>Precio desde:<br><input type="number" name="precioDesde" min="0" step="0.01"></label><br>
+          <label>Precio hasta:<br><input type="number" name="precioHasta" min="0" step="0.01"></label><br>
+          <label>Stock desde:<br><input type="number" name="stockDesde" min="0" step="1"></label><br>
+          <label>Stock hasta:<br><input type="number" name="stockHasta" min="0" step="1"></label><br>
+          <label>Fecha desde:<br><input type="date" name="fechaDesde"></label><br>
+          <label>Fecha hasta:<br><input type="date" name="fechaHasta"></label><br>
+          <label><input type="checkbox" name="activo" checked> Solo activos</label><br>
+          <div class="filter-buttons">
+            <button type="submit" class="primary">Aplicar</button>
+            <button type="button" id="limpiar-filtros">Limpiar</button>
+          </div>
+        </form>
+  <!-- spacer to ensure buttons are visible above OS taskbar when panel is scrolled -->
+  <div style="height: calc(env(safe-area-inset-bottom, 24px) + 40px);"></div>
+      </div>
     </div>
     <table class="gastos-table" id="tabla-todos-productos">
       <thead>
