@@ -30,7 +30,8 @@ body, html {
   height: 100vh;
   background: #fff;
   box-shadow: -4px 0 12px rgba(0,0,0,0.15);
-  padding: 32px 24px 24px 24px;
+  /* dejar espacio extra abajo para barras del SO (Windows taskbar, safe-area) */
+  padding: 32px 24px calc(24px + env(safe-area-inset-bottom, 24px)) 24px;
   transform: translateX(100%);
   transition: transform 0.3s cubic-bezier(.4,0,.2,1);
   overflow-y: auto;
