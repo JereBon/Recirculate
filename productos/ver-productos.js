@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Elementos del DOM
   const tabla = document.getElementById('tabla-todos-productos').querySelector('tbody');
   const searchInput = document.getElementById('search-input');
-  const API_URL = "http://localhost:3001/api/productos";
+  const API_URL = "https://recirculate-api.onrender.com/api/productos";
   const errorDiv = document.getElementById("errorProductos");
 
   let allProductos = []; // Cache de todos los productos

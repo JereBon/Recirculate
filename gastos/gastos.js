@@ -1,7 +1,7 @@
 // gastos.js - Lógica mejorada para mostrar y gestionar el listado de gastos
 // Incluye búsqueda, filtros, ordenamiento y conexión a API
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'https://recirculate-api.onrender.com/api';
 
 // Función para cargar gastos desde la API
 async function cargarGastos() {

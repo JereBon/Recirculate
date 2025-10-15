@@ -72,7 +72,7 @@ async function convertirCriptoAFiat(montoCripto) {
 }
 
 
-const API_URL = "http://localhost:3001/api";
+const API_URL = "https://recirculate-api.onrender.com/api";
 let productosDisponibles = [];
 
 // Mini menú de productos con imagen y stock

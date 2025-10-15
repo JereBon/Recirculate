@@ -1,7 +1,7 @@
 // ventas.js - Lógica mejorada para mostrar y gestionar el listado de ventas
 // Incluye búsqueda, filtros, ordenamiento y conexión a API
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'https://recirculate-api.onrender.com/api';
 
 // Función para cargar ventas desde la API
 async function cargarVentas() {

@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const formData = new FormData();
     formData.append('imagen', file);
     try {
-      const res = await fetch('http://localhost:3001/api/upload', {
+      const res = await fetch('https://recirculate-api.onrender.com/api/upload', {
         method: 'POST',
         body: formData
       });
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let editandoId = null; // ID del producto siendo editado, null si creando
   let productosCache = []; // Cache de productos para edición rápida
-  const API_URL = 'http://localhost:3001/api/productos'; // URL base de la API
+  const API_URL = 'https://recirculate-api.onrender.com/api/productos'; // URL base de la API
 
 
   // Función asíncrona para obtener productos desde la API y actualizar cache

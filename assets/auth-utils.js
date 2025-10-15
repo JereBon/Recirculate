@@ -1,5 +1,5 @@
 // assets/auth-utils.js - Utilidades de autenticación para todas las páginas
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'https://recirculate-api.onrender.com/api';
 
 // Verificar autenticación y redirigir si no está logueado
 function requireAuth(redirectToLogin = true) {

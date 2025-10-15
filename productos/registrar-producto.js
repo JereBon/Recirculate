@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3001/api/productos";
+const API_URL = "https://recirculate-api.onrender.com/api/productos";
 
 document.getElementById("formProducto").addEventListener("submit", async (e) => {
   e.preventDefault();

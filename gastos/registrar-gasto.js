@@ -1,7 +1,7 @@
 // registrar-gasto.js - Lógica del formulario de registro de gastos
 // Maneja validaciones, persistencia, mensajes y conversión cripto.
 
-const API_URL = "http://localhost:3001/api/gastos";
+const API_URL = "https://recirculate-api.onrender.com/api/gastos";
 
 function guardarDatos(key, value) {
   try {
