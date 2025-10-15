@@ -80,6 +80,31 @@ app.use(cors());
 app.use(express.json());
 app.use('/api/upload', uploadRouter);
 
+// --- SERVIR ARCHIVOS ESTÁTICOS ---
+const path = require('path');
+app.use(express.static(path.join(__dirname, '..')));
+
+// --- RUTA PRINCIPAL ---
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'welcome.html'));
+});
+
+// --- RUTA PARA EL SISTEMA COMPLETO ---
+app.get('/app', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
+
+// --- RUTA DE PRUEBA DE API ---
+app.get('/api/status', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    message: 'Recirculate API funcionando correctamente',
+    version: '3.0',
+    database: 'PostgreSQL',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // --- RUTAS DE AUTENTICACIÓN ---
 app.use('/api/auth', authRoutes);
 
@@ -293,5 +318,7 @@ app.post('/api/gastos', verifyToken, verifyAdmin, async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`API escuchando en puerto ${PORT} - v3.0 - PostgreSQL completo`);
+  console.log(`API escuchando en puerto ${PORT} - v3.1 - Web completa`);
+  console.log(`🌐 Aplicación disponible en: https://recirculate-api.onrender.com`);
+  console.log(`📱 Sistema completo en: https://recirculate-api.onrender.com/app`);
 });

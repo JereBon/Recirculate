@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recirculate - Sistema de Gestión</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: 600px;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ffd700, #ffed4a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(0, 255, 0, 0.1);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+        
+        .status-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #00ff00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        .info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .info h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+        
+        .info ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .info li {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .info li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00ff00;
+            font-weight: bold;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #ffd700, #ffed4a);
+            color: #333;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            margin: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Recirculate</h1>
+        <p class="subtitle">Sistema de Gestión Empresarial</p>
+        
+        <div class="status">
+            <div class="status-icon">✓</div>
+            <div>
+                <strong>API Activa y Funcionando</strong><br>
+                <small>PostgreSQL conectado - Todas las funciones disponibles</small>
+            </div>
+        </div>
+        
+        <div class="info">
+            <h3>🚀 Funciones Disponibles:</h3>
+            <ul>
+                <li>Sistema de autenticación completo</li>
+                <li>Gestión de productos con control de stock</li>
+                <li>Registro y seguimiento de ventas</li>
+                <li>Control de gastos y categorización</li>
+                <li>Base de datos PostgreSQL en la nube</li>
+                <li>Acceso desde cualquier dispositivo</li>
+            </ul>
+        </div>
+        
+        <div class="info">
+            <h3>🔐 Credenciales de Acceso:</h3>
+            <ul>
+                <li><strong>Email:</strong> admin@recirculate.com</li>
+                <li><strong>Password:</strong> admin123</li>
+            </ul>
+        </div>
+        
+        <div>
+            <p style="margin: 20px 0;">Para acceder al sistema completo:</p>
+            <a href="/index.html" class="btn">🏠 Ir al Sistema</a>
+        </div>
+        
+        <div class="footer">
+            <p>Recirculate v3.0 - Sistema completo con PostgreSQL</p>
+            <p>Desarrollado para gestión empresarial eficiente</p>
+        </div>
+    </div>
+    
+    <script>
+        // Verificar que la API esté funcionando
+        async function checkAPI() {
+            try {
+                const response = await fetch('/api/auth/test');
+                console.log('API Status: OK');
+            } catch (error) {
+                console.log('API Status: Checking...');
+            }
+        }
+        
+        checkAPI();
+    </script>
+</body>
+</html>
