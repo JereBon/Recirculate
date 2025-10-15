@@ -119,66 +119,95 @@ app.delete('/api/ventas/:id', verifyToken, verifyAdmin, async (req, res) => {
   res.status(204).end();
 });
 
-// --- RUTAS DE PRODUCTOS TEMPORALMENTE DESHABILITADAS (PENDIENTES MIGRACIÓN A POSTGRESQL) ---
-/*
+// --- RUTAS DE PRODUCTOS CON POSTGRESQL ---
+const Product = require('./models/Product');
+const Sale = require('./models/Sale');
+const Expense = require('./models/Expense');
+
 // Obtener todos los productos
 app.get('/api/productos', async (req, res) => {
-  const { search } = req.query;
-  let query = {};
-  if (search) {
-    query = {
-      $or: [
-        { nombre: { $regex: search, $options: 'i' } },
-        { categoria: { $regex: search, $options: 'i' } }
-      ]
-    };
+  try {
+    const { search } = req.query;
+    const productos = await Product.findAll(search);
+    res.json(productos);
+  } catch (error) {
+    console.error('Error obteniendo productos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
-  const productos = await Producto.find(query);
-  res.json(productos);
-});*/
+});
 
-/*
 // Obtener un producto por ID
 app.get('/api/productos/:id', async (req, res) => {
-  const producto = await Producto.findById(req.params.id);
-  if (!producto) {
-    return res.status(404).json({ error: 'Producto no encontrado' });
+  try {
+    const producto = await Product.findById(req.params.id);
+    if (!producto) {
+      return res.status(404).json({ error: 'Producto no encontrado' });
+    }
+    res.json(producto);
+  } catch (error) {
+    console.error('Error obteniendo producto:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
-  res.json(producto);
 });
 
 // Crear producto (solo admin)
 app.post('/api/productos', verifyToken, verifyAdmin, async (req, res) => {
-  const nuevo = new Producto(req.body);
-  await nuevo.save();
-  res.status(201).json(nuevo);
+  try {
+    const nuevo = await Product.create({
+      ...req.body,
+      usuario_id: req.userId
+    });
+    res.status(201).json(nuevo);
+  } catch (error) {
+    console.error('Error creando producto:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
 });
 
 // Actualizar producto (solo admin)
 app.put('/api/productos/:id', verifyToken, verifyAdmin, async (req, res) => {
-  const actualizado = await Producto.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  );
-  if (actualizado && actualizado.stock <= 0) {
-    await Producto.findByIdAndDelete(actualizado._id);
-    res.json({ message: 'Producto eliminado por stock agotado' });
-  } else {
-    res.json(actualizado);
+  try {
+    const actualizado = await Product.update(req.params.id, req.body);
+    if (!actualizado) {
+      return res.status(404).json({ error: 'Producto no encontrado' });
+    }
+    
+    // Si el stock queda en 0 o menos, eliminar producto
+    if (actualizado.stock <= 0) {
+      await Product.delete(actualizado.id);
+      res.json({ message: 'Producto eliminado por stock agotado' });
+    } else {
+      res.json(actualizado);
+    }
+  } catch (error) {
+    console.error('Error actualizando producto:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
 
 // Borrar producto (solo admin)
 app.delete('/api/productos/:id', verifyToken, verifyAdmin, async (req, res) => {
-  await Producto.findByIdAndDelete(req.params.id);
-  res.status(204).end();
+  try {
+    const eliminado = await Product.delete(req.params.id);
+    if (!eliminado) {
+      return res.status(404).json({ error: 'Producto no encontrado' });
+    }
+    res.status(204).end();
+  } catch (error) {
+    console.error('Error eliminando producto:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
 });
 
 // Obtener todas las ventas (solo no archivadas) - solo admin
 app.get('/api/ventas', verifyToken, verifyAdmin, async (req, res) => {
-  const ventas = await Venta.find({ archivada: false });
-  res.json(ventas);
+  try {
+    const ventas = await Sale.findAll();
+    res.json(ventas);
+  } catch (error) {
+    console.error('Error obteniendo ventas:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
 });
 
 // Crear venta y actualizar stock (solo admin)
@@ -188,7 +217,7 @@ app.post('/api/ventas', verifyToken, verifyAdmin, async (req, res) => {
   const { cliente, producto, cantidad, metodoPago, montoCripto, fecha } = req.body;
 
     // Encontrar el producto por nombre exacto
-    const prod = await Producto.findOne({ nombre: producto });
+    const prod = await Product.findByName(producto);
     if (!prod) {
       console.log('Producto no encontrado:', producto);
       return res.status(404).json({ error: 'Producto no encontrado' });
@@ -203,21 +232,27 @@ app.post('/api/ventas', verifyToken, verifyAdmin, async (req, res) => {
     // Calcular total basado en precio del producto
     const total = cantidad * prod.precio;
 
-  // Crear la venta
-  const nuevaVenta = new Venta({ cliente, producto: prod.nombre, cantidad, metodoPago, montoCripto, total, fecha });
-    await nuevaVenta.save();
-    console.log('Venta guardada en MongoDB:', nuevaVenta);
+    // Crear la venta
+    const nuevaVenta = await Sale.create({
+      cliente,
+      producto: prod.nombre,
+      cantidad,
+      metodo_pago: metodoPago,
+      monto_cripto: montoCripto,
+      total,
+      fecha,
+      usuario_id: req.userId
+    });
+    console.log('Venta guardada en PostgreSQL:', nuevaVenta);
 
-    // Actualizar stock
-    prod.stock -= cantidad;
-    if (prod.stock <= 0) {
-      prod.stock = 0;
-      prod.estado = 'Sin stock';
-      await prod.save();
+    // Actualizar stock del producto
+    const nuevoStock = prod.stock - cantidad;
+    await Product.updateStock(prod.id, nuevoStock);
+    
+    if (nuevoStock <= 0) {
       console.log('Producto marcado como Sin stock:', prod.nombre);
     } else {
-      await prod.save();
-      console.log('Stock actualizado para producto:', prod.nombre, 'Nuevo stock:', prod.stock);
+      console.log('Stock actualizado para producto:', prod.nombre, 'Nuevo stock:', nuevoStock);
     }
 
     // Emitir evento de nueva venta a todos los clientes conectados
@@ -232,24 +267,31 @@ app.post('/api/ventas', verifyToken, verifyAdmin, async (req, res) => {
 
 // Obtener todos los gastos (solo admin)
 app.get('/api/gastos', verifyToken, verifyAdmin, async (req, res) => {
-  const gastos = await Gasto.find();
-  res.json(gastos);
+  try {
+    const gastos = await Expense.findAll();
+    res.json(gastos);
+  } catch (error) {
+    console.error('Error obteniendo gastos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
 });
 
 // Registrar un nuevo gasto (solo admin)
 app.post('/api/gastos', verifyToken, verifyAdmin, async (req, res) => {
   try {
-    const nuevoGasto = new Gasto(req.body);
-    await nuevoGasto.save();
-    // Emitir evento en tiempo real si usas socket.io
+    const nuevoGasto = await Expense.create({
+      ...req.body,
+      usuario_id: req.userId
+    });
+    // Emitir evento en tiempo real
     io.emit('nuevo-gasto', nuevoGasto);
     res.status(201).json(nuevoGasto);
   } catch (err) {
-    res.status(400).json({ error: 'Error al registrar gasto', details: err.message });
+    console.error('Error al registrar gasto:', err);
+    res.status(500).json({ error: 'Error al registrar gasto', details: err.message });
   }
 });
-*/
 
 server.listen(PORT, () => {
-  console.log(`API escuchando en puerto ${PORT} - v2.1 - Solo PostgreSQL`);
+  console.log(`API escuchando en puerto ${PORT} - v3.0 - PostgreSQL completo`);
 });

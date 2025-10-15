@@ -17,8 +17,11 @@ const connectDB = async () => {
     await client.connect();
     console.log('✅ Conectado a PostgreSQL');
     
-    // Crear tabla usuarios si no existe
+    // Crear todas las tablas si no existen
     await createUsersTable();
+    await createProductsTable();
+    await createSalesTable();
+    await createExpensesTable();
     
   } catch (error) {
     if (error.code === '3D000') {
@@ -53,8 +56,11 @@ const createDatabase = async () => {
     // Actualizar el cliente global
     module.exports.client = newClient;
     
-    // Crear tablas
+    // Crear todas las tablas
     await createUsersTable();
+    await createProductsTable();
+    await createSalesTable();
+    await createExpensesTable();
     
   } catch (createError) {
     console.error('❌ Error creando base de datos:', createError);
@@ -113,6 +119,84 @@ const createDefaultAdmin = async () => {
     }
   } catch (error) {
     console.error('❌ Error creando admin por defecto:', error);
+  }
+};
+
+// Crear tabla de productos
+const createProductsTable = async () => {
+  const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS productos (
+      id SERIAL PRIMARY KEY,
+      nombre VARCHAR(255) NOT NULL,
+      descripcion TEXT,
+      categoria VARCHAR(100),
+      talle VARCHAR(50),
+      color VARCHAR(50),
+      marca VARCHAR(100),
+      precio DECIMAL(10,2) NOT NULL,
+      stock INTEGER DEFAULT 0,
+      estado VARCHAR(50) DEFAULT 'Disponible',
+      imagen_url TEXT,
+      usuario_id INTEGER REFERENCES usuarios(id),
+      fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `;
+
+  try {
+    await client.query(createTableQuery);
+    console.log('✅ Tabla productos verificada/creada');
+  } catch (error) {
+    console.error('❌ Error creando tabla productos:', error);
+  }
+};
+
+// Crear tabla de ventas
+const createSalesTable = async () => {
+  const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS ventas (
+      id SERIAL PRIMARY KEY,
+      cliente VARCHAR(255) NOT NULL,
+      producto VARCHAR(255) NOT NULL,
+      cantidad INTEGER NOT NULL,
+      metodo_pago VARCHAR(100),
+      monto_cripto DECIMAL(20,8),
+      total DECIMAL(10,2) NOT NULL,
+      fecha DATE DEFAULT CURRENT_DATE,
+      archivada BOOLEAN DEFAULT FALSE,
+      usuario_id INTEGER REFERENCES usuarios(id),
+      fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `;
+
+  try {
+    await client.query(createTableQuery);
+    console.log('✅ Tabla ventas verificada/creada');
+  } catch (error) {
+    console.error('❌ Error creando tabla ventas:', error);
+  }
+};
+
+// Crear tabla de gastos
+const createExpensesTable = async () => {
+  const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS gastos (
+      id SERIAL PRIMARY KEY,
+      descripcion VARCHAR(255) NOT NULL,
+      categoria VARCHAR(100),
+      monto DECIMAL(10,2) NOT NULL,
+      fecha DATE DEFAULT CURRENT_DATE,
+      metodo_pago VARCHAR(100),
+      usuario_id INTEGER REFERENCES usuarios(id),
+      fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `;
+
+  try {
+    await client.query(createTableQuery);
+    console.log('✅ Tabla gastos verificada/creada');
+  } catch (error) {
+    console.error('❌ Error creando tabla gastos:', error);
   }
 };
 
