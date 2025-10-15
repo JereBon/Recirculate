@@ -118,6 +118,9 @@ app.delete('/api/ventas/:id', verifyToken, verifyAdmin, async (req, res) => {
   io.emit('venta-borrada', { ventaId: req.params.id });
   res.status(204).end();
 });
+
+// --- RUTAS DE PRODUCTOS TEMPORALMENTE DESHABILITADAS (PENDIENTES MIGRACIÓN A POSTGRESQL) ---
+/*
 // Obtener todos los productos
 app.get('/api/productos', async (req, res) => {
   const { search } = req.query;
@@ -132,8 +135,9 @@ app.get('/api/productos', async (req, res) => {
   }
   const productos = await Producto.find(query);
   res.json(productos);
-});
+});*/
 
+/*
 // Obtener un producto por ID
 app.get('/api/productos/:id', async (req, res) => {
   const producto = await Producto.findById(req.params.id);
@@ -244,7 +248,8 @@ app.post('/api/gastos', verifyToken, verifyAdmin, async (req, res) => {
     res.status(400).json({ error: 'Error al registrar gasto', details: err.message });
   }
 });
+*/
 
 server.listen(PORT, () => {
-  console.log(`API escuchando en puerto ${PORT} - v2.0`);
+  console.log(`API escuchando en puerto ${PORT} - v2.1 - Solo PostgreSQL`);
 });
