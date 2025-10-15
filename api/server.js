@@ -1,6 +1,5 @@
 // --- IMPORTS Y CONFIGURACIÓN INICIAL ---
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const multer = require('multer');
 require('dotenv').config();
@@ -25,55 +24,7 @@ const PORT = process.env.PORT || 3001;
 // --- CONEXIÓN A POSTGRESQL ---
 connectDB();
 
-// --- CONEXIÓN A MONGODB (comentado para usar solo PostgreSQL en producción) ---
-// MongoDB desactivado en producción - solo PostgreSQL
-// if (process.env.NODE_ENV !== 'production') {
-//   mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/recirculate', {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   });
-// }
-
-// --- DEFINICIÓN DE SCHEMAS Y MODELOS ---
-const gastoSchema = new mongoose.Schema({
-  proveedor: { type: String, required: true },
-  concepto: { type: String, required: true },
-  total: { type: Number, required: true },
-  metodoPago: { type: String, required: true },
-  fecha: { type: Date, default: Date.now },
-}, { timestamps: true });
-const Gasto = mongoose.model('Gasto', gastoSchema);
-
-const productoSchema = new mongoose.Schema({
-  nombre: { type: String, required: true },
-  descripcion: String,
-  categoria: String,
-  talle: String,
-  color: String,
-  marca: String,
-  estado: String, // "Usado - Muy bueno"
-  precio: { type: Number, required: true },
-  moneda: { type: String, default: "ARS" },
-  imagenes: [String],
-  proveedor: {
-    usuarioId: mongoose.Schema.Types.ObjectId,
-    nombre: String
-  },
-  stock: { type: Number, default: 1 },
-  activo: { type: Boolean, default: true },
-}, { timestamps: true });
-const Producto = mongoose.model('Producto', productoSchema);
-
-const ventaSchema = new mongoose.Schema({
-  cliente: { type: String, required: true },
-  producto: { type: String, required: true }, // nombre del producto
-  cantidad: { type: Number, required: true },
-  metodoPago: { type: String, required: true },
-  montoCripto: Number,
-  total: { type: Number, required: true },
-  archivada: { type: Boolean, default: false },
-}, { timestamps: true });
-const Venta = mongoose.model('Venta', ventaSchema);
+// --- SOLO POSTGRESQL - MongoDB ELIMINADO COMPLETAMENTE ---
 
 // --- MIDDLEWARES ---
 app.use(cors());
@@ -155,33 +106,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// Archivar venta y restaurar stock (no borrar) - solo admin
-app.delete('/api/ventas/:id', verifyToken, verifyAdmin, async (req, res) => {
-  console.log('Intentando archivar venta con id:', req.params.id);
-  const venta = await Venta.findById(req.params.id);
-  if (!venta) {
-    console.log('Venta no encontrada');
-    return res.status(404).json({ error: 'Venta no encontrada' });
-  }
-  if (venta.archivada) {
-    return res.status(400).json({ error: 'La venta ya está archivada' });
-  }
-  // Buscar producto por nombre
-  const prod = await Producto.findOne({ nombre: venta.producto });
-  if (prod) {
-    prod.stock += venta.cantidad;
-    await prod.save();
-    console.log('Stock actualizado:', prod.stock);
-  } else {
-    console.log('Producto NO encontrado para reponer stock:', venta.producto);
-  }
-  // Marcar como archivada en vez de borrar
-  venta.archivada = true;
-  await venta.save();
-  console.log('Venta archivada correctamente:', venta._id);
-  io.emit('venta-borrada', { ventaId: req.params.id });
-  res.status(204).end();
-});
+// Ruta obsoleta eliminada - ahora se usa PostgreSQL
 
 // --- RUTAS DE PRODUCTOS CON POSTGRESQL ---
 const Product = require('./models/Product');
@@ -369,8 +294,9 @@ app.post('/api/gastos', verifyToken, verifyAdmin, async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`API escuchando en puerto ${PORT} - v3.2 - Debug enabled`);
+  console.log(`API escuchando en puerto ${PORT} - v4.0 - PostgreSQL puro`);
   console.log(`🌐 Aplicación disponible en: https://recirculate-api.onrender.com`);
   console.log(`📱 Sistema completo en: https://recirculate-api.onrender.com/app`);
   console.log(`🔍 Verificar BD en: https://recirculate-api.onrender.com/debug`);
+  console.log(`🚀 MongoDB completamente eliminado - Solo PostgreSQL`);
 });

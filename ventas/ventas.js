@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let ventas = await cargarVentas();
   // Asegurar ID persistente para items que no provengan del backend
   ventas = ventas.map(v => {
-    if (!v._id && !v.id && !v._generatedId) {
+    if (!v.id && !v._generatedId) {
       v._generatedId = 'local-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8);
     }
     return v;
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let usedNums = Object.values(seqMap).map(n => Number(n)).filter(n => !isNaN(n));
   let nextNum = usedNums.length ? Math.max(...usedNums) + 1 : 1;
   ventas.forEach(v => {
-    const pid = v._id || v.id || v._generatedId;
+    const pid = v.id || v._generatedId;
     if (!seqMap[pid]) {
       seqMap[pid] = nextNum++;
     }
@@ -84,8 +84,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   function pasaFiltros(v) {
     if (filtros.cliente && !(v.cliente || '').toLowerCase().includes(filtros.cliente)) return false;
     if (filtros.producto && !(v.producto || '').toLowerCase().includes(filtros.producto)) return false;
-    if (filtros.fechaDesde && new Date(v.createdAt || v.fecha) < new Date(filtros.fechaDesde)) return false;
-    if (filtros.fechaHasta && new Date(v.createdAt || v.fecha) > new Date(filtros.fechaHasta)) return false;
+    if (filtros.fechaDesde && new Date(v.fecha_creacion || v.fecha) < new Date(filtros.fechaDesde)) return false;
+    if (filtros.fechaHasta && new Date(v.fecha_creacion || v.fecha) > new Date(filtros.fechaHasta)) return false;
     if (filtros.metodo && !(v.metodoPago || '').toLowerCase().includes(filtros.metodo)) return false;
     return true;
   }
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const idx = i + 1;
   const val = Number(venta.total) || 0;
-  const persistentId = venta._id || venta.id || venta._generatedId || idx;
+  const persistentId = venta.id || venta._generatedId || idx;
   const seqNum = (function() { try { const m = JSON.parse(localStorage.getItem('ventas_seq_map')||'{}'); return m[persistentId]; } catch(e){return null;} })();
   const displayId = seqNum ? formatSeqNum(seqNum) : persistentId;
 
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
   <td data-label="ID">${displayId}</td>
-        <td data-label="Fecha">${formatearFecha(venta.createdAt || venta.fecha)}</td>
+        <td data-label="Fecha">${formatearFecha(venta.fecha_creacion || venta.fecha)}</td>
         <td data-label="Cliente">${venta.cliente || ''}</td>
         <td data-label="Producto">${venta.producto || ''}</td>
         <td data-label="Cantidad">${venta.cantidad || 0}</td>
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (tipo === 'monto') {
         ventasOrdenadas.sort((a, b) => asc * ((Number(a.total) || 0) - (Number(b.total) || 0)));
       } else if (tipo === 'fecha') {
-        ventasOrdenadas.sort((a, b) => asc * ((new Date(a.createdAt || a.fecha)).getTime() - (new Date(b.createdAt || b.fecha)).getTime()));
+        ventasOrdenadas.sort((a, b) => asc * ((new Date(a.fecha_creacion || a.fecha)).getTime() - (new Date(b.fecha_creacion || b.fecha)).getTime()));
       } else if (tipo === 'metodo') {
         ventasOrdenadas.sort((a, b) => asc * ((a.metodoPago || '').localeCompare(b.metodoPago || '')));
       } else if (tipo === 'cliente') {

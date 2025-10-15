@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let gastos = await cargarGastos();
   // Asegurar ID persistente para items que no provengan del backend
   gastos = gastos.map(g => {
-    if (!g._id && !g.id && !g._generatedId) {
+    if (!g.id && !g._generatedId) {
       g._generatedId = 'local-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8);
     }
     return g;
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let usedNumsG = Object.values(seqMapG).map(n => Number(n)).filter(n => !isNaN(n));
   let nextNumG = usedNumsG.length ? Math.max(...usedNumsG) + 1 : 1;
   gastos.forEach(g => {
-    const pid = g._id || g.id || g._generatedId;
+    const pid = g.id || g._generatedId;
     if (!seqMapG[pid]) {
       seqMapG[pid] = nextNumG++;
     }
@@ -83,8 +83,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function pasaFiltros(g) {
     if (filtros.proveedor && !(g.proveedor || '').toLowerCase().includes(filtros.proveedor)) return false;
-    if (filtros.fechaDesde && new Date(g.createdAt || g.fecha) < new Date(filtros.fechaDesde)) return false;
-    if (filtros.fechaHasta && new Date(g.createdAt || g.fecha) > new Date(filtros.fechaHasta)) return false;
+    if (filtros.fechaDesde && new Date(g.fecha_creacion || g.fecha) < new Date(filtros.fechaDesde)) return false;
+    if (filtros.fechaHasta && new Date(g.fecha_creacion || g.fecha) > new Date(filtros.fechaHasta)) return false;
     if (filtros.metodo && !(g.metodoPago || '').toLowerCase().includes(filtros.metodo)) return false;
     return true;
   }
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const idx = i + 1;
   const val = Number(gasto.total) || 0;
-  const persistentId = gasto._id || gasto.id || gasto._generatedId || idx;
+  const persistentId = gasto.id || gasto._generatedId || idx;
   const seqNumG = (function() { try { const m = JSON.parse(localStorage.getItem('gastos_seq_map')||'{}'); return m[persistentId]; } catch(e){return null;} })();
   const displayId = seqNumG ? formatSeqNumG(seqNumG) : persistentId;
 
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
   <td data-label="ID">${displayId}</td>
-        <td data-label="Fecha">${formatearFecha(gasto.createdAt || gasto.fecha)}</td>
+        <td data-label="Fecha">${formatearFecha(gasto.fecha_creacion || gasto.fecha)}</td>
         <td data-label="Proveedor">${gasto.proveedor || ''}</td>
         <td data-label="Concepto">${gasto.concepto || ''}</td>
         <td data-label="Monto">${formatearMoneda(val)}</td>
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (tipo === 'monto') {
         gastosOrdenados.sort((a, b) => asc * ((Number(a.total) || 0) - (Number(b.total) || 0)));
       } else if (tipo === 'fecha') {
-        gastosOrdenados.sort((a, b) => asc * ((new Date(a.createdAt || a.fecha)).getTime() - (new Date(b.createdAt || b.fecha)).getTime()));
+        gastosOrdenados.sort((a, b) => asc * ((new Date(a.fecha_creacion || a.fecha)).getTime() - (new Date(b.fecha_creacion || b.fecha)).getTime()));
       } else if (tipo === 'metodo') {
         gastosOrdenados.sort((a, b) => asc * ((a.metodoPago || '').localeCompare(b.metodoPago || '')));
       }

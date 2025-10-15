@@ -91,7 +91,7 @@ async function cargarMenuProductos() {
       return;
     }
     menu.innerHTML = productosDisponibles.map(p => `
-      <div class="opcion-producto" data-id="${p._id}" style="display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer;border-bottom:1px solid #f0f0f0;">
+      <div class="opcion-producto" data-id="${p.id}" style="display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer;border-bottom:1px solid #f0f0f0;">
         ${p.imagenes && p.imagenes.length ? `<img src="${p.imagenes[0]}" alt="img" style="width:48px;height:48px;object-fit:cover;border-radius:8px;">` : `<span style='width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:#eee;border-radius:8px;color:#aaa;font-size:0.9em;'>Sin imagen</span>`}
         <div style="flex:1;">
           <div style="font-weight:bold;">${p.nombre}</div>
@@ -102,7 +102,7 @@ async function cargarMenuProductos() {
     // Evento click en cada opción
     menu.querySelectorAll('.opcion-producto').forEach(div => {
       div.addEventListener('click', () => {
-        const prod = productosDisponibles.find(p => p._id === div.dataset.id);
+        const prod = productosDisponibles.find(p => p.id === div.dataset.id);
         if (prod) {
           seleccionado.innerHTML = `
             ${prod.imagenes && prod.imagenes.length ? `<img src="${prod.imagenes[0]}" alt="img" style="width:48px;height:48px;object-fit:cover;border-radius:8px;">` : `<span style='width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:#eee;border-radius:8px;color:#aaa;font-size:0.9em;'>Sin imagen</span>`}

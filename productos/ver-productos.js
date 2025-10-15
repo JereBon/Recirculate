@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         (prod.categoria && prod.categoria.toLowerCase().includes(term)) ||
         (prod.marca && prod.marca.toLowerCase().includes(term)) ||
         (prod.proveedor && prod.proveedor.nombre && prod.proveedor.nombre.toLowerCase().includes(term)) ||
-        (prod._id && prod._id.toLowerCase().includes(term))
+        (prod.id && prod.id.toString().toLowerCase().includes(term))
       );
     }
 
@@ -68,10 +68,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       filtered = filtered.filter(p => p.stock != null && p.stock <= parseInt(filtros.stockHasta));
     }
     if (filtros.fechaDesde) {
-      filtered = filtered.filter(p => p.createdAt && new Date(p.createdAt) >= new Date(filtros.fechaDesde));
+      filtered = filtered.filter(p => p.fecha_creacion && new Date(p.fecha_creacion) >= new Date(filtros.fechaDesde));
     }
     if (filtros.fechaHasta) {
-      filtered = filtered.filter(p => p.createdAt && new Date(p.createdAt) <= new Date(filtros.fechaHasta));
+      filtered = filtered.filter(p => p.fecha_creacion && new Date(p.fecha_creacion) <= new Date(filtros.fechaHasta));
     }
     if (filtros.activo !== undefined) {
       filtered = filtered.filter(p => p.activo === filtros.activo);
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td data-label="Imagen">
-          ${prod.imagenes && prod.imagenes.length ? `<img src="${prod.imagenes[0]}" class="producto-img" alt="Imagen producto" />` : ''}
+          ${prod.imagen_url ? `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" />` : ''}
         </td>
         <td data-label="Nombre">${prod.nombre || ''}</td>
         <td data-label="Descripción">${prod.descripcion || ''}</td>
@@ -120,15 +120,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td data-label="Marca">${prod.marca || ''}</td>
         <td data-label="Estado">${prod.estado || ''}</td>
         <td data-label="Precio">${prod.precio != null ? '$' + prod.precio : ''}</td>
-        <td data-label="Moneda">${prod.moneda || ''}</td>
-        <td data-label="Proveedor">${prod.proveedor && prod.proveedor.nombre ? prod.proveedor.nombre : ''}</td>
+        <td data-label="Moneda">ARS</td>
+        <td data-label="Proveedor">-</td>
         <td data-label="Stock">${prod.stock != null ? prod.stock : ''}</td>
-        <td data-label="Activo">${prod.activo ? 'Sí' : 'No'}</td>
-        <td data-label="Creado">${prod.createdAt ? new Date(prod.createdAt).toLocaleString() : ''}</td>
-        <td data-label="Actualizado">${prod.updatedAt ? new Date(prod.updatedAt).toLocaleString() : ''}</td>
+        <td data-label="Activo">Sí</td>
+        <td data-label="Creado">${prod.fecha_creacion ? new Date(prod.fecha_creacion).toLocaleString() : ''}</td>
+        <td data-label="Actualizado">${prod.fecha_actualizacion ? new Date(prod.fecha_actualizacion).toLocaleString() : ''}</td>
         <td data-label="Acciones">
-          <button data-edit="${prod._id}" class="primary">Editar</button>
-          <button data-delete="${prod._id}" style="background:#e74c3c; color:#fff; margin-left:8px;">Eliminar</button>
+          <button data-edit="${prod.id}" class="primary">Editar</button>
+          <button data-delete="${prod.id}" style="background:#e74c3c; color:#fff; margin-left:8px;">Eliminar</button>
         </td>
       `;
       tabla.appendChild(tr);
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (confirm('¿Seguro que deseas eliminar este producto?')) {
         try {
           await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-          allProductos = allProductos.filter(p => p._id !== id); // Actualiza cache
+          allProductos = allProductos.filter(p => p.id !== id); // Actualiza cache
           cargarProductos(); // Refresca tabla
         } catch (err) {
           alert('Error al eliminar producto');

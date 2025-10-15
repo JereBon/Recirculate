@@ -86,8 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <td data-label="Precio">$${parseFloat(prod.precio).toFixed(2)}</td>
         <td data-label="Stock">${prod.stock}</td>
         <td data-label="Acciones">
-          <button data-edit="${prod._id}" class="primary">Editar</button>
-          <button data-borrar="${prod._id}" style="background:#e74c3c; color:#fff;">Borrar</button>
+          <button data-edit="${prod.id}" class="primary">Editar</button>
+          <button data-borrar="${prod.id}" style="background:#e74c3c; color:#fff;">Borrar</button>
         </td>
       `;
       tabla.appendChild(tr);
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target.dataset.edit !== undefined) {
       // Si click en editar, carga datos del producto en formulario
       const id = e.target.dataset.edit;
-      const prod = productosCache.find(p => p._id === id);
+      const prod = productosCache.find(p => p.id === id);
       if (prod) {
         form.nombre.value = prod.nombre || '';
         form.descripcion.value = prod.descripcion || '';
