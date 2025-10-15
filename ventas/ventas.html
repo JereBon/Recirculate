@@ -1,0 +1,81 @@
+<!--
+  ventas.html - Listado de ventas registradas
+  Muestra la tabla de ventas y permite navegar al formulario de registro.
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ventas</title>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Ventas</h1>
+    <div style="margin-bottom: 18px;">
+      <a href="registrar-venta.html"><button class="primary">+ Registrar venta</button></a>
+      <a href="../index.html"><button style="margin-left:12px;">Volver al panel</button></a>
+    </div>
+  </header>
+  <main class="main">
+    <!-- Toolbar de búsqueda, ordenamiento y filtros -->
+    <div class="search-bar" style="margin-bottom: 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+      <input id="q" type="text" placeholder="Buscar ventas..." style="flex: 1; min-width: 200px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" />
+      
+      <div class="order-btn" style="position: relative;">
+        <button id="btn-ordenar" style="padding: 8px 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">⇅ Ordenar</button>
+        <div id="menu-ordenar" style="display: none; position: absolute; right: 0; top: calc(100% + 6px); background: white; border: 1px solid #eee; border-radius: 8px; padding: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 100; min-width: 160px;">
+          <button class="ordenar-opcion" data-orden="monto" style="display: block; width: 100%; padding: 6px 12px; margin: 2px 0; background: none; border: none; text-align: left; cursor: pointer; border-radius: 4px;">Por monto</button>
+          <button class="ordenar-opcion" data-orden="fecha" style="display: block; width: 100%; padding: 6px 12px; margin: 2px 0; background: none; border: none; text-align: left; cursor: pointer; border-radius: 4px;">Por fecha</button>
+          <button class="ordenar-opcion" data-orden="metodo" style="display: block; width: 100%; padding: 6px 12px; margin: 2px 0; background: none; border: none; text-align: left; cursor: pointer; border-radius: 4px;">Por método</button>
+          <button class="ordenar-opcion" data-orden="cliente" style="display: block; width: 100%; padding: 6px 12px; margin: 2px 0; background: none; border: none; text-align: left; cursor: pointer; border-radius: 4px;">Por cliente</button>
+        </div>
+      </div>
+      
+      <button id="btn-filtrar" class="primary" style="padding: 8px 12px;">🔍 Filtrar</button>
+    </div>
+
+    <!-- Panel lateral de filtros -->
+    <div class="container-filtros">
+      <div class="cont-filtros">
+        <button type="button" id="cerrar-filtros">✕</button>
+        <h2>Filtrar ventas</h2>
+        <form id="form-filtros">
+          <label>Cliente:<br><input type="text" name="cliente"></label><br>
+          <label>Producto:<br><input type="text" name="producto"></label><br>
+          <label>Fecha desde:<br><input type="date" name="fechaDesde"></label><br>
+          <label>Fecha hasta:<br><input type="date" name="fechaHasta"></label><br>
+          <label>Método de pago:<br><input type="text" name="metodo"></label><br>
+          <div class="filter-buttons">
+            <button type="submit" class="primary">Aplicar</button>
+            <button type="button" id="limpiar-filtros">Limpiar</button>
+          </div>
+        </form>
+  <!-- spacer to ensure buttons are visible above OS taskbar when panel is scrolled -->
+  <div style="height: calc(env(safe-area-inset-bottom, 24px) + 40px);"></div>
+      </div>
+    </div>
+
+    <table class="ventas-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Fecha</th>
+          <th>Cliente</th>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Total</th>
+          <th>Método de pago</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="ventas-body">
+        <!-- Las filas se llenan dinámicamente con JS -->
+      </tbody>
+    </table>
+    <div class="footer-info" id="ventas-total"></div>
+  </main>
+  <script src="ventas.js"></script>
+</body>
+</html>
