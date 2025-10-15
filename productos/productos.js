@@ -38,12 +38,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let editandoId = null; // ID del producto siendo editado, null si creando
   let productosCache = []; // Cache de productos para edición rápida
-  const API_URL = 'https://recirculate-api.onrender.com/api/productos'; // URL base de la API
+  const API_URL = 'https://recirculate-api.onrender.com/api'; // URL base de la API
 
 
   // Función asíncrona para obtener productos desde la API y actualizar cache
   async function obtenerProductos() {
-    const res = await fetch(API_URL);
+    const res = await fetch(API_URL + '/productos');
     const data = await res.json();
     productosCache = data;
     return data;
@@ -125,7 +125,15 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!validarFormulario()) return;
-    let imagenes = imagenesSubidas.slice(); // Copia array de imágenes
+    // Obtener token para autenticación
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('❌ Debes iniciar sesión para gestionar productos');
+      window.location.href = '../auth/login.html';
+      return;
+    }
+
+    // Formato correcto para PostgreSQL
     const nuevo = {
       nombre: form.nombre.value.trim(),
       descripcion: form.descripcion.value.trim(),
@@ -133,21 +141,19 @@ document.addEventListener('DOMContentLoaded', () => {
       talle: form.talle.value.trim(),
       color: form.color.value.trim(),
       marca: form.marca.value.trim(),
-      estado: form.estado.value.trim(),
+      estado: form.estado.value.trim() || 'Disponible',
       precio: parseFloat(form.precio.value),
-      moneda: form.moneda.value.trim() || 'ARS',
-      imagenes,
-      proveedor: {
-        nombre: form['proveedor-nombre'].value.trim()
-      },
       stock: parseInt(form.stock.value, 10),
-      activo: form.activo.checked
+      imagen_url: imagenesSubidas.length > 0 ? imagenesSubidas[0] : null // Solo primera imagen
     };
     if (editandoId !== null) {
       // Si editando, actualiza producto existente
-      const res = await fetch(`${API_URL}/${editandoId}`, {
+      const res = await fetch(`${API_URL}/productos/${editandoId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
         body: JSON.stringify(nuevo)
       });
       const data = await res.json();
@@ -159,11 +165,29 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } else {
       // Si no editando, crea nuevo producto
-      await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(nuevo)
-      });
+      try {
+        const response = await fetch(API_URL + '/productos', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` 
+          },
+          body: JSON.stringify(nuevo)
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok || data.error) {
+          alert('❌ Error: ' + (data.message || 'Error al guardar producto'));
+          return;
+        }
+        
+        alert('✅ Producto agregado exitosamente');
+      } catch (err) {
+        console.error('Error:', err);
+        alert('❌ Error al conectar con el servidor');
+        return;
+      }
     }
     limpiarFormulario();
     imagenesSubidas = []; // Resetea imágenes subidas
@@ -185,12 +209,10 @@ document.addEventListener('DOMContentLoaded', () => {
         form.marca.value = prod.marca || '';
         form.estado.value = prod.estado || '';
         form.precio.value = prod.precio || '';
-        form.moneda.value = prod.moneda || 'ARS';
-        imagenesSubidas = prod.imagenes ? prod.imagenes.slice() : [];
+        // PostgreSQL no tiene moneda ni proveedor
+        imagenesSubidas = prod.imagen_url ? [prod.imagen_url] : [];
         imagenUploadStatus.textContent = imagenesSubidas.length ? 'Imagen cargada ✔' : '';
-        form['proveedor-nombre'].value = prod.proveedor && prod.proveedor.nombre ? prod.proveedor.nombre : '';
         form.stock.value = prod.stock || '';
-        form.activo.checked = prod.activo !== false;
         editandoId = id;
         cancelarBtn.style.display = ''; // Muestra botón cancelar
       }
@@ -198,7 +220,13 @@ document.addEventListener('DOMContentLoaded', () => {
       // Si click en borrar, confirma y elimina producto
       const id = e.target.dataset.borrar;
       if (confirm('¿Seguro que deseas borrar este producto?')) {
-        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        const token = localStorage.getItem('token');
+        await fetch(`${API_URL}/productos/${id}`, { 
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         limpiarFormulario();
         renderTabla();
       }
@@ -212,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const editId = urlParams.get('id');
   if (editId) {
-    fetch(`${API_URL}/${editId}`)
+    fetch(`${API_URL}/productos/${editId}`)
       .then(res => res.json())
       .then(prod => {
         if (prod) {
@@ -225,12 +253,10 @@ document.addEventListener('DOMContentLoaded', () => {
           form.marca.value = prod.marca || '';
           form.estado.value = prod.estado || '';
           form.precio.value = prod.precio || '';
-          form.moneda.value = prod.moneda || 'ARS';
-          imagenesSubidas = prod.imagenes ? prod.imagenes.slice() : [];
+          // PostgreSQL no tiene moneda ni proveedor
+          imagenesSubidas = prod.imagen_url ? [prod.imagen_url] : [];
           imagenUploadStatus.textContent = imagenesSubidas.length ? 'Imagen cargada ✔' : '';
-          form['proveedor-nombre'].value = prod.proveedor && prod.proveedor.nombre ? prod.proveedor.nombre : '';
           form.stock.value = prod.stock || '';
-          form.activo.checked = prod.activo !== false;
           editandoId = editId;
           cancelarBtn.style.display = '';
         }

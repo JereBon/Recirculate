@@ -294,9 +294,9 @@ app.post('/api/gastos', verifyToken, verifyAdmin, async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`API escuchando en puerto ${PORT} - v4.0 - PostgreSQL puro`);
+  console.log(`API escuchando en puerto ${PORT} - v4.1 - Modal de productos`);
   console.log(`🌐 Aplicación disponible en: https://recirculate-api.onrender.com`);
   console.log(`📱 Sistema completo en: https://recirculate-api.onrender.com/app`);
   console.log(`🔍 Verificar BD en: https://recirculate-api.onrender.com/debug`);
-  console.log(`🚀 MongoDB completamente eliminado - Solo PostgreSQL`);
+  console.log(`➕ Agregar productos desde la página principal - Modal integrado`);
 });
