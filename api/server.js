@@ -94,15 +94,54 @@ app.get('/app', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'index.html'));
 });
 
+// --- RUTA PARA VERIFICAR BASE DE DATOS ---
+app.get('/debug', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'db-check.html'));
+});
+
 // --- RUTA DE PRUEBA DE API ---
 app.get('/api/status', (req, res) => {
   res.json({ 
     status: 'OK', 
     message: 'Recirculate API funcionando correctamente',
-    version: '3.0',
+    version: '3.1',
     database: 'PostgreSQL',
     timestamp: new Date().toISOString()
   });
+});
+
+// --- RUTA PARA VERIFICAR BASE DE DATOS ---
+app.get('/api/db-check', verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const { client } = require('./database');
+    
+    // Verificar conexión
+    const connectionTest = await client.query('SELECT NOW()');
+    
+    // Contar registros en cada tabla
+    const userCount = await client.query('SELECT COUNT(*) FROM usuarios');
+    const productCount = await client.query('SELECT COUNT(*) FROM productos');
+    const saleCount = await client.query('SELECT COUNT(*) FROM ventas');
+    const expenseCount = await client.query('SELECT COUNT(*) FROM gastos');
+    
+    // Obtener últimos productos
+    const recentProducts = await client.query('SELECT * FROM productos ORDER BY fecha_creacion DESC LIMIT 5');
+    
+    res.json({
+      status: 'Conexión exitosa',
+      timestamp: connectionTest.rows[0].now,
+      tables: {
+        usuarios: parseInt(userCount.rows[0].count),
+        productos: parseInt(productCount.rows[0].count),
+        ventas: parseInt(saleCount.rows[0].count),
+        gastos: parseInt(expenseCount.rows[0].count)
+      },
+      recent_products: recentProducts.rows
+    });
+  } catch (error) {
+    console.error('Error verificando base de datos:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // --- RUTAS DE AUTENTICACIÓN ---
@@ -152,11 +191,17 @@ const Expense = require('./models/Expense');
 // Obtener todos los productos
 app.get('/api/productos', async (req, res) => {
   try {
+    console.log('🔍 GET /api/productos - Solicitando productos...');
     const { search } = req.query;
+    console.log('🔍 Parámetro de búsqueda:', search);
+    
     const productos = await Product.findAll(search);
+    console.log(`🔍 Productos encontrados: ${productos.length}`);
+    console.log('🔍 Productos:', JSON.stringify(productos, null, 2));
+    
     res.json(productos);
   } catch (error) {
-    console.error('Error obteniendo productos:', error);
+    console.error('❌ Error obteniendo productos:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
@@ -178,13 +223,19 @@ app.get('/api/productos/:id', async (req, res) => {
 // Crear producto (solo admin)
 app.post('/api/productos', verifyToken, verifyAdmin, async (req, res) => {
   try {
+    console.log('📦 POST /api/productos - Creando producto...');
+    console.log('📦 Datos recibidos:', JSON.stringify(req.body, null, 2));
+    console.log('📦 Usuario ID:', req.userId);
+    
     const nuevo = await Product.create({
       ...req.body,
       usuario_id: req.userId
     });
+    
+    console.log('✅ Producto creado exitosamente:', JSON.stringify(nuevo, null, 2));
     res.status(201).json(nuevo);
   } catch (error) {
-    console.error('Error creando producto:', error);
+    console.error('❌ Error creando producto:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
@@ -318,7 +369,8 @@ app.post('/api/gastos', verifyToken, verifyAdmin, async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`API escuchando en puerto ${PORT} - v3.1 - Web completa`);
+  console.log(`API escuchando en puerto ${PORT} - v3.2 - Debug enabled`);
   console.log(`🌐 Aplicación disponible en: https://recirculate-api.onrender.com`);
   console.log(`📱 Sistema completo en: https://recirculate-api.onrender.com/app`);
+  console.log(`🔍 Verificar BD en: https://recirculate-api.onrender.com/debug`);
 });
