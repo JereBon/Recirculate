@@ -246,5 +246,5 @@ app.post('/api/gastos', verifyToken, verifyAdmin, async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`API escuchando en puerto ${PORT}`);
+  console.log(`API escuchando en puerto ${PORT} - v2.0`);
 });
