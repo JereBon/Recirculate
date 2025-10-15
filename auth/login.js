@@ -1,5 +1,5 @@
 // login.js - Funcionalidad del formulario de login
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'https://recirculate-api.onrender.com/api';
 
 // Verificar si ya está logueado
 document.addEventListener('DOMContentLoaded', () => {

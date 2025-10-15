@@ -25,11 +25,14 @@ const PORT = process.env.PORT || 3001;
 // --- CONEXIÓN A POSTGRESQL ---
 connectDB();
 
-// --- CONEXIÓN A MONGODB (mantener por ahora para productos existentes) ---
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/recirculate', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// --- CONEXIÓN A MONGODB (comentado para usar solo PostgreSQL en producción) ---
+// Solo conectar MongoDB si estamos en desarrollo local
+if (process.env.NODE_ENV !== 'production') {
+  mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/recirculate', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+}
 
 // --- DEFINICIÓN DE SCHEMAS Y MODELOS ---
 const gastoSchema = new mongoose.Schema({
