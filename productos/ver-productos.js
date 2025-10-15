@@ -212,105 +212,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     cargarProductos();
   });
 
-  // --- FUNCIONALIDAD DEL MODAL PARA AGREGAR PRODUCTOS ---
+  // --- BOTÓN PARA AGREGAR PRODUCTOS ---
   const btnAgregarProducto = document.getElementById('btn-agregar-producto');
-  const modal = document.getElementById('modal-agregar-producto');
-  const closeModal = document.getElementById('close-modal');
-  const cancelarProducto = document.getElementById('cancelar-producto');
-  const formProducto = document.getElementById('form-producto');
 
-  // Abrir modal
-  btnAgregarProducto.addEventListener('click', () => {
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden'; // Prevenir scroll del fondo
-  });
-
-  // Cerrar modal
-  function cerrarModal() {
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-    formProducto.reset(); // Limpiar formulario
+  // Redirigir a página de productos (formulario original)
+  if (btnAgregarProducto) {
+    btnAgregarProducto.addEventListener('click', () => {
+      window.location.href = 'productos.html';
+    });
   }
-
-  closeModal.addEventListener('click', cerrarModal);
-  cancelarProducto.addEventListener('click', cerrarModal);
-
-  // Cerrar modal al hacer clic fuera
-  window.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      cerrarModal();
-    }
-  });
-
-  // Manejar envío del formulario
-  formProducto.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    // Obtener token de autenticación
-    const token = localStorage.getItem('token');
-    if (!token) {
-      alert('❌ Debes iniciar sesión para agregar productos');
-      window.location.href = '../auth/login.html';
-      return;
-    }
-
-    // Recopilar datos del formulario
-    const formData = new FormData(formProducto);
-    const productData = {
-      nombre: formData.get('nombre').trim(),
-      descripcion: formData.get('descripcion').trim(),
-      categoria: formData.get('categoria'),
-      talle: formData.get('talle'),
-      color: formData.get('color').trim(),
-      marca: formData.get('marca').trim(),
-      estado: formData.get('estado') || 'Disponible',
-      precio: parseFloat(formData.get('precio')),
-      stock: parseInt(formData.get('stock')) || 1,
-      imagen_url: formData.get('imagen_url').trim() || null
-    };
-
-    // Validaciones básicas
-    if (!productData.nombre) {
-      alert('❌ El nombre del producto es obligatorio');
-      return;
-    }
-
-    if (!productData.precio || productData.precio <= 0) {
-      alert('❌ El precio debe ser mayor a 0');
-      return;
-    }
-
-    try {
-      // Enviar producto a la API
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(productData)
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Error al crear producto');
-      }
-
-      const nuevoProducto = await response.json();
-      
-      // Éxito - agregar producto a la cache local y recargar tabla
-      allProductos.unshift(nuevoProducto); // Agregar al inicio
-      cargarProductos(); // Recargar tabla
-      cerrarModal(); // Cerrar modal
-      
-      // Mostrar mensaje de éxito
-      alert('✅ Producto agregado exitosamente: ' + nuevoProducto.nombre);
-      
-    } catch (error) {
-      console.error('Error agregando producto:', error);
-      alert('❌ Error al agregar producto: ' + error.message);
-    }
-  });
 
   // Carga inicial de productos
   cargarProductos();
