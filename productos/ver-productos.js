@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let allProductos = []; // Cache de todos los productos
   let searchTerm = ''; // Término de búsqueda actual
-  let filtros = { nombre: '', categoria: '', marca: '', proveedor: '', precioDesde: '', precioHasta: '', stockDesde: '', stockHasta: '', fechaDesde: '', fechaHasta: '', activo: true };
+  let filtros = { nombre: '', categoria: '', marca: '', precioDesde: '', precioHasta: '', stockDesde: '', stockHasta: '', fechaDesde: '', fechaHasta: '' };
 
   // Función asíncrona para obtener productos desde la API
   async function fetchProductos() {
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         (prod.nombre && prod.nombre.toLowerCase().includes(term)) ||
         (prod.categoria && prod.categoria.toLowerCase().includes(term)) ||
         (prod.marca && prod.marca.toLowerCase().includes(term)) ||
-        (prod.proveedor && prod.proveedor.nombre && prod.proveedor.nombre.toLowerCase().includes(term)) ||
+        (prod.descripcion && prod.descripcion.toLowerCase().includes(term)) ||
         (prod.id && prod.id.toString().toLowerCase().includes(term))
       );
     }
@@ -52,9 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (filtros.marca) {
       filtered = filtered.filter(p => p.marca && p.marca.toLowerCase().includes(filtros.marca.toLowerCase()));
     }
-    if (filtros.proveedor) {
-      filtered = filtered.filter(p => p.proveedor && p.proveedor.nombre && p.proveedor.nombre.toLowerCase().includes(filtros.proveedor.toLowerCase()));
-    }
+    // Proveedor no existe en PostgreSQL - removido
     if (filtros.precioDesde) {
       filtered = filtered.filter(p => p.precio != null && p.precio >= parseFloat(filtros.precioDesde));
     }
@@ -73,9 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (filtros.fechaHasta) {
       filtered = filtered.filter(p => p.fecha_creacion && new Date(p.fecha_creacion) <= new Date(filtros.fechaHasta));
     }
-    if (filtros.activo !== undefined) {
-      filtered = filtered.filter(p => p.activo === filtros.activo);
-    }
+    // Campo activo no existe en PostgreSQL - removido
 
     return filtered;
   }
@@ -207,7 +203,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   btnLimpiarFiltros.addEventListener('click', () => {
-    filtros = { nombre: '', categoria: '', marca: '', proveedor: '', precioDesde: '', precioHasta: '', stockDesde: '', stockHasta: '', fechaDesde: '', fechaHasta: '', activo: true };
+    filtros = { nombre: '', categoria: '', marca: '', precioDesde: '', precioHasta: '', stockDesde: '', stockHasta: '', fechaDesde: '', fechaHasta: '' };
     formFiltros.reset();
     cargarProductos();
   });
