@@ -1,8 +1,5 @@
 /* 
-INTEGRACIÓN MERCADOPAGO - GUÍA DE USO
-=====================================
-
-Este archivo contiene ejemplos de cómo usar los endpoints de MercadoPago integrados con PostgreSQL.
+Como funciona mp
 
 1. CREAR PREFERENCIA DE PAGO:
 -----------------------------
