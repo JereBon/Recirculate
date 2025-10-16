@@ -8,12 +8,15 @@ class User {
   static async create(userData) {
     const { nombre, email, password, rol = 'cliente', telefono, direccion, fechaNacimiento } = userData;
     
+    let transactionStarted = false;
+    
     try {
-      // Iniciar transacción
-      await client.query('BEGIN');
-      
       // Hashear contraseña
       const hashedPassword = await bcrypt.hash(password, 10);
+      
+      // Iniciar transacción
+      await client.query('BEGIN');
+      transactionStarted = true;
       
       const userQuery = `
         INSERT INTO usuarios (nombre, email, password, rol, fecha_creacion, fecha_actualizacion)
@@ -41,8 +44,14 @@ class User {
       
       return newUser;
     } catch (error) {
-      // Revertir transacción en caso de error
-      await client.query('ROLLBACK');
+      // Revertir transacción solo si se inició
+      if (transactionStarted) {
+        try {
+          await client.query('ROLLBACK');
+        } catch (rollbackError) {
+          console.error('Error en rollback:', rollbackError);
+        }
+      }
       throw error;
     }
   }
