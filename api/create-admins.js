@@ -28,7 +28,7 @@ const admins = [
   {
     nombre: 'Loe Nuñez',
     password: 'LoeZeraNasheUwU',
-    email: 'loe@recirculate.com', 
+    email: '', 
     rol: 'admin'
   },
   {
