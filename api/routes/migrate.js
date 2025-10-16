@@ -3,8 +3,17 @@ const express = require('express');
 const router = express.Router();
 const { getClient } = require('../database');
 
+// Endpoint de prueba para verificar que la ruta funciona
+router.get('/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Ruta de migración funcionando correctamente',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Endpoint para forzar la migración del campo proveedor
-router.post('/add-proveedor-column', async (req, res) => {
+router.get('/add-proveedor-column', async (req, res) => {
   try {
     const client = await getClient();
     
