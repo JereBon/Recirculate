@@ -98,6 +98,10 @@ app.get('/api/db-check', verifyToken, verifyAdmin, async (req, res) => {
 // --- RUTAS DE AUTENTICACIÓN ---
 app.use('/api/auth', authRoutes);
 
+// --- RUTA DE SETUP INICIAL ---
+const setupRoutes = require('./routes/setup');
+app.use('/api/setup', setupRoutes);
+
 // --- SOCKET.IO ---
 io.on('connection', (socket) => {
   console.log('Cliente conectado a Socket.IO');
