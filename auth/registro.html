@@ -190,8 +190,22 @@
                     </select>
                 </div>
                 
+                <div class="form-group" id="tokenGroup" style="display: none;">
+                    <label for="adminToken">Token de administrador</label>
+                    <input 
+                        type="password" 
+                        id="adminToken" 
+                        name="adminToken" 
+                        placeholder="Ingresa el token de administrador"
+                        maxlength="10"
+                    >
+                    <div class="password-requirements">
+                        Necesario para crear cuenta de administrador
+                    </div>
+                </div>
+                
                 <div class="admin-note" id="adminNote" style="display: none;">
-                    <strong>Nota:</strong> Solo un administrador existente puede crear cuentas de administrador.
+                    <strong>Nota:</strong> Se requiere un token válido para crear cuentas de administrador.
                 </div>
                 
                 <button type="submit" class="auth-btn" id="registerBtn">

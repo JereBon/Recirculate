@@ -16,12 +16,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Manejar cambio de rol
     const rolSelect = document.getElementById('rol');
     const adminNote = document.getElementById('adminNote');
+    const tokenGroup = document.getElementById('tokenGroup');
+    const adminTokenInput = document.getElementById('adminToken');
     
     rolSelect.addEventListener('change', () => {
         if (rolSelect.value === 'admin') {
             adminNote.style.display = 'block';
+            tokenGroup.style.display = 'block';
+            adminTokenInput.required = true;
         } else {
             adminNote.style.display = 'none';
+            tokenGroup.style.display = 'none';
+            adminTokenInput.required = false;
+            adminTokenInput.value = ''; // Limpiar el campo cuando se cambia a cliente
         }
     });
 });
@@ -35,6 +42,7 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
     const rol = document.getElementById('rol').value;
+    const adminToken = document.getElementById('adminToken').value;
     
     const registerBtn = document.getElementById('registerBtn');
     const loading = document.getElementById('loading');
@@ -44,6 +52,18 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
     if (!nombre || !email || !password || !confirmPassword) {
         showMessage('Por favor, completa todos los campos', 'error');
         return;
+    }
+    
+    // Validación del token de administrador
+    if (rol === 'admin') {
+        if (!adminToken) {
+            showMessage('Se requiere el token de administrador', 'error');
+            return;
+        }
+        if (adminToken !== '676767') {
+            showMessage('Sin el token no se puede registrar como administrador', 'error');
+            return;
+        }
     }
     
     if (nombre.length < 2 || nombre.length > 50) {
