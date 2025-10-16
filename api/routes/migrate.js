@@ -1,7 +1,13 @@
 // migrate.js - Endpoint para forzar migraciones de base de datos
 const express = require('express');
 const router = express.Router();
-const { getClient } = require('../database');
+const { Client } = require('pg');
+
+// Configuración de la base de datos
+const config = {
+  connectionString: process.env.DATABASE_URL || 'postgresql://localhost:5432/recirculate',
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+};
 
 // Endpoint de prueba para verificar que la ruta funciona
 router.get('/test', (req, res) => {
@@ -14,8 +20,10 @@ router.get('/test', (req, res) => {
 
 // Endpoint para forzar la migración del campo proveedor
 router.get('/add-proveedor-column', async (req, res) => {
+  const client = new Client(config);
+  
   try {
-    const client = await getClient();
+    await client.connect();
     
     console.log('🔧 Forzando migración de columna proveedor...');
     
@@ -63,13 +71,17 @@ router.get('/add-proveedor-column', async (req, res) => {
       success: false,
       error: error.message
     });
+  } finally {
+    await client.end();
   }
 });
 
 // Endpoint para verificar productos y sus proveedores
 router.get('/check-productos', async (req, res) => {
+  const client = new Client(config);
+  
   try {
-    const client = await getClient();
+    await client.connect();
     
     const productos = await client.query(`
       SELECT id, nombre, proveedor, fecha_creacion 
@@ -90,6 +102,8 @@ router.get('/check-productos', async (req, res) => {
       success: false,
       error: error.message
     });
+  } finally {
+    await client.end();
   }
 });
 
