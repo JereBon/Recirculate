@@ -61,6 +61,8 @@ const createDatabase = async () => {
     await createProductsTable();
     await createSalesTable();
     await createExpensesTable();
+    await createMPPreferencesTable();
+    await createMPPaymentsTable();
     
   } catch (createError) {
     console.error('❌ Error creando base de datos:', createError);
@@ -217,6 +219,58 @@ const createExpensesTable = async () => {
     console.log('✅ Tabla gastos verificada/creada');
   } catch (error) {
     console.error('❌ Error creando tabla gastos:', error);
+  }
+};
+
+// Crear tabla de preferencias de MercadoPago
+const createMPPreferencesTable = async () => {
+  const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS mp_preferencias (
+      id SERIAL PRIMARY KEY,
+      preference_id VARCHAR(255) UNIQUE NOT NULL,
+      items JSONB NOT NULL,
+      status VARCHAR(50) DEFAULT 'pending',
+      sandbox_init_point TEXT,
+      usuario_id INTEGER REFERENCES usuarios(id),
+      fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `;
+
+  try {
+    await client.query(createTableQuery);
+    console.log('✅ Tabla mp_preferencias verificada/creada');
+  } catch (error) {
+    console.error('❌ Error creando tabla mp_preferencias:', error);
+  }
+};
+
+// Crear tabla de pagos de MercadoPago
+const createMPPaymentsTable = async () => {
+  const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS mp_pagos (
+      id SERIAL PRIMARY KEY,
+      payment_id VARCHAR(255) UNIQUE NOT NULL,
+      preference_id VARCHAR(255) REFERENCES mp_preferencias(preference_id),
+      status VARCHAR(50) NOT NULL,
+      status_detail VARCHAR(255),
+      payment_type VARCHAR(100),
+      payment_method VARCHAR(100),
+      amount DECIMAL(10,2),
+      currency VARCHAR(10),
+      payer_email VARCHAR(255),
+      external_reference VARCHAR(255),
+      notification_data JSONB,
+      fecha_pago TIMESTAMP,
+      fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `;
+
+  try {
+    await client.query(createTableQuery);
+    console.log('✅ Tabla mp_pagos verificada/creada');
+  } catch (error) {
+    console.error('❌ Error creando tabla mp_pagos:', error);
   }
 };
 

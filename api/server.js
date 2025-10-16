@@ -50,6 +50,19 @@ app.get('/debug', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'db-check.html'));
 });
 
+// --- RUTAS DE MERCADOPAGO ---
+app.get('/success', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'success.html'));
+});
+
+app.get('/failure', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'failure.html'));
+});
+
+app.get('/pending', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'pending.html'));
+});
+
 // --- RUTA DE PRUEBA DE API ---
 app.get('/api/status', (req, res) => {
   res.json({ 
@@ -301,10 +314,166 @@ app.post('/api/gastos', verifyToken, verifyAdmin, async (req, res) => {
   }
 });
 
+// --- MERCADOPAGO INTEGRACIÓN ---
+const { MercadoPagoConfig, Preference, Payment } = require('mercadopago');
+const { MPPreference, MPPayment } = require('./models/MercadoPago');
+
+// Configuración del cliente de MercadoPago
+const mpClient = new MercadoPagoConfig({
+  accessToken: process.env.MP_ACCESS_TOKEN
+});
+
+// Endpoint para crear preferencia de pago
+app.post('/api/pagos/preferencia', verifyToken, async (req, res) => {
+  try {
+    console.log('📦 POST /api/pagos/preferencia - Creando preferencia de pago...');
+    console.log('📦 Datos recibidos:', JSON.stringify(req.body, null, 2));
+    console.log('📦 Usuario ID:', req.userId);
+
+    const { items, external_reference } = req.body;
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ 
+        error: 'Items son requeridos y deben ser un array con al menos un item.' 
+      });
+    }
+
+    // Datos de la preferencia
+    const preferenceData = {
+      items: items,
+      back_urls: {
+        success: process.env.MP_SUCCESS_URL || "https://recirculate-api.onrender.com/success",
+        failure: process.env.MP_FAILURE_URL || "https://recirculate-api.onrender.com/failure",
+        pending: process.env.MP_PENDING_URL || "https://recirculate-api.onrender.com/pending"
+      },
+      auto_return: "approved",
+      external_reference: external_reference || `user_${req.userId}_${Date.now()}`,
+      notification_url: "https://recirculate-api.onrender.com/api/pagos/notificaciones"
+    };
+
+    // Crear preferencia en MercadoPago
+    const preference = new Preference(mpClient);
+    const result = await preference.create({ body: preferenceData });
+
+    // Guardar preferencia en PostgreSQL
+    await MPPreference.create({
+      preference_id: result.id,
+      items: items,
+      sandbox_init_point: result.sandbox_init_point,
+      usuario_id: req.userId
+    });
+
+    console.log('✅ Preferencia creada exitosamente:', result.id);
+    res.json({ 
+      preference_id: result.id,
+      sandbox_init_point: result.sandbox_init_point 
+    });
+
+  } catch (error) {
+    console.error('❌ Error creando preferencia:', error);
+    res.status(500).json({ error: 'Error al crear preferencia de pago' });
+  }
+});
+
+// Endpoint para recibir notificaciones de MercadoPago (Webhooks)
+app.post('/api/pagos/notificaciones', async (req, res) => {
+  try {
+    console.log('🔔 Notificación de MercadoPago recibida');
+    console.log('Query:', req.query);
+    console.log('Body:', req.body);
+
+    const { type, data } = req.body;
+
+    if (type === 'payment' && data && data.id) {
+      // Obtener información del pago desde MercadoPago
+      const payment = new Payment(mpClient);
+      const paymentInfo = await payment.get({ id: data.id });
+
+      console.log('💳 Información del pago:', JSON.stringify(paymentInfo, null, 2));
+
+      // Guardar/actualizar pago en PostgreSQL
+      const existingPayment = await MPPayment.findByPaymentId(data.id);
+
+      if (!existingPayment) {
+        // Crear nuevo pago
+        await MPPayment.create({
+          payment_id: data.id,
+          preference_id: paymentInfo.preference_id,
+          status: paymentInfo.status,
+          status_detail: paymentInfo.status_detail,
+          payment_type: paymentInfo.payment_type_id,
+          payment_method: paymentInfo.payment_method_id,
+          amount: paymentInfo.transaction_amount,
+          currency: paymentInfo.currency_id,
+          payer_email: paymentInfo.payer?.email,
+          external_reference: paymentInfo.external_reference,
+          notification_data: req.body,
+          fecha_pago: paymentInfo.date_approved ? new Date(paymentInfo.date_approved) : new Date()
+        });
+
+        console.log('✅ Nuevo pago guardado en BD');
+      } else {
+        // Actualizar pago existente
+        await MPPayment.updateStatus(data.id, paymentInfo.status, paymentInfo.status_detail);
+        console.log('✅ Pago actualizado en BD');
+      }
+
+      // Actualizar status de preferencia
+      if (paymentInfo.preference_id) {
+        await MPPreference.updateStatus(paymentInfo.preference_id, paymentInfo.status);
+      }
+    }
+
+    res.status(200).send('OK');
+  } catch (error) {
+    console.error('❌ Error procesando notificación:', error);
+    res.status(500).send('Error');
+  }
+});
+
+// Endpoint para obtener estado de un pago
+app.get('/api/pagos/:payment_id', verifyToken, async (req, res) => {
+  try {
+    const { payment_id } = req.params;
+    
+    const pago = await MPPayment.findByPaymentId(payment_id);
+    
+    if (!pago) {
+      return res.status(404).json({ error: 'Pago no encontrado' });
+    }
+
+    res.json(pago);
+  } catch (error) {
+    console.error('❌ Error obteniendo pago:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// Endpoint para obtener historial de pagos del usuario
+app.get('/api/pagos/usuario/historial', verifyToken, async (req, res) => {
+  try {
+    const preferencias = await MPPreference.findByUserId(req.userId);
+    
+    const historial = [];
+    for (const pref of preferencias) {
+      const pagos = await MPPayment.findByPreferenceId(pref.preference_id);
+      historial.push({
+        preferencia: pref,
+        pagos: pagos
+      });
+    }
+
+    res.json(historial);
+  } catch (error) {
+    console.error('❌ Error obteniendo historial:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 server.listen(PORT, () => {
-  console.log(`API escuchando en puerto ${PORT} - v4.1 - Modal de productos`);
+  console.log(`API escuchando en puerto ${PORT} - v4.2 - Con MercadoPago integrado`);
   console.log(`🌐 Aplicación disponible en: https://recirculate-api.onrender.com`);
   console.log(`📱 Sistema completo en: https://recirculate-api.onrender.com/app`);
   console.log(`🔍 Verificar BD en: https://recirculate-api.onrender.com/debug`);
-  console.log(`➕ Agregar productos desde la página principal - Modal integrado`);
+  console.log(`💳 MercadoPago integrado - Endpoints /api/pagos/*`);
 });
