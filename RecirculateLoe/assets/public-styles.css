@@ -22,7 +22,7 @@ body, html {
   background: #fafafa;
   color: #222;
   font-family: "Poppins", sans-serif;
-  overflow-x: hidden; /* Evita scroll horizontal por si el sidebar lo genera */
+  overflow-x: hidden;
 }
 
 /* --- Estilos del Header --- */
@@ -35,34 +35,26 @@ body, html {
   z-index: 1000;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   background-color: #ffd84d;
-  height: 121px; /* 110 + 11px (mitad del aumento) */
+  height: 121px;
   padding: 0;
 }
 
 .header-nav {
   display: grid;
-  grid-template-columns: 150px 1fr 150px; /* Columnas laterales más pequeñas y simétricas */
+  grid-template-columns: 150px 1fr 150px;
   align-items: center;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
   height: 100%;
-  box-sizing: border-box;
 }
 
-.header-left {
+.header-left, .header-right {
   display: flex;
   align-items: center;
-  gap: 2rem; /* Espaciado uniforme entre iconos */
-  justify-content: center; /* Centrar los iconos en su columna */
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 2rem; /* MISMO espaciado que header-left */
-  justify-content: center; /* Centrar los iconos en su columna */
+  gap: 2rem;
+  justify-content: center;
 }
 
 .header-logo {
@@ -73,7 +65,7 @@ body, html {
 }
 
 .logo-image {
-  height: 105px; /* Ajustado para la nueva altura del header (121px) */
+  height: 105px;
   width: auto;
   max-width: 350px;
   object-fit: contain;
@@ -85,17 +77,17 @@ body, html {
 }
 
 .header-icon {
-  position: relative; /* Para posicionar el contador del carrito */
-  font-size: 1rem; /* Tamaño de fuente unificado */
+  position: relative;
+  font-size: 1rem;
   color: #222;
   transition: color 0.2s;
   background: none;
   border: none;
   cursor: pointer;
-  display: flex; /* Para alinear ícono y texto */
+  display: flex;
   align-items: center;
-  gap: 0.5rem; /* Espacio entre ícono y texto */
-  font-family: "Poppins", sans-serif; /* Asegura la misma fuente */
+  gap: 0.5rem;
+  font-family: "Poppins", sans-serif;
   text-decoration: none;
 }
 
@@ -107,10 +99,19 @@ body, html {
   color: #555;
 }
 
-/* --- Tooltip para Iniciar Sesión --- */
-.user-icon[data-tooltip]::after {
+/* --- Tooltip --- */
+.user-icon[data-tooltip]::after, .user-icon[data-tooltip]::before {
   content: attr(data-tooltip);
   position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  z-index: 1000;
+}
+.user-icon[data-tooltip]:hover::after, .user-icon[data-tooltip]:hover::before {
+  opacity: 1;
+}
+.user-icon[data-tooltip]::after {
   bottom: -35px;
   left: 50%;
   transform: translateX(-50%);
@@ -120,46 +121,26 @@ body, html {
   border-radius: 4px;
   font-size: 0.75rem;
   white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
-  z-index: 1000;
 }
-
-.user-icon[data-tooltip]:hover::after {
-  opacity: 1;
-}
-
-/* Flecha del tooltip */
 .user-icon[data-tooltip]::before {
   content: '';
-  position: absolute;
   bottom: -10px;
   left: 50%;
   transform: translateX(-50%);
-  border-width: 0 6px 6px 6px;
-  border-style: solid;
-  border-color: transparent transparent #222 transparent;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
-  z-index: 1000;
-}
-
-.user-icon[data-tooltip]:hover::before {
-  opacity: 1;
+  border: 6px solid transparent;
+  border-bottom-color: #222;
 }
 
 /* --- Buscador Integrado --- */
 .search-container {
-  position: relative; /* Para posicionar el input absolutamente */
+  position: relative;
   display: flex;
   align-items: center;
 }
 
 .search-input {
   position: absolute;
-  left: 45px; /* Empieza a la derecha del icono de búsqueda */
+  left: 45px;
   top: 50%;
   transform: translateY(-50%);
   width: 0;
@@ -167,7 +148,7 @@ body, html {
   border: none;
   border-bottom: 2px solid #222;
   outline: none;
-  background-color: #ffd84d; /* Mismo color que el header */
+  background-color: #ffd84d;
   transition: width 0.4s ease-in-out, padding 0.4s ease-in-out;
   font-family: "Poppins", sans-serif;
   font-size: 1rem;
@@ -175,7 +156,7 @@ body, html {
 }
 
 .search-container.active .search-input {
-  width: 250px; /* Ancho del buscador al activarse */
+  width: 250px;
   padding: 5px 10px;
 }
 
@@ -196,10 +177,9 @@ body, html {
 }
 
 /* --- Menú Lateral (Sidebar) --- */
-
 .sidebar {
   height: 100%;
-  width: 0; /* Inicialmente oculto */
+  width: 0;
   position: fixed;
   z-index: 1001;
   top: 0;
@@ -210,28 +190,24 @@ body, html {
   padding-top: 120px;
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
-
 .sidebar.open {
   width: 550px;
 }
-
 .sidebar a {
-  padding: 12px 32px; /* Mayor padding para separación */
+  padding: 12px 32px;
   text-decoration: none;
   font-size: 1.2rem;
   color: #222;
   display: block;
   transition: 0.3s;
 }
-
 .sidebar a:hover {
   background-color: #f1f1f1;
 }
-
 .sidebar .close-btn {
   position: absolute;
-  top: 40px; /* Alineado verticalmente con el icono del menú en el header */
-  left: 495px; /* Posicionado desde la izquierda para quedar sobre el icono del menú */
+  top: 40px;
+  left: 495px;
   font-size: 30px;
   color: #222;
   border: none;
@@ -244,25 +220,22 @@ body, html {
   align-items: center;
   justify-content: center;
 }
-
 .menu-icon {
   font-size: 1.5rem;
   padding: 10px;
 }
 
 /* --- Estilos de Secciones Principales --- */
-
 .public-main {
-  max-width: 1200px; /* MISMO que header-nav */
+  max-width: 1200px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 2rem; /* MISMO que header-nav */
+  padding: 0 2rem;
   padding-top: 145px;
   transition: opacity 0.5s;
-  box-sizing: border-box;
 }
 
-/* --- Overlay del Menú --- */
+/* --- Overlay --- */
 .overlay {
   position: fixed;
   top: 0;
@@ -274,33 +247,34 @@ body, html {
   display: none;
   transition: background-color 0.5s;
 }
-
-body.sidebar-active .public-main {
+body.sidebar-active .public-main, body.sidebar-active .public-footer {
   opacity: 0.7;
 }
-
 body.sidebar-active .overlay {
   display: block;
 }
 
-/* --- Animación del Título --- */
-
+/* --- Hero Section --- */
 .animated-hero-section {
   text-align: center;
-  padding: 4rem 0;
-  margin: 10px 0 0 0;
+  padding: 6rem 2rem 2rem 2rem; /* CAMBIO: Relleno inferior reducido */
+  margin-top: 150px; 
+  background-image: url(./images/Banner.jpeg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #353434;
 }
 
 .animated-title {
   font-size: 3rem;
   font-weight: bold;
-  color: #222;
   margin-bottom: 20px;
 }
 
 .hero-subtitle {
   font-size: 1.25rem;
-  color: #555;
+  color: #222121;
   margin-bottom: 30px;
 }
 
@@ -326,43 +300,22 @@ body.sidebar-active .overlay {
   transform: translateY(0);
 }
 
-/* --- Sección de Beneficios --- */
-
+/* --- Sección Beneficios --- */
 .benefits-section {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 columnas iguales como los productos */
-  gap: 8px; /* MISMO gap que carrusel y productos */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
   text-align: center;
   margin: 60px 0;
   padding: 0;
   width: 100%;
 }
-
-.benefit-item {
-  padding: 20px 0;
-  text-align: center;
-}
-
-.benefit-icon {
-  font-size: 2.5rem;
-  color: #222;
-  margin-bottom: 10px;
-}
-
-.benefit-item h4 {
-  font-size: 1rem;
-  font-weight: bold;
-  margin: 0 0 5px 0;
-}
-
-.benefit-item p {
-  font-size: 0.9rem;
-  color: #555;
-  margin: 0;
-}
+.benefit-item { padding: 20px 0; }
+.benefit-icon { font-size: 2.5rem; color: #222; margin-bottom: 10px; }
+.benefit-item h4 { font-size: 1rem; font-weight: bold; margin: 0 0 5px 0; }
+.benefit-item p { font-size: 0.9rem; color: #555; margin: 0; }
 
 /* --- Carrusel --- */
-
 .carrusel-container {
   display: flex;
   justify-content: center;
@@ -370,30 +323,26 @@ body.sidebar-active .overlay {
   width: 100%;
   max-width: 1200px;
   height: 640px;
-  margin: 30px auto;
+  margin: -7rem auto 30px auto; /* CAMBIO: Margen superior eliminado */
   gap: 8px;
   overflow: hidden;
 }
 
 .carrusel-item {
   position: relative;
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: 0;
+  flex: 1 1 0;
   cursor: pointer;
   height: 100%;
   border-radius: 12px;
   overflow: hidden;
   transition: flex-grow 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .carrusel-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease-in-out;
 }
-
 .carrusel-item .carrusel-text {
   position: absolute;
   bottom: 15px;
@@ -406,69 +355,47 @@ body.sidebar-active .overlay {
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 }
+.carrusel-item:hover { flex-grow: 3; }
+.carrusel-item:hover img { transform: scale(1.05); }
+.carrusel-item:hover .carrusel-text { opacity: 1; }
 
-.carrusel-item:hover {
-  flex-grow: 3;
-}
-
-.carrusel-item:hover img {
-  transform: scale(1.05);
-}
-
-.carrusel-item:hover .carrusel-text {
-  opacity: 1;
-}
-
-/* --- Productos Destacados y Grilla --- */
-
-.featured-products-section {
-  text-align: center;
-  margin: 60px 0;
-  padding: 0;
-}
-
+/* --- Grilla de Productos y Animación --- */
+.featured-products-section { text-align: center; margin: 60px 0; padding: 0; }
 .product-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px; /* MISMO gap que el carrusel para alineación perfecta */
+  gap: 3rem;
   padding: 0;
   margin: 0;
   width: 100%;
 }
-
 .product-card {
   position: relative;
   background: #fff;
   border-radius: 12px;
-  padding: 0; /* SIN padding para que la imagen llegue al borde */
+  padding: 1rem; /* SOLUCIÓN: Añadimos un padding interno */
   text-align: center;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  opacity: 0;
+  transform: translateY(20px);
+  filter: blur(5px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out, filter 0.6s ease-out;
 }
-
-/* Para pantallas más pequeñas */
-@media (max-width: 900px) {
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.product-card.animate-visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
 }
-
-@media (max-width: 600px) {
-  .product-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 .product-images {
   position: relative;
   width: 100%;
   height: 400px;
   overflow: hidden;
-  border-radius: 12px 12px 0 0; /* Bordes redondeados solo arriba */
-  margin-bottom: 0; /* Sin margen */
+  border-radius: 8px;
+  margin-bottom: 1rem;
 }
-
 .product-images img {
   position: absolute;
   top: 0;
@@ -478,42 +405,12 @@ body.sidebar-active .overlay {
   object-fit: cover;
   transition: opacity 0.4s ease-in-out, filter 0.4s ease-in-out;
 }
-
-
-.product-images .hover-image {
-  opacity: 0; /* Por defecto oculta la segunda imagen */
-  filter: brightness(0.8); /* Ligero brillo para la segunda imagen */
-}
-
-/* Efecto al pasar el mouse sobre la tarjeta del producto */
-.product-card:hover .product-images .main-image {
-  opacity: 0; /* Oculta la imagen principal */
-  filter: brightness(0.6); /* Oscurece un poco la imagen principal si se superpone */
-}
-
-.product-card:hover .product-images .hover-image {
-  opacity: 1; /* Muestra la segunda imagen */
-  filter: brightness(1.2); /* Mayor brillo en la segunda imagen */
-}
-
-
-.product-card h3 {
-  margin: 0.5rem 0;
-  font-size: 1.15rem;
-  padding: 0 1rem; /* Padding horizontal para el texto */
-}
-
-.product-card p {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #444;
-  margin-bottom: 1rem;
-  padding: 0 1rem; /* Padding horizontal para el texto */
-}
-
-.product-card .precio {
-    color: #ff0000;
-}
+.product-images .hover-image { opacity: 0; filter: brightness(0.8); }
+.product-card:hover .product-images .main-image { opacity: 0; filter: brightness(0.6); }
+.product-card:hover .product-images .hover-image { opacity: 1; filter: brightness(1.2); }
+.product-card h3 { margin: 0.5rem 0; font-size: 1.15rem; }
+.product-card p { font-size: 1rem; font-weight: bold; color: #444; margin-bottom: 1rem; }
+.product-card .precio { color: #ff0000; }
 .add-to-cart-btn {
   background-color: #ffd84d;
   color: #000;
@@ -522,21 +419,12 @@ body.sidebar-active .overlay {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s;
-  margin: 0 1rem 1rem 1rem; /* Margen para separar del borde */
+  margin: auto 0 0 0;
 }
+.add-to-cart-btn:hover { background-color: #ffe98a; }
 
-.add-to-cart-btn:hover {
-  background-color: #ffe98a;
-}
-
-/* --- Sección de Descuentos --- */
-
-.discount-section {
-  text-align: center;
-  margin: 60px 0;
-  padding: 0;
-}
-
+/* --- Sección Descuentos --- */
+.discount-section { text-align: center; margin: 60px 0; padding: 0; }
 .discount-btn {
   background-color: #ffd84d;
   color: #222;
@@ -548,11 +436,7 @@ body.sidebar-active .overlay {
   cursor: pointer;
   transition: background-color 0.2s;
 }
-
-.discount-btn:hover {
-  background-color: #ffe98a;
-}
-
+.discount-btn:hover { background-color: #ffe98a; }
 .discount-tag {
   position: absolute;
   top: 10px;
@@ -565,14 +449,46 @@ body.sidebar-active .overlay {
   z-index: 10;
 }
 
-/* --- Footer --- */
-
-.public-footer {
-  background-color: #222;
-  color: #fff;
-  padding: 40px 20px;
+/* --- NUEVOS ESTILOS: SECCIÓN CATEGORÍA GÉNERO --- */
+.gender-category-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin: 60px 0;
 }
 
+.gender-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  display: block;
+  text-decoration: none;
+}
+
+.gender-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease-out;
+}
+
+.gender-card:hover img {
+  transform: scale(1.05);
+}
+
+.gender-card h2 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 2.5rem;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  margin: 0;
+}
+
+/* --- Footer --- */
+.public-footer { background-color: #222; color: #fff; padding: 40px 20px; }
 .footer-container {
   display: flex;
   justify-content: space-around;
@@ -582,88 +498,32 @@ body.sidebar-active .overlay {
   padding-bottom: 20px;
   border-bottom: 1px solid #444;
 }
+.footer-column { flex: 1 1 200px; margin-bottom: 20px; }
+.footer-column h4 { font-size: 1.2rem; margin-bottom: 15px; }
+.footer-column p, .footer-column ul, .footer-column li { margin: 0; padding: 0; list-style: none; }
+.footer-column a { color: #fff; text-decoration: none; transition: color 0.2s; }
+.footer-column a:hover { color: #ffd84d; }
+.social-icons { display: flex; gap: 15px; }
+.social-icons a { font-size: 1.5rem; }
+.footer-bottom { text-align: center; padding-top: 20px; }
 
-.footer-column {
-  flex: 1 1 300px;
-  margin-bottom: 20px;
+/* --- Media Queries --- */
+@media (max-width: 900px) {
+  .product-grid, .benefits-section { grid-template-columns: repeat(2, 1fr); }
 }
-
-.footer-column h4 {
-  font-size: 1.2rem;
-  margin-bottom: 15px;
-}
-
-.footer-column p, .footer-column ul, .footer-column li {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.footer-column a {
-  color: #fff;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.footer-column a:hover {
-  color: #ffd84d;
-}
-
-.social-icons {
-  display: flex;
-  gap: 15px;
-}
-
-.social-icons a {
-  font-size: 1.5rem;
-}
-
-.footer-bottom {
-  text-align: center;
-  padding-top: 20px;
-}
-
-/* --- Media Queries (Responsividad) --- */
-
 @media (max-width: 768px) {
-  .header-nav {
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-  }
-  .header-left, .header-right {
-    width: 100%;
-    justify-content: center;
-    gap: 1rem;
-  }
-  .header-logo {
-    order: -1;
-  }
-  .logo-image {
-    height: 40px;
-  }
-  .sidebar.open {
-    width: 70%;
-  }
-  .product-grid {
-    padding: 0 1rem; /* Menor padding en móviles */
-    gap: 2rem;
-  }
-  .footer-container {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
+  .header-nav { grid-template-columns: 1fr; gap: 1rem; padding: 1rem; }
+  .header-left, .header-right { width: 100%; justify-content: space-between; }
+  .header-logo { order: -1; }
+  .logo-image { height: 40px; }
+  .sidebar.open { width: 70%; }
+  .footer-container { flex-direction: column; align-items: center; text-align: center; }
 }
-
+@media (max-width: 600px) {
+  .product-grid, .benefits-section { grid-template-columns: 1fr; }
+}
 @media (max-width: 480px) {
-  .animated-title {
-    font-size: 2rem;
-  }
-  .hero-subtitle {
-    font-size: 1rem;
-  }
-  .sidebar.open {
-    width: 90%; /* Mayor ancho en teléfonos */
-  }
+  .animated-title { font-size: 2rem; }
+  .hero-subtitle { font-size: 1rem; }
+  .sidebar.open { width: 90%; }
 }

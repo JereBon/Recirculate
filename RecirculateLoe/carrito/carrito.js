@@ -75,25 +75,6 @@ crearItemHTML(item, index) {
 
   // Configurar eventos
   configurarEventos() {
-    // Scroll suave al hacer click en el logo
-    const logo = document.querySelector('.header-logo');
-    if (logo) {
-      logo.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // Método compatible con todos los navegadores
-        const scrollToTop = () => {
-          const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
-          if (currentScroll > 0) {
-            window.requestAnimationFrame(scrollToTop);
-            window.scrollTo(0, currentScroll - currentScroll / 8);
-          }
-        };
-        scrollToTop();
-      });
-    }
-
     // Eventos de eliminar
     document.addEventListener('click', (e) => {
       if (e.target.closest('.btn-remove')) {
@@ -243,7 +224,7 @@ crearItemHTML(item, index) {
     return precio.toLocaleString('es-AR', { minimumFractionDigits: 0 });
   }
 
-  // Finalizar compra
+  // Finalizar compra con MercadoPago
   async finalizarCompra() {
     if (this.carrito.length === 0) {
       alert('Tu carrito está vacío');

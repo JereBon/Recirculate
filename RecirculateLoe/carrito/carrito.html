@@ -10,36 +10,36 @@
 </head>
 <body>
 
-<header class="public-header fixed-header">
+  <header class="public-header fixed-header">
     <nav class="header-nav">
-    <div class="header-left">
+      <div class="header-left">
         <button id="menu-btn" class="header-icon menu-icon"><i class="fas fa-bars"></i></button>
         <div id="search-container" class="search-container">
-        <button id="search-btn" class="header-icon search-icon"><i class="fas fa-search"></i></button>
-        <input type="text" id="search-input" class="search-input" placeholder="Buscar...">
+          <button id="search-btn" class="header-icon search-icon"><i class="fas fa-search"></i></button>
+          <input type="text" id="search-input" class="search-input" placeholder="Buscar...">
         </div>
-    </div>
-    <a href="../home/home.html" class="header-logo">
+      </div>
+      <a href="../home/home.html" class="header-logo">
         <img src="../assets/images/Recirculate-logo.png" alt="Recirculate Logo" class="logo-image">
-    </a>
-    <div class="header-right">
+      </a>
+      <div class="header-right">
         <a href="#login" class="header-icon user-icon" data-tooltip="INICIAR SESIÓN">
-        <i class="fas fa-user"></i>
+          <i class="fas fa-user"></i>
         </a>
-        <a href="carrito.html" class="header-icon cart-icon active">
-        <i class="fas fa-shopping-cart"></i>
-        <span id="cart-counter" class="cart-counter">0</span>
+        <a href="./carrito.html" class="header-icon cart-icon">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cart-counter" class="cart-counter">0</span>
         </a>
-    </div>
+      </div>
     </nav>
-</header>
+  </header>
 
 <div id="sidebar-menu" class="sidebar">
     <button id="close-btn" class="close-btn">&times;</button>
     <a href="../home/home.html#catalogo?categoria=buzos">Buzos</a>
     <a href="../home/home.html#catalogo?categoria=camperas">Camperas</a>
     <a href="../home/home.html#catalogo?categoria=camisas">Camisas</a>
-    <a href="../home/home.html#catalogo?categoria=remeras">Remeras</a>
+    <a href="../pages/remeras.html">Remeras</a>
     <a href="../home/home.html#catalogo?categoria=pantalones">Pantalones</a>
 </div>
 <div class="overlay"></div>
@@ -53,7 +53,6 @@
         <h1>Mi Carrito</h1>
     </div>
 
-    <!-- Mensaje cuando el carrito está vacío -->
     <div id="carrito-vacio" class="carrito-vacio" style="display: none;">
         <i class="fas fa-shopping-cart empty-cart-icon"></i>
         <h2>Tu carrito está vacío</h2>
@@ -61,7 +60,6 @@
         <a href="../home/home.html" class="btn-primary">Ir a la tienda</a>
     </div>
 
-    <!-- Contenido del carrito -->
     <div id="carrito-contenido" class="carrito-contenido">
         <div class="carrito-items">
         <div class="items-header">
@@ -69,7 +67,6 @@
         </div>
         
         <div id="items-list" class="items-list">
-            <!-- Los productos se cargarán aquí dinámicamente -->
         </div>
         </div>
 
@@ -136,6 +133,15 @@
         <p>Moda circular para un futuro sostenible.</p>
     </div>
     <div class="footer-column">
+        <h4>Navegación</h4>
+        <ul>
+          <li><a href="/home/home.html">Inicio</a></li>
+          <li><a href="/pages/remeras.html">Remeras</a></li>
+          <li><a href="#catalogo?categoria=pantalones">Pantalones</a></li>
+          <li><a href="#catalogo?categoria=buzos">Buzos</a></li>
+        </ul>
+      </div>
+    <div class="footer-column">
         <h4>Contacto</h4>
         <ul>
         <li><a href="mailto:info@recirculate.com">info@recirculate.com</a></li>
@@ -156,7 +162,6 @@
     </div>
 </footer>
 
-<script src="../assets/utils.js"></script>
-<script src="carrito.js"></script>
+<script type="module" src="carrito.js"></script>
 </body>
 </html>

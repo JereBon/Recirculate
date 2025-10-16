@@ -18,7 +18,7 @@
           <input type="text" id="search-input" class="search-input" placeholder="Buscar...">
         </div>
       </div>
-      <a href="#" class="header-logo">
+      <a href="./home.html" class="header-logo">
         <img src="../assets/images/Recirculate-logo.png" alt="Recirculate Logo" class="logo-image">
       </a>
       <div class="header-right">
@@ -35,48 +35,57 @@
 
   <div id="sidebar-menu" class="sidebar">
     <button id="close-btn" class="close-btn">&times;</button>
-    <a href="catalogo.html?categoria=buzos">Buzos</a>
-    <a href="catalogo.html?categoria=camperas">Camperas</a>
-    <a href="catalogo.html?categoria=camisas">Camisas</a>
-    <a href="catalogo.html?categoria=remeras">Remeras</a>
-    <a href="catalogo.html?categoria=pantalones">Pantalones</a>
+    <a href="../pages/buzos/buzos.html">Buzos</a>
+    <a href="../pages/camperas/camperas.html">Camperas</a>
+    <a href="../pages/camisas/camisas.html">Camisas</a>
+    <a href="../pages/remeras/remeras.html">Remeras</a>
+    <a href="../pages/pantalones/pantalones.html">Pantalones</a>
   </div>
   <div class="overlay"></div>
-  
-  <main class="public-main">
-    <section class="animated-hero-section">
-      <h1 class="animated-title">Moda Circular para un Futuro
-        <span class="word-wrapper">
-          <span class="word active">Sostenible</span>
-          <span class="word">Consciente</span>
-          <span class="word">Ético</span>
-          <span class="word">Innovador</span>
-        </span>
-      </h1>
-      <p class="hero-subtitle">Descubre prendas únicas y de calidad. Dale una segunda vida a la ropa.</p>
-    </section>
 
+  <section class="animated-hero-section">
+    <h1 class="animated-title">Moda Circular para un Futuro
+      <span class="word-wrapper">
+        <span class="word active">Sostenible</span>
+        <span class="word">Consciente</span>
+        <span class="word">Ético</span>
+        <span class="word">Innovador</span>
+      </span>
+    </h1>
+    <p class="hero-subtitle">Descubre prendas únicas y de calidad. Dale una segunda vida a la ropa.</p>
+  </section>
+
+  <main class="public-main">
     <section class="carrusel-container">
-      <a href="catalogo.html?categoria=buzos" class="carrusel-item">
+      <a href="../pages/buzos/buzos.html" class="carrusel-item">
         <img src="../assets/images/Buzo.png" alt="Buzos">
         <span class="carrusel-text">Buzos</span>
       </a>
-      <a href="catalogo.html?categoria=camperas" class="carrusel-item">
+      <a href="../pages/camperas/camperas.html" class="carrusel-item">
         <img src="../assets/images/Campera.png" alt="Camperas">
         <span class="carrusel-text">Camperas</span>
       </a>
-      <a href="catalogo.html?categoria=camisas" class="carrusel-item">
+      <a href="../pages/camisas/camisas.html" class="carrusel-item">
         <img src="../assets/images/Camisa.png" alt="Camisas">
         <span class="carrusel-text">Camisas</span>
       </a>
-      <a href="catalogo.html?categoria=remeras" class="carrusel-item">
+      <a href="../pages/remeras/remeras.html" class="carrusel-item">
         <img src="../assets/images/Remera.png" alt="Remeras">
         <span class="carrusel-text">Remeras</span>
       </a>
-      <a href="catalogo.html?categoria=pantalones" class="carrusel-item">
+      <a href="../pages/pantalones/pantalones.html" class="carrusel-item">
         <img src="../assets/images/Pantalon.png" alt="Pantalones">
         <span class="carrusel-text">Pantalones</span>
       </a>
+    </section>
+
+    <section class="gender-category-section">
+        <a href="../pages/hombre.html" class="gender-card">
+            <img src="../assets/images/Hombre.png" alt="Categoría Hombre">
+        </a>
+        <a href="../pages/mujer.html" class="gender-card">
+            <img src="../assets/images/Mujer.png" alt="Categoría Mujer">
+        </a>
     </section>
 
     <section class="benefits-section">
@@ -108,7 +117,6 @@
           <p class="precio">$25.500 ARS</p>
           <button class="add-to-cart-btn">Añadir al carrito</button>
         </div>
-
         <div class="product-card">
           <div class="product-images">
             <img src="../assets/images/Pantalon corderoy.png" alt="Pantalón Corderoy" class="main-image">
@@ -118,7 +126,6 @@
           <p class="precio">$33.200 ARS</p>
           <button class="add-to-cart-btn">Añadir al carrito</button>
         </div>
-        
         <div class="product-card">
           <div class="product-images">
             <img src="../assets/images/Camisa lineas.png" alt="Camisa BLUE" class="main-image">
@@ -147,7 +154,6 @@
           <p class="precio">$25.500 ARS</p>
           <button class="add-to-cart-btn">Añadir al carrito</button>
         </div>
-
         <div class="product-card">
           <div class="discount-tag">15% OFF</div>
           <div class="product-images">
@@ -158,7 +164,6 @@
           <p class="precio">$33.200 ARS</p>
           <button class="add-to-cart-btn">Añadir al carrito</button>
         </div>
-        
         <div class="product-card">
           <div class="discount-tag">30% OFF</div>
           <div class="product-images">
@@ -178,6 +183,15 @@
       <div class="footer-column">
         <h4>Recirculate</h4>
         <p>Moda circular para un futuro sostenible.</p>
+      </div>
+      <div class="footer-column">
+        <h4>Navegación</h4>
+        <ul>
+          <li><a href="./home.html">Inicio</a></li>
+          <li><a href="../pages/remeras.html">Remeras</a></li>
+          <li><a href="#catalogo?categoria=pantalones">Pantalones</a></li>
+          <li><a href="#catalogo?categoria=buzos">Buzos</a></li>
+        </ul>
       </div>
       <div class="footer-column">
         <h4>Contacto</h4>
@@ -200,6 +214,6 @@
     </div>
   </footer>
   
-  <script src="home.js"></script>
+  <script type="module" src="home.js"></script>
 </body>
 </html>

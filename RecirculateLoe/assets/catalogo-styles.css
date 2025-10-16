@@ -1,0 +1,74 @@
+/* assets/catalogo-styles.css */
+
+/* --- Breadcrumbs --- */
+.breadcrumbs {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+  font-size: 0.9rem;
+}
+
+.breadcrumb-item {
+  display: inline;
+  color: #6c757d;
+}
+
+.breadcrumb-item a {
+  color: #222;
+  text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: '>';
+  display: inline-block;
+  padding: 0 0.5rem;
+  color: #6c757d;
+}
+
+.breadcrumb-item.active {
+  font-weight: bold;
+}
+
+/* --- Encabezado de Categoría --- */
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.category-header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+.filter-toolbar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.filter-toolbar select, .filter-toolbar .filter-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+}
+
+.filter-toolbar .filter-btn {
+  background-color: #222;
+  color: #fff;
+  cursor: pointer;
+  border-color: #222;
+}
+
+/* --- Grilla de Productos de Categoría --- */
+/* Esta clase hereda los estilos de .product-grid de public-styles.css */
+/* Podemos usarla para sobreescribir estilos si es necesario */

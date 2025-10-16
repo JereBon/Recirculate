@@ -6,37 +6,9 @@ document.addEventListener("DOMContentLoaded", function() {
   const logo = document.querySelector('.header-logo');
   if (logo) {
     logo.addEventListener('click', (e) => {
-      e.preventDefault();
       e.stopPropagation();
-      
-      // Si ya estamos en el home, hace scroll suave. Si no, navega.
-      if (window.location.pathname.includes('home.html') || window.location.pathname === '/') {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
-      } else {
-        window.location.href = '/home/home.html';
-      }
+      window.location.href = '../home/home.html';
     });
-  }
-
-  // --- Lógica para el efecto de cambio de palabras ---
-  const words = document.querySelectorAll('.word');
-  if (words.length > 0) {
-    let currentIndex = 0;
-    function changeWord() {
-      const currentWord = words[currentIndex];
-      const nextIndex = (currentIndex + 1) % words.length;
-      const nextWord = words[nextIndex];
-
-      currentWord.classList.remove('active');
-      setTimeout(() => {
-        nextWord.classList.add('active');
-        currentIndex = nextIndex;
-      }, 800);
-    }
-    setInterval(changeWord, 5000);
   }
 
   // --- Lógica para el panel lateral (Sidebar) ---
@@ -55,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
     sidebar.classList.remove('open');
     body.classList.remove('sidebar-active');
   }
-
+  
   if (menuBtn) menuBtn.addEventListener('click', (event) => { event.stopPropagation(); openSidebar(); });
   if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
   if (overlay) overlay.addEventListener('click', closeSidebar);
@@ -84,7 +56,27 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     });
   }
-  
+  // --- Lógica para la animación al hacer scroll ---
+  function setupScrollAnimation() {
+    const elementsToAnimate = document.querySelectorAll('.product-card, .carrusel-item, .benefit-item');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    elementsToAnimate.forEach(el => {
+      observer.observe(el);
+    });
+  }
+
+  setupScrollAnimation();
+});
+
   // --- Lógica para el Contador del Carrito ---
   const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
 
@@ -194,4 +186,4 @@ function mostrarNotificacion(mensaje) {
   }
 
   setupScrollAnimation();
-});
+;
