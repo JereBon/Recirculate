@@ -1,6 +1,6 @@
 // create-admins.js - Script para crear los 6 administradores
 const { Client } = require('pg');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs'); // Usar la misma librería que User.js
 require('dotenv').config();
 
 // Configuración de la base de datos (usar la misma configuración que database.js)
@@ -61,15 +61,15 @@ async function createAdmins() {
 
     for (const admin of admins) {
       try {
-        // Verificar si el usuario ya existe
+        // Verificar si el usuario ya existe y eliminarlo para recrearlo con hash correcto
         const existingUser = await client.query(
           'SELECT id FROM usuarios WHERE email = $1',
           [admin.email]
         );
 
         if (existingUser.rows.length > 0) {
-          console.log(`⚠️  Usuario ${admin.email} ya existe, saltando...`);
-          continue;
+          console.log(`🔄 Usuario ${admin.email} ya existe, eliminando para recrear con hash correcto...`);
+          await client.query('DELETE FROM usuarios WHERE email = $1', [admin.email]);
         }
 
         // Encriptar contraseña
