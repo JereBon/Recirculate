@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td data-label="Estado">${prod.estado || ''}</td>
         <td data-label="Precio">${prod.precio != null ? '$' + prod.precio : ''}</td>
         <td data-label="Moneda">ARS</td>
-        <td data-label="Proveedor">-</td>
+        <td data-label="Proveedor">${prod.proveedor || '-'}</td>
         <td data-label="Stock">${prod.stock != null ? prod.stock : ''}</td>
         <td data-label="Activo">Sí</td>
         <td data-label="Creado">${prod.fecha_creacion ? new Date(prod.fecha_creacion).toLocaleString() : ''}</td>

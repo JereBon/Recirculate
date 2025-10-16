@@ -137,6 +137,7 @@ const createProductsTable = async () => {
       stock INTEGER DEFAULT 0,
       estado VARCHAR(50) DEFAULT 'Disponible',
       imagen_url TEXT,
+      proveedor VARCHAR(255),
       usuario_id INTEGER REFERENCES usuarios(id),
       fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -146,8 +147,27 @@ const createProductsTable = async () => {
   try {
     await client.query(createTableQuery);
     console.log('✅ Tabla productos verificada/creada');
+    
+    // Migración: Agregar columna proveedor si no existe
+    await addProveedorColumn();
   } catch (error) {
     console.error('❌ Error creando tabla productos:', error);
+  }
+};
+
+// Función para agregar columna proveedor a productos existentes
+const addProveedorColumn = async () => {
+  try {
+    await client.query(`
+      ALTER TABLE productos 
+      ADD COLUMN IF NOT EXISTS proveedor VARCHAR(255)
+    `);
+    console.log('✅ Columna proveedor agregada/verificada');
+  } catch (error) {
+    // Si la columna ya existe, no es un error
+    if (error.code !== '42701') {
+      console.error('❌ Error agregando columna proveedor:', error.message);
+    }
   }
 };
 

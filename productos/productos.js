@@ -144,6 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
       estado: form.estado.value.trim() || 'Disponible',
       precio: parseFloat(form.precio.value),
       stock: parseInt(form.stock.value, 10),
+      proveedor: form['proveedor-nombre'].value.trim(), // Agregar campo proveedor
       imagen_url: imagenesSubidas.length > 0 ? imagenesSubidas[0] : null // Solo primera imagen
     };
     if (editandoId !== null) {
@@ -253,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
           form.marca.value = prod.marca || '';
           form.estado.value = prod.estado || '';
           form.precio.value = prod.precio || '';
-          // PostgreSQL no tiene moneda ni proveedor
+          form['proveedor-nombre'].value = prod.proveedor || ''; // Cargar proveedor
           imagenesSubidas = prod.imagen_url ? [prod.imagen_url] : [];
           imagenUploadStatus.textContent = imagenesSubidas.length ? 'Imagen cargada ✔' : '';
           form.stock.value = prod.stock || '';
