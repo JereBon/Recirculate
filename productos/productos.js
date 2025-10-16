@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     if (!validarFormulario()) return;
     // Obtener token para autenticación
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('authToken');
     if (!token) {
       alert('❌ Debes iniciar sesión para gestionar productos');
       window.location.href = '../auth/login.html';
@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Si click en borrar, confirma y elimina producto
       const id = e.target.dataset.borrar;
       if (confirm('¿Seguro que deseas borrar este producto?')) {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('authToken');
         await fetch(`${API_URL}/productos/${id}`, { 
           method: 'DELETE',
           headers: {
