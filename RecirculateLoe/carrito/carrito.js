@@ -244,22 +244,56 @@ crearItemHTML(item, index) {
   }
 
   // Finalizar compra
-  finalizarCompra() {
+  async finalizarCompra() {
     if (this.carrito.length === 0) {
       alert('Tu carrito está vacío');
       return;
     }
 
-    const total = this.carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-    
-    if (confirm(`¿Confirmar compra por $${this.formatearPrecio(total)}?`)) {
-      alert('¡Gracias por tu compra! En una aplicación real, aquí se procesaría el pago.');
-      // Aquí iría la lógica de procesamiento de pago
-      // Por ahora solo vaciamos el carrito
-      this.carrito = [];
-      this.guardarCarrito();
-      this.renderizarCarrito();
-      this.actualizarContador();
+    const btnFinalizar = document.getElementById('btn-finalizar');
+    btnFinalizar.disabled = true;
+    btnFinalizar.textContent = 'Procesando...';
+
+    try {
+      const token = localStorage.getItem('recirculate_token');
+      if (!token) {
+        alert('Debes iniciar sesión para continuar con la compra.');
+        window.location.href = '/auth/login.html';
+        return;
+      }
+
+      const items = this.carrito.map(item => ({
+        title: item.nombre,
+        quantity: item.cantidad,
+        unit_price: item.precio,
+        currency_id: 'ARS'
+      }));
+
+      const response = await fetch('/api/pagos/preferencia', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ items })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Redirigir al checkout de MercadoPago
+        window.location.href = data.sandbox_init_point;
+      } else {
+        // Mostrar error de stock u otro error del backend
+        alert(`Error: ${data.error || 'No se pudo procesar el pago.'}`);
+        btnFinalizar.disabled = false;
+        btnFinalizar.textContent = 'Finalizar Compra';
+      }
+    } catch (error) {
+      console.error('Error al finalizar la compra:', error);
+      alert('Hubo un problema al conectar con el servidor. Inténtalo de nuevo.');
+      btnFinalizar.disabled = false;
+      btnFinalizar.textContent = 'Finalizar Compra';
     }
   }
 }

@@ -338,6 +338,17 @@ app.post('/api/pagos/preferencia', verifyToken, async (req, res) => {
       });
     }
 
+    // Validar stock antes de crear la preferencia
+    for (const item of items) {
+      const producto = await Product.findByName(item.title);
+      if (!producto) {
+        return res.status(400).json({ error: `Producto no encontrado: ${item.title}` });
+      }
+      if (producto.stock < item.quantity) {
+        return res.status(400).json({ error: `Stock insuficiente para: ${item.title}` });
+      }
+    }
+
     // Datos de la preferencia
     const preferenceData = {
       items: items,
@@ -416,6 +427,48 @@ app.post('/api/pagos/notificaciones', async (req, res) => {
         // Actualizar pago existente
         await MPPayment.updateStatus(data.id, paymentInfo.status, paymentInfo.status_detail);
         console.log('✅ Pago actualizado en BD');
+      }
+
+      if (paymentInfo.status === 'approved') {
+        console.log('✅ Pago aprobado. Procesando post-pago...');
+
+        // 1. Obtener los items de la preferencia
+        const preference = await MPPreference.findByPreferenceId(paymentInfo.preference_id);
+        if (!preference || !preference.items) {
+          console.error('❌ No se encontró la preferencia o no tiene items:', paymentInfo.preference_id);
+          return res.status(404).send('Preferencia no encontrada');
+        }
+
+        // 2. Iterar sobre los items para actualizar stock y registrar venta
+        for (const item of preference.items) {
+          try {
+            const producto = await Product.findByName(item.title);
+            if (producto) {
+              // Actualizar stock
+              const nuevoStock = producto.stock - item.quantity;
+              await Product.updateStock(producto.id, nuevoStock);
+              console.log(`📦 Stock actualizado para ${item.title}: ${nuevoStock}`);
+
+              // Registrar la venta
+              await Sale.create({
+                cliente: paymentInfo.payer?.email || 'N/A',
+                producto: item.title,
+                cantidad: item.quantity,
+                metodo_pago: 'MercadoPago',
+                monto_cripto: null,
+                total: item.unit_price * item.quantity,
+                fecha: new Date(paymentInfo.date_approved),
+                usuario_id: preference.usuario_id
+              });
+              console.log(`💰 Venta registrada para ${item.title}`);
+            } else {
+              console.error(`❌ Producto no encontrado para el item: ${item.title}`);
+            }
+          } catch (itemError) {
+            console.error(`❌ Error procesando el item ${item.title}:`, itemError);
+            // Continuar con el siguiente item
+          }
+        }
       }
 
       // Actualizar status de preferencia
