@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
     searchBtn.addEventListener('click', () => {
       const isExpanded = searchContainer.classList.contains('active');
       if (isExpanded && searchInput.value !== '') {
-        alert(`Buscando: ${searchInput.value}`);
+        performSearch(searchInput.value.trim());
       } else {
         searchContainer.classList.toggle('active');
         if (searchContainer.classList.contains('active')) {
@@ -55,6 +55,61 @@ document.addEventListener("DOMContentLoaded", function() {
         }
       }
     });
+  }
+
+  // Buscar al presionar Enter
+  if (searchInput) {
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && searchInput.value.trim() !== '') {
+        performSearch(searchInput.value.trim());
+      }
+    });
+  }
+
+  // Función para realizar la búsqueda desde páginas de productos
+  function performSearch(query) {
+    const searchTerm = query.toLowerCase();
+    
+    // Mapeo de términos de búsqueda a páginas (rutas relativas desde páginas de productos)
+    const searchMap = {
+      'remera': '../remeras/remeras.html',
+      'remeras': '../remeras/remeras.html',
+      'pantalon': '../pantalones/pantalones.html',
+      'pantalones': '../pantalones/pantalones.html',
+      'buzo': '../buzos/buzos.html',
+      'buzos': '../buzos/buzos.html',
+      'camisa': '../camisas/camisas.html',
+      'camisas': '../camisas/camisas.html',
+      'campera': '../camperas/camperas.html',
+      'camperas': '../camperas/camperas.html',
+      'jacket': '../camperas/camperas.html',
+      'hoodie': '../buzos/buzos.html',
+      'sudadera': '../buzos/buzos.html',
+      'polo': '../camisas/camisas.html',
+      'shirt': '../remeras/remeras.html',
+      'jean': '../pantalones/pantalones.html',
+      'jeans': '../pantalones/pantalones.html',
+      'jogger': '../pantalones/pantalones.html',
+      'home': '../home/home.html',
+      'inicio': '../home/home.html'
+    };
+
+    // Buscar coincidencia exacta
+    if (searchMap[searchTerm]) {
+      window.location.href = searchMap[searchTerm];
+      return;
+    }
+
+    // Buscar coincidencias parciales
+    for (const [key, url] of Object.entries(searchMap)) {
+      if (key.includes(searchTerm) || searchTerm.includes(key)) {
+        window.location.href = url;
+        return;
+      }
+    }
+
+    // Si no encuentra nada, mostrar mensaje
+    alert(`No se encontraron resultados para "${query}". Intenta buscar: remeras, pantalones, buzos, camisas o camperas.`);
   }
   // --- Lógica para la animación al hacer scroll ---
   function setupScrollAnimation() {
