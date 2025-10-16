@@ -1,0 +1,146 @@
+<!--
+  index.html - Panel principal de la aplicación.
+  Permite navegar a los módulos de Ventas y Gastos.
+  Cumple con accesibilidad y responsividad.
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Panel de Administración</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <style>
+    .user-info {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .user-welcome {
+      color: #333;
+      font-weight: bold;
+    }
+    
+    .user-role {
+      background: #ffd84d;
+      color: #222;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    
+    .logout-btn {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    
+    .logout-btn:hover {
+      background: #ff5252;
+    }
+    
+    .auth-actions {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .auth-link {
+      background: #4CAF50;
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+    
+    .auth-link:hover {
+      background: #45a049;
+    }
+    
+    .admin-warning {
+      background: #fff3cd;
+      color: #856404;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #ffeaa7;
+    }
+  </style>
+</head>
+<body>
+  <!-- Información del usuario (solo si está logueado) -->
+  <div class="user-info" data-auth="logged-in" style="display: none;">
+    <span class="user-welcome">Bienvenido, <span data-user="name"></span></span>
+    <span class="user-role" data-user="role"></span>
+    <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+  </div>
+
+  <header>
+    <h1>Panel de Administración</h1>
+    <p>Elegí qué formulario querés gestionar</p>
+  </header>
+  <main class="main" style="display: flex; flex-direction: column; align-items: center; gap: 32px;">
+    
+    <!-- Acciones de autenticación (solo si NO está logueado) -->
+    <div class="auth-actions" data-auth="logged-out" style="display: none;">
+      <a href="auth/login.html" class="auth-link">Iniciar Sesión</a>
+      <a href="auth/registro.html" class="auth-link">Registrarse</a>
+    </div>
+    
+    <!-- Advertencia para usuarios no admin -->
+    <div class="admin-warning" data-auth="logged-in" style="display: none;" id="adminWarning">
+      <strong>Nota:</strong> Algunas funciones están disponibles solo para administradores.
+    </div>
+    
+    <!-- Navegación principal (siempre visible) -->
+    <a href="productos/ver-productos.html" class="home-btn" style="width:220px; height:80px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; background:#ffd84d; border-radius:12px; text-decoration:none; color:#222; font-weight:bold;">Ver Productos</a>
+    
+    <!-- Funciones de administrador -->
+    <div data-auth="admin" style="display: none;">
+      <a href="ventas/ventas.html" class="home-btn" style="width:220px; height:80px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; background:#ffd84d; border-radius:12px; text-decoration:none; color:#222; font-weight:bold; margin-bottom:12px;">Ventas</a>
+      <a href="gastos/gastos.html" class="home-btn" style="width:220px; height:80px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; background:#ffd84d; border-radius:12px; text-decoration:none; color:#222; font-weight:bold; margin-bottom:12px;">Gastos</a>
+    </div>
+    
+  </main>
+
+  <script src="assets/auth-utils.js"></script>
+  <script>
+    // Inicializar autenticación al cargar la página
+    document.addEventListener('DOMContentLoaded', async () => {
+      await initAuth();
+      updateUIForAuth();
+      
+      // Ocultar advertencia de admin si el usuario es admin
+      const userData = getUserData();
+      if (userData && userData.rol === 'admin') {
+        const adminWarning = document.getElementById('adminWarning');
+        if (adminWarning) {
+          adminWarning.style.display = 'none';
+        }
+      }
+    });
+    
+    // Función para proteger enlaces de admin
+    function checkAdminAccess(event, targetUrl) {
+      if (!isAdmin()) {
+        event.preventDefault();
+        alert('Necesitas permisos de administrador para acceder a esta función.');
+        return false;
+      }
+      return true;
+    }
+  </script>
+</body>
+</html>
