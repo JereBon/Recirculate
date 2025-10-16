@@ -19,6 +19,7 @@ const connectDB = async () => {
     
     // Crear todas las tablas si no existen
     await createUsersTable();
+    await createClientsTable();
     await createProductsTable();
     await createSalesTable();
     await createExpensesTable();
@@ -58,6 +59,7 @@ const createDatabase = async () => {
     
     // Crear todas las tablas
     await createUsersTable();
+    await createClientsTable();
     await createProductsTable();
     await createSalesTable();
     await createExpensesTable();
@@ -121,6 +123,28 @@ const createDefaultAdmin = async () => {
     }
   } catch (error) {
     console.error('❌ Error creando admin por defecto:', error);
+  }
+};
+
+// Crear tabla de clientes
+const createClientsTable = async () => {
+  const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS clientes (
+      id SERIAL PRIMARY KEY,
+      usuario_id INTEGER UNIQUE REFERENCES usuarios(id) ON DELETE CASCADE,
+      telefono VARCHAR(20),
+      direccion TEXT,
+      fecha_nacimiento DATE,
+      fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `;
+
+  try {
+    await client.query(createTableQuery);
+    console.log('✅ Tabla clientes verificada/creada');
+  } catch (error) {
+    console.error('❌ Error creando tabla clientes:', error);
   }
 };
 

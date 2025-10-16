@@ -6,23 +6,43 @@ class User {
   
   // Crear nuevo usuario
   static async create(userData) {
-    const { nombre, email, password, rol = 'cliente' } = userData;
+    const { nombre, email, password, rol = 'cliente', telefono, direccion, fechaNacimiento } = userData;
     
     try {
+      // Iniciar transacción
+      await client.query('BEGIN');
+      
       // Hashear contraseña
       const hashedPassword = await bcrypt.hash(password, 10);
       
-      const query = `
+      const userQuery = `
         INSERT INTO usuarios (nombre, email, password, rol, fecha_creacion, fecha_actualizacion)
         VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
         RETURNING id, nombre, email, rol, fecha_creacion
       `;
       
-      const values = [nombre, email, hashedPassword, rol];
-      const result = await client.query(query, values);
+      const userValues = [nombre, email, hashedPassword, rol];
+      const userResult = await client.query(userQuery, userValues);
+      const newUser = userResult.rows[0];
       
-      return result.rows[0];
+      // Si es cliente, crear registro en tabla clientes
+      if (rol === 'cliente' && telefono && direccion && fechaNacimiento) {
+        const clientQuery = `
+          INSERT INTO clientes (usuario_id, telefono, direccion, fecha_nacimiento, fecha_creacion, fecha_actualizacion)
+          VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        `;
+        
+        const clientValues = [newUser.id, telefono, direccion, fechaNacimiento];
+        await client.query(clientQuery, clientValues);
+      }
+      
+      // Confirmar transacción
+      await client.query('COMMIT');
+      
+      return newUser;
     } catch (error) {
+      // Revertir transacción en caso de error
+      await client.query('ROLLBACK');
       throw error;
     }
   }
@@ -117,6 +137,25 @@ class User {
       
       const result = await client.query(query, values);
       return result.rows.length > 0;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Obtener cliente completo con información adicional
+  static async getClientWithDetails(userId) {
+    try {
+      const query = `
+        SELECT 
+          u.id, u.nombre, u.email, u.rol, u.fecha_creacion,
+          c.telefono, c.direccion, c.fecha_nacimiento
+        FROM usuarios u
+        LEFT JOIN clientes c ON u.id = c.usuario_id
+        WHERE u.id = $1 AND u.rol = 'cliente'
+      `;
+      
+      const result = await client.query(query, [userId]);
+      return result.rows[0] || null;
     } catch (error) {
       throw error;
     }

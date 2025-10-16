@@ -51,7 +51,7 @@ router.post('/registro', registerValidation, async (req, res) => {
       });
     }
 
-    const { nombre, email, password, rol } = req.body;
+    const { nombre, email, password, rol, telefono, direccion, fechaNacimiento, adminToken } = req.body;
 
     // Verificar si el email ya existe
     const emailExists = await User.emailExists(email);
@@ -62,11 +62,21 @@ router.post('/registro', registerValidation, async (req, res) => {
       });
     }
 
-    // Solo admin puede crear otros admins
-    if (rol === 'admin' && (!req.user || req.user.rol !== 'admin')) {
-      return res.status(403).json({
+    // Validar token para crear cuentas de administrador
+    if (rol === 'admin') {
+      if (!adminToken || adminToken !== '676767') {
+        return res.status(403).json({
+          success: false,
+          message: 'Solo con un token correcto se puede ser admin'
+        });
+      }
+    }
+
+    // Validar campos adicionales para clientes
+    if (rol === 'cliente' && (!telefono || !direccion || !fechaNacimiento)) {
+      return res.status(400).json({
         success: false,
-        message: 'Solo un administrador puede crear cuentas de administrador'
+        message: 'Los campos teléfono, dirección y fecha de nacimiento son obligatorios para clientes'
       });
     }
 
@@ -75,7 +85,10 @@ router.post('/registro', registerValidation, async (req, res) => {
       nombre,
       email,
       password,
-      rol: rol || 'cliente'
+      rol: rol || 'cliente',
+      telefono,
+      direccion,
+      fechaNacimiento
     });
 
     // Generar token

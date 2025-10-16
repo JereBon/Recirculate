@@ -1,34 +1,39 @@
 // registro.js - Funcionalidad del formulario de registro
 const API_BASE_URL = 'https://recirculate-api.onrender.com/api';
 
-// Verificar si ya está logueado
+// Inicializar formulario
 document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-        // Verificar token válido
-        verifyToken().then(isValid => {
-            if (isValid) {
-                window.location.href = '../index.html';
-            }
-        });
-    }
     
     // Manejar cambio de rol
     const rolSelect = document.getElementById('rol');
     const adminNote = document.getElementById('adminNote');
     const tokenGroup = document.getElementById('tokenGroup');
     const adminTokenInput = document.getElementById('adminToken');
+    const clientFields = document.querySelectorAll('[id^="clientFields"]');
+    const telefonoInput = document.getElementById('telefono');
+    const direccionInput = document.getElementById('direccion');
+    const fechaNacimientoInput = document.getElementById('fechaNacimiento');
     
     rolSelect.addEventListener('change', () => {
         if (rolSelect.value === 'admin') {
             adminNote.style.display = 'block';
             tokenGroup.style.display = 'block';
             adminTokenInput.required = true;
+            // Ocultar campos de cliente para admin
+            clientFields.forEach(field => field.style.display = 'none');
+            telefonoInput.required = false;
+            direccionInput.required = false;
+            fechaNacimientoInput.required = false;
         } else {
             adminNote.style.display = 'none';
             tokenGroup.style.display = 'none';
             adminTokenInput.required = false;
             adminTokenInput.value = ''; // Limpiar el campo cuando se cambia a cliente
+            // Mostrar campos de cliente
+            clientFields.forEach(field => field.style.display = 'block');
+            telefonoInput.required = true;
+            direccionInput.required = true;
+            fechaNacimientoInput.required = true;
         }
     });
 });
@@ -44,6 +49,11 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
     const rol = document.getElementById('rol').value;
     const adminToken = document.getElementById('adminToken').value;
     
+    // Campos adicionales para clientes
+    const telefono = document.getElementById('telefono').value.trim();
+    const direccion = document.getElementById('direccion').value.trim();
+    const fechaNacimiento = document.getElementById('fechaNacimiento').value;
+    
     const registerBtn = document.getElementById('registerBtn');
     const loading = document.getElementById('loading');
     const messageDiv = document.getElementById('message');
@@ -52,6 +62,29 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
     if (!nombre || !email || !password || !confirmPassword) {
         showMessage('Por favor, completa todos los campos', 'error');
         return;
+    }
+    
+    // Validaciones específicas para clientes
+    if (rol === 'cliente') {
+        if (!telefono || !direccion || !fechaNacimiento) {
+            showMessage('Por favor, completa todos los campos de cliente', 'error');
+            return;
+        }
+        
+        // Validar que sea mayor de 18 años
+        const today = new Date();
+        const birthDate = new Date(fechaNacimiento);
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        
+        if (age < 18) {
+            showMessage('Debes ser mayor de 18 años para registrarte', 'error');
+            return;
+        }
     }
     
     // Validación del token de administrador
@@ -101,38 +134,36 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
             'Content-Type': 'application/json'
         };
         
-        // Si intenta crear admin, incluir token si existe
+        // Preparar datos del formulario
+        const userData = { 
+            nombre, 
+            email, 
+            password, 
+            rol 
+        };
+        
+        // Agregar datos adicionales para clientes
+        if (rol === 'cliente') {
+            userData.telefono = telefono;
+            userData.direccion = direccion;
+            userData.fechaNacimiento = fechaNacimiento;
+        }
+        
+        // Agregar token para administradores
         if (rol === 'admin') {
-            const token = localStorage.getItem('authToken');
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
-            }
+            userData.adminToken = adminToken;
         }
         
         const response = await fetch(`${API_BASE_URL}/auth/registro`, {
             method: 'POST',
             headers: headers,
-            body: JSON.stringify({ 
-                nombre, 
-                email, 
-                password, 
-                rol 
-            })
+            body: JSON.stringify(userData)
         });
         
         const data = await response.json();
         
         if (data.success) {
-            // Guardar token y datos del usuario
-            localStorage.setItem('authToken', data.data.token);
-            localStorage.setItem('userData', JSON.stringify(data.data.user));
-            
-            showMessage('¡Cuenta creada exitosamente! Redirigiendo...', 'success');
-            
-            // Redirigir después de 1.5 segundos
-            setTimeout(() => {
-                window.location.href = '../index.html';
-            }, 1500);
+            showMessage('¡Cuenta creada exitosamente! Puedes cerrar esta ventana.', 'success');
             
         } else {
             // Mostrar errores específicos
@@ -165,23 +196,7 @@ function isValidEmail(email) {
     return emailRegex.test(email);
 }
 
-// Función para verificar token
-async function verifyToken() {
-    const token = localStorage.getItem('authToken');
-    if (!token) return false;
-    
-    try {
-        const response = await fetch(`${API_BASE_URL}/auth/perfil`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        return response.ok;
-    } catch (error) {
-        return false;
-    }
-}
+
 
 // Validación en tiempo real de coincidencia de contraseñas
 document.getElementById('confirmPassword').addEventListener('input', () => {
