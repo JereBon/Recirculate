@@ -1,7 +1,7 @@
 // registrar-gasto.js - Lógica del formulario de registro de gastos
 // Maneja validaciones, persistencia, mensajes y conversión cripto.
 
-const API_URL = "https://recirculate-api.onrender.com/gastos";
+const API_URL = "https://recirculate-api.onrender.com/api/gastos";
 
 function guardarDatos(key, value) {
   try {
@@ -154,9 +154,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        successMsg.textContent = 'Debe estar autenticado para registrar gastos';
+        return;
+      }
+
       const res = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(gasto)
       });
       if (!res.ok) throw new Error('Error al registrar el gasto');

@@ -72,7 +72,7 @@ async function convertirCriptoAFiat(montoCripto) {
 }
 
 
-const API_URL = "https://recirculate-api.onrender.com";
+const API_URL = "https://recirculate-api.onrender.com/api";
 let productosDisponibles = [];
 
 // Mini menú de productos con imagen y stock
@@ -259,9 +259,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Enviar venta al backend
     try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        successMsg.textContent = 'Debe estar autenticado para registrar ventas';
+        return;
+      }
+
       const res = await fetch(`${API_URL}/ventas`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(venta)
       });
       if (!res.ok) throw new Error('Error al registrar la venta');
