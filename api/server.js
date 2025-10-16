@@ -102,6 +102,10 @@ app.use('/api/auth', authRoutes);
 const setupRoutes = require('./routes/setup');
 app.use('/api/setup', setupRoutes);
 
+// --- RUTA DE MIGRACIÓN ---
+const migrateRoutes = require('./routes/migrate');
+app.use('/api/migrate', migrateRoutes);
+
 // --- SOCKET.IO ---
 io.on('connection', (socket) => {
   console.log('Cliente conectado a Socket.IO');
