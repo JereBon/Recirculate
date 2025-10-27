@@ -247,4 +247,172 @@ function mostrarNotificacion(mensaje) {
   }
 
   setupScrollAnimation();
+
+  // --- CARGAR PRODUCTOS DINÁMICOS ---
+  loadFeaturedProducts();
+  loadLatestProducts();
+  
+  // Configurar evento de cierre del modal
+  const modal = document.getElementById('gender-modal');
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        closeGenderModal();
+      }
+    });
+  }
 });
+
+// --- CONFIGURACIÓN DE LA API ---
+const API_BASE_URL = "https://recirculate-api.onrender.com/api";
+
+// --- FUNCIÓN GLOBAL PARA AÑADIR AL CARRITO ---
+function addToCart(id, nombre, precio) {
+  const producto = {
+    id: id,
+    nombre: nombre,
+    precio: precio,
+    cantidad: 1
+  };
+  
+  // Obtener carrito actual del localStorage
+  let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+  
+  // Verificar si el producto ya existe en el carrito
+  const productoExistente = carrito.find(item => item.id === id);
+  
+  if (productoExistente) {
+    productoExistente.cantidad += 1;
+  } else {
+    carrito.push(producto);
+  }
+  
+  // Guardar carrito actualizado
+  localStorage.setItem('carrito', JSON.stringify(carrito));
+  
+  // Actualizar contador visual si existe
+  updateCartCounter();
+  
+  // Mostrar mensaje de confirmación
+  alert(`${nombre} añadido al carrito!`);
+}
+
+// --- FUNCIÓN PARA ACTUALIZAR CONTADOR DEL CARRITO ---
+function updateCartCounter() {
+  const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+  const totalItems = carrito.reduce((total, item) => total + item.cantidad, 0);
+  
+  const counter = document.querySelector('.cart-counter');
+  if (counter) {
+    counter.textContent = totalItems;
+    counter.style.display = totalItems > 0 ? 'inline' : 'none';
+  }
+}
+
+// --- FUNCIONES PARA CARGAR PRODUCTOS ---
+async function loadFeaturedProducts() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/productos/categoria/destacados`);
+    if (!response.ok) throw new Error('Error al cargar productos destacados');
+    
+    const productos = await response.json();
+    renderProducts(productos, 'featured-products-grid', true);
+  } catch (error) {
+    console.error('Error cargando productos destacados:', error);
+    document.getElementById('featured-products-grid').innerHTML = 
+      '<div class="error-message">Error al cargar productos destacados</div>';
+  }
+}
+
+async function loadLatestProducts() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/productos?limit=6`);
+    if (!response.ok) throw new Error('Error al cargar últimos productos');
+    
+    let productos = await response.json();
+    // Tomar solo los últimos 6 productos
+    productos = productos.slice(0, 6);
+    renderProducts(productos, 'latest-products-grid', false);
+  } catch (error) {
+    console.error('Error cargando últimos productos:', error);
+    document.getElementById('latest-products-grid').innerHTML = 
+      '<div class="error-message">Error al cargar productos</div>';
+  }
+}
+
+function renderProducts(productos, containerId, isDestacados = false) {
+  const container = document.getElementById(containerId);
+  
+  if (!productos || productos.length === 0) {
+    container.innerHTML = '<div class="no-products-message">No hay productos disponibles</div>';
+    return;
+  }
+
+  const productHTML = productos.map(producto => {
+    const imageUrl = producto.imagen_url || '../assets/images/placeholder.png';
+    const precio = producto.precio ? `$${producto.precio.toLocaleString()} ARS` : 'Consultar precio';
+    const descuentoTag = isDestacados ? '<div class="destacado-tag">⭐ DESTACADO</div>' : '';
+    const generoTag = `<div class="genero-tag genero-${producto.genero?.toLowerCase()}">${producto.genero || ''}</div>`;
+    
+    return `
+      <div class="product-card" data-product-id="${producto.id}">
+        ${descuentoTag}
+        ${generoTag}
+        <div class="product-images">
+          <img src="${imageUrl}" alt="${producto.nombre}" class="main-image" 
+               onerror="this.src='../assets/images/placeholder.png'">
+        </div>
+        <h3>${producto.nombre}</h3>
+        <p class="precio">${precio}</p>
+        <p class="product-details">
+          ${producto.marca ? `<span class="marca">${producto.marca}</span>` : ''}
+          ${producto.talle ? `<span class="talle">Talle: ${producto.talle}</span>` : ''}
+          ${producto.color ? `<span class="color">Color: ${producto.color}</span>` : ''}
+        </p>
+        <p class="stock-info">Stock: ${producto.stock || 0}</p>
+        <button class="add-to-cart-btn" onclick="addToCart(${producto.id}, '${producto.nombre}', ${producto.precio || 0})">
+          Añadir al carrito
+        </button>
+      </div>
+    `;
+  }).join('');
+
+  container.innerHTML = productHTML;
+}
+
+// --- FUNCIONES PARA PRODUCTOS POR GÉNERO ---
+async function loadGenderProducts(genero) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/productos/genero/${genero}`);
+    if (!response.ok) throw new Error(`Error al cargar productos para ${genero}`);
+    
+    const productos = await response.json();
+    showGenderModal(genero, productos);
+  } catch (error) {
+    console.error(`Error cargando productos para ${genero}:`, error);
+    showGenderModal(genero, []);
+  }
+}
+
+function showGenderModal(genero, productos) {
+  const modal = document.getElementById('gender-modal');
+  const title = document.getElementById('gender-modal-title');
+  const grid = document.getElementById('gender-products-grid');
+  
+  title.textContent = `Productos para ${genero}`;
+  
+  if (!productos || productos.length === 0) {
+    grid.innerHTML = '<div class="no-products-message">No hay productos disponibles para esta categoría</div>';
+  } else {
+    renderProducts(productos, 'gender-products-grid', false);
+  }
+  
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeGenderModal() {
+  const modal = document.getElementById('gender-modal');
+  modal.style.display = 'none';
+  document.body.style.overflow = 'auto';
+}

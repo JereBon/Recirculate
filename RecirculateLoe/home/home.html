@@ -80,13 +80,34 @@
     </section>
 
     <section class="gender-category-section">
-        <a href="#" class="gender-card" onclick="showComingSoonModal()">
+        <a href="#" class="gender-card" onclick="loadGenderProducts('Hombre')">
             <img src="../assets/images/Hombre.png" alt="Categoría Hombre">
+            <div class="gender-overlay">
+              <h3>HOMBRE</h3>
+              <p>Descubre productos para hombre</p>
+            </div>
         </a>
-        <a href="#" class="gender-card" onclick="showComingSoonModal()">
+        <a href="#" class="gender-card" onclick="loadGenderProducts('Mujer')">
             <img src="../assets/images/Mujer.png" alt="Categoría Mujer">
+            <div class="gender-overlay">
+              <h3>MUJER</h3>
+              <p>Descubre productos para mujer</p>
+            </div>
         </a>
     </section>
+
+    <!-- Modal para mostrar productos por género -->
+    <div id="gender-modal" class="gender-modal" style="display: none;">
+      <div class="gender-modal-content">
+        <div class="gender-modal-header">
+          <h2 id="gender-modal-title">Productos</h2>
+          <button class="gender-modal-close" onclick="closeGenderModal()">&times;</button>
+        </div>
+        <div id="gender-products-grid" class="product-grid">
+          <!-- Productos por género se cargan aquí -->
+        </div>
+      </div>
+    </div>
 
     <section class="benefits-section">
       <div class="benefit-item">
@@ -107,73 +128,18 @@
     </section>
 
     <section class="featured-products-section">
-      <div class="product-grid">
-        <div class="product-card">
-          <div class="product-images">
-            <img src="../assets/images/Buzo morley.png" alt="Buzo morley" class="main-image">
-            <img src="../assets/images/buzo morley 2.png" alt="Buzo morley" class="hover-image">
-          </div>
-          <h3>Buzo morley</h3>
-          <p class="precio">$25.500 ARS</p>
-          <button class="add-to-cart-btn">Añadir al carrito</button>
-        </div>
-        <div class="product-card">
-          <div class="product-images">
-            <img src="../assets/images/Pantalon corderoy.png" alt="Pantalón Corderoy" class="main-image">
-            <img src="../assets/images/Pantalon corderoy 2.png" alt="Pantalón Corderoy" class="hover-image">
-          </div>
-          <h3>Pantalón Corderoy</h3>
-          <p class="precio">$33.200 ARS</p>
-          <button class="add-to-cart-btn">Añadir al carrito</button>
-        </div>
-        <div class="product-card">
-          <div class="product-images">
-            <img src="../assets/images/Camisa lineas.png" alt="Camisa BLUE" class="main-image">
-            <img src="../assets/images/Camisa lineas 2.png" alt="Camisa BLUE" class="hover-image">
-          </div>
-          <h3>Camisa BLEU</h3>
-          <p class="precio">$46.000 ARS</p>
-          <button class="add-to-cart-btn">Añadir al carrito</button>
-        </div>
+      <h2>Productos Destacados</h2>
+      <div class="product-grid" id="featured-products-grid">
+        <!-- Los productos destacados se cargan dinámicamente aquí -->
+        <div class="loading-message">Cargando productos destacados...</div>
       </div>
     </section>
 
     <section class="discount-section">
-      <h2>Descuentos</h2>
-    </section>
-
-    <section class="featured-products-section">
-      <div class="product-grid">
-        <div class="product-card">
-          <div class="discount-tag">23% OFF</div>
-          <div class="product-images">
-            <img src="../assets/images/Buzo morley.png" alt="Buzo morley" class="main-image">
-            <img src="../assets/images/buzo morley 2.png" alt="Buzo morley" class="hover-image">
-          </div>
-          <h3>Buzo morley</h3>
-          <p class="precio">$25.500 ARS</p>
-          <button class="add-to-cart-btn">Añadir al carrito</button>
-        </div>
-        <div class="product-card">
-          <div class="discount-tag">15% OFF</div>
-          <div class="product-images">
-            <img src="../assets/images/Pantalon corderoy.png" alt="Pantalón Corderoy" class="main-image">
-            <img src="../assets/images/Pantalon corderoy 2.png" alt="Pantalón Corderoy" class="hover-image">
-          </div>
-          <h3>Pantalón Corderoy</h3>
-          <p class="precio">$33.200 ARS</p>
-          <button class="add-to-cart-btn">Añadir al carrito</button>
-        </div>
-        <div class="product-card">
-          <div class="discount-tag">30% OFF</div>
-          <div class="product-images">
-            <img src="../assets/images/Camisa lineas.png" alt="Camisa BLUE" class="main-image">
-            <img src="../assets/images/Camisa lineas 2.png" alt="Camisa BLUE" class="hover-image">
-          </div>
-          <h3>Camisa BLEU</h3>
-          <p class="precio">$46.000 ARS</p>
-          <button class="add-to-cart-btn">Añadir al carrito</button>
-        </div>
+      <h2>Últimos Agregados</h2>
+      <div class="product-grid" id="latest-products-grid">
+        <!-- Los últimos productos se cargan dinámicamente aquí -->
+        <div class="loading-message">Cargando últimos productos...</div>
       </div>
     </section>
   </main>

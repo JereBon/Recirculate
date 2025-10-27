@@ -156,12 +156,14 @@ const createProductsTable = async () => {
       nombre VARCHAR(255) NOT NULL,
       descripcion TEXT,
       categoria VARCHAR(100),
+      genero VARCHAR(20) NOT NULL CHECK (genero IN ('Hombre', 'Mujer', 'Unisex')),
       talle VARCHAR(50),
       color VARCHAR(50),
       marca VARCHAR(100),
       precio DECIMAL(10,2) NOT NULL,
       stock INTEGER DEFAULT 0,
       estado VARCHAR(50) DEFAULT 'Disponible',
+      destacado BOOLEAN DEFAULT TRUE,
       imagen_url TEXT,
       proveedor VARCHAR(255),
       usuario_id INTEGER REFERENCES usuarios(id),
@@ -176,6 +178,15 @@ const createProductsTable = async () => {
     
     // Migración: Agregar columna proveedor si no existe
     await addProveedorColumn();
+    
+    // Migración: Agregar columna genero si no existe
+    await addGeneroColumn();
+    
+    // Migración: Agregar columna destacado si no existe
+    await addDestacadoColumn();
+    
+    // Limpiar productos de prueba
+    await clearTestProducts();
   } catch (error) {
     console.error('❌ Error creando tabla productos:', error);
   }
@@ -194,6 +205,48 @@ const addProveedorColumn = async () => {
     if (error.code !== '42701') {
       console.error('❌ Error agregando columna proveedor:', error.message);
     }
+  }
+};
+
+// Función para agregar columna genero a productos existentes
+const addGeneroColumn = async () => {
+  try {
+    await client.query(`
+      ALTER TABLE productos 
+      ADD COLUMN IF NOT EXISTS genero VARCHAR(20) CHECK (genero IN ('Hombre', 'Mujer', 'Unisex'))
+    `);
+    console.log('✅ Columna genero agregada/verificada');
+  } catch (error) {
+    // Si la columna ya existe, no es un error
+    if (error.code !== '42701') {
+      console.error('❌ Error agregando columna genero:', error.message);
+    }
+  }
+};
+
+// Función para agregar columna destacado a productos existentes
+const addDestacadoColumn = async () => {
+  try {
+    await client.query(`
+      ALTER TABLE productos 
+      ADD COLUMN IF NOT EXISTS destacado BOOLEAN DEFAULT FALSE
+    `);
+    console.log('✅ Columna destacado agregada/verificada');
+  } catch (error) {
+    // Si la columna ya existe, no es un error
+    if (error.code !== '42701') {
+      console.error('❌ Error agregando columna destacado:', error.message);
+    }
+  }
+};
+
+// Función para limpiar productos de prueba
+const clearTestProducts = async () => {
+  try {
+    const result = await client.query('DELETE FROM productos');
+    console.log(`🧹 ${result.rowCount} productos de prueba eliminados`);
+  } catch (error) {
+    console.error('❌ Error eliminando productos de prueba:', error.message);
   }
 };
 

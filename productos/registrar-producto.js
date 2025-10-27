@@ -4,24 +4,84 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
   e.preventDefault();
   limpiarMensajes();
 
+  // Obtener todos los valores del formulario
   const nombre = document.getElementById("nombre").value.trim();
-  const stock = Number(document.getElementById("stock").value);
+  const descripcion = document.getElementById("descripcion").value.trim();
+  const categoria = document.getElementById("categoria").value.trim();
+  const genero = document.getElementById("genero").value;
+  const talle = document.getElementById("talle").value.trim();
+  const color = document.getElementById("color").value.trim();
+  const marca = document.getElementById("marca").value.trim();
   const precio = Number(document.getElementById("precio").value);
+  const stock = Number(document.getElementById("stock").value);
+  const imagen_url = document.getElementById("imagen_url").value.trim();
+  const proveedor = document.getElementById("proveedor").value.trim();
+  const destacado = document.getElementById("destacado").checked;
 
-  if (!nombre || stock < 0 || precio < 0) {
-    mostrarError("Completa todos los campos correctamente.");
+  // Validaciones
+  if (!nombre) {
+    mostrarError("El nombre es obligatorio.");
+    return;
+  }
+  
+  if (!genero) {
+    mostrarError("Debe seleccionar un género.");
+    return;
+  }
+  
+  if (precio < 0) {
+    mostrarError("El precio no puede ser negativo.");
+    return;
+  }
+  
+  if (stock < 0) {
+    mostrarError("El stock no puede ser negativo.");
     return;
   }
 
+  // Preparar datos para enviar
+  const productoData = {
+    nombre,
+    descripcion: descripcion || null,
+    categoria: categoria || null,
+    genero,
+    talle: talle || null,
+    color: color || null,
+    marca: marca || null,
+    precio,
+    stock,
+    imagen_url: imagen_url || null,
+    proveedor: proveedor || null,
+    destacado
+  };
+
   try {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      mostrarError("Debe estar autenticado para crear productos.");
+      return;
+    }
+
     const res = await fetch(API_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nombre, stock, precio })
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(productoData)
     });
-    if (!res.ok) throw new Error("Error al guardar el producto");
-    mostrarExito("Producto guardado correctamente ✅");
+    
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error || "Error al guardar el producto");
+    }
+    
+    const nuevoProducto = await res.json();
+    mostrarExito(`Producto "${nuevoProducto.nombre}" guardado correctamente ✅`);
     document.getElementById("formProducto").reset();
+    
+    // Marcar destacado por defecto de nuevo
+    document.getElementById("destacado").checked = true;
   } catch (err) {
     mostrarError(err.message);
   }

@@ -12,12 +12,57 @@
       <label>Nombre:
         <input type="text" id="nombre" required>
       </label>
-      <label>Stock:
+      
+      <label>Descripción:
+        <textarea id="descripcion" rows="3" placeholder="Descripción del producto"></textarea>
+      </label>
+      
+      <label>Categoría:
+        <input type="text" id="categoria" placeholder="Ej: Remeras, Pantalones, Zapatillas">
+      </label>
+      
+      <label>Género: *
+        <select id="genero" required>
+          <option value="">-- Seleccionar género --</option>
+          <option value="Hombre">Hombre</option>
+          <option value="Mujer">Mujer</option>
+          <option value="Unisex">Unisex</option>
+        </select>
+      </label>
+      
+      <label>Talle:
+        <input type="text" id="talle" placeholder="Ej: S, M, L, XL, 40, 42">
+      </label>
+      
+      <label>Color:
+        <input type="text" id="color" placeholder="Ej: Azul, Rojo, Negro">
+      </label>
+      
+      <label>Marca:
+        <input type="text" id="marca" placeholder="Ej: Nike, Adidas, Zara">
+      </label>
+      
+      <label>Precio: *
+        <input type="number" id="precio" min="0" step="0.01" required>
+      </label>
+      
+      <label>Stock: *
         <input type="number" id="stock" min="0" required>
       </label>
-      <label>Precio:
-        <input type="number" id="precio" min="0" required>
+      
+      <label>Imagen URL:
+        <input type="url" id="imagen_url" placeholder="https://ejemplo.com/imagen.jpg">
       </label>
+      
+      <label>Proveedor:
+        <input type="text" id="proveedor" placeholder="Nombre del proveedor">
+      </label>
+      
+      <label>
+        <input type="checkbox" id="destacado" checked> 
+        Marcar como producto destacado
+      </label>
+      
       <button type="submit" class="btn">Guardar Producto</button>
       <div id="errorProducto" class="error"></div>
       <div id="successProducto" class="success"></div>

@@ -65,7 +65,7 @@
       <a href="../index.html"><button style="margin-left:12px;">Volver al panel</button></a>
     </div>
   </header>
-  <main class="main" style="max-width:1800px; min-width:1200px;">
+  <main class="main" style="max-width:100%; overflow-x: auto;">
     <div class="search-filter-bar" style="display:flex; gap:10px; margin-bottom:16px; align-items:center;">
       <input type="text" id="search-input" placeholder="Buscar producto..." style="flex:1; min-width:0; max-width:100%;" />
       <button id="btn-filtrar" class="primary" style="padding: 8px 12px;">🔍 Filtrar</button>
@@ -97,31 +97,42 @@
   <div style="height: calc(env(safe-area-inset-bottom, 24px) + 40px);"></div>
       </div>
     </div>
-    <table class="gastos-table" id="tabla-todos-productos">
-      <thead>
-        <tr>
-          <th>Imagen</th>
-          <th>Nombre</th>
-          <th>Descripción</th>
-          <th>Categoría</th>
-          <th>Talle</th>
-          <th>Color</th>
-          <th>Marca</th>
-          <th>Estado</th>
-          <th>Precio</th>
-          <th>Moneda</th>
-          <th>Proveedor</th>
-          <th>Stock</th>
-          <th>Activo</th>
-          <th>Creado</th>
-          <th>Actualizado</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Productos se insertan aquí dinámicamente -->
-      </tbody>
-    </table>
+    
+    <!-- Contenedor de la tabla con scroll mejorado -->
+    <div class="table-container" style="overflow-x: auto; border: 1px solid #ddd; border-radius: 12px; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+      <!-- Indicador de scroll horizontal -->
+      <div class="scroll-indicator" style="position: sticky; top: 0; background: #fff3cd; text-align: center; padding: 8px; font-size: 0.9em; color: #856404; border-bottom: 1px solid #ffeaa7; z-index: 10;">
+        💡 Tip: Desliza horizontalmente para ver más columnas
+      </div>
+      
+      <table class="gastos-table" id="tabla-todos-productos">
+        <thead>
+          <tr>
+            <th style="position: sticky; left: 0; background: #ffe066; z-index: 5;">Imagen</th>
+            <th style="position: sticky; left: 180px; background: #ffe066; z-index: 5;">Nombre</th>
+            <th>Descripción</th>
+            <th>Categoría</th>
+            <th>Género</th>
+            <th>Talle</th>
+            <th>Color</th>
+            <th>Marca</th>
+            <th>Estado</th>
+            <th>Precio</th>
+            <th>Moneda</th>
+            <th>Proveedor</th>
+            <th>Stock</th>
+            <th>Destacado</th>
+            <th>Activo</th>
+            <th>Creado</th>
+            <th>Actualizado</th>
+            <th style="position: sticky; right: 0; background: #ffe066; z-index: 5;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Productos se insertan aquí dinámicamente -->
+        </tbody>
+      </table>
+    </div>
     <div id="errorProductos" class="error"></div>
     <div class="footer-info" id="productos-total"></div>
   </main>
@@ -152,6 +163,49 @@
     .gastos-table {
       table-layout: auto;
       width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    
+    /* Mejorar las columnas sticky */
+    .gastos-table th, .gastos-table td {
+      border-right: 1px solid #f0f0f0;
+    }
+    
+    /* Sombras para las columnas sticky */
+    .gastos-table th:nth-child(1), .gastos-table td:nth-child(1) {
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+    
+    .gastos-table th:nth-child(2), .gastos-table td:nth-child(2) {
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+    
+    .gastos-table th:last-child, .gastos-table td:last-child {
+      box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    }
+    
+    /* Scroll más suave */
+    .table-container {
+      scroll-behavior: smooth;
+    }
+    
+    .table-container::-webkit-scrollbar {
+      height: 12px;
+    }
+    
+    .table-container::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 6px;
+    }
+    
+    .table-container::-webkit-scrollbar-thumb {
+      background: #ffe066;
+      border-radius: 6px;
+    }
+    
+    .table-container::-webkit-scrollbar-thumb:hover {
+      background: #ffd84d;
     }
     .producto-num-mobile {
       background: #ffe066;
@@ -269,6 +323,56 @@
     
     .form-row .form-group {
       flex: 1;
+    }
+    
+    /* Estilos para el toggle switch de destacado */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .toggle-slider {
+      background-color: #ffd84d;
+    }
+    
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+    }
+    
+    input:focus + .toggle-slider {
+      box-shadow: 0 0 1px #ffd84d;
     }
   </style>
 

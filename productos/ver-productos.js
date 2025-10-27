@@ -105,12 +105,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td data-label="Imagen">
+        <td data-label="Imagen" style="position: sticky; left: 0; background: #fff; z-index: 2;">
           ${prod.imagen_url ? `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" />` : ''}
         </td>
-        <td data-label="Nombre">${prod.nombre || ''}</td>
+        <td data-label="Nombre" style="position: sticky; left: 180px; background: #fff; z-index: 2;">${prod.nombre || ''}</td>
         <td data-label="Descripción">${prod.descripcion || ''}</td>
         <td data-label="Categoría">${prod.categoria || ''}</td>
+        <td data-label="Género">
+          <span style="background: ${getGeneroColor(prod.genero)}; padding: 4px 8px; border-radius: 12px; font-size: 0.9em; font-weight: bold;">
+            ${prod.genero || '-'}
+          </span>
+        </td>
         <td data-label="Talle">${prod.talle || ''}</td>
         <td data-label="Color">${prod.color || ''}</td>
         <td data-label="Marca">${prod.marca || ''}</td>
@@ -119,10 +124,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td data-label="Moneda">ARS</td>
         <td data-label="Proveedor">${prod.proveedor || '-'}</td>
         <td data-label="Stock">${prod.stock != null ? prod.stock : ''}</td>
+        <td data-label="Destacado">
+          <label class="toggle-switch">
+            <input type="checkbox" ${prod.destacado ? 'checked' : ''} data-toggle-destacado="${prod.id}">
+            <span class="toggle-slider"></span>
+          </label>
+        </td>
         <td data-label="Activo">Sí</td>
         <td data-label="Creado">${prod.fecha_creacion ? new Date(prod.fecha_creacion).toLocaleString() : ''}</td>
         <td data-label="Actualizado">${prod.fecha_actualizacion ? new Date(prod.fecha_actualizacion).toLocaleString() : ''}</td>
-        <td data-label="Acciones">
+        <td data-label="Acciones" style="position: sticky; right: 0; background: #fff; z-index: 2;">
           <button data-edit="${prod.id}" class="primary">Editar</button>
           <button data-delete="${prod.id}" style="background:#e74c3c; color:#fff; margin-left:8px;">Eliminar</button>
         </td>
@@ -218,8 +229,48 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  // --- MANEJAR TOGGLE DE DESTACADO ---
+  document.addEventListener('change', async (e) => {
+    if (e.target.dataset.toggleDestacado) {
+      const productoId = e.target.dataset.toggleDestacado;
+      const destacado = e.target.checked;
+      
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await fetch(`${API_URL}/${productoId}/destacado`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ destacado })
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al cambiar estado destacado');
+        }
+
+        console.log(`Producto ${productoId} ${destacado ? 'marcado' : 'desmarcado'} como destacado`);
+      } catch (error) {
+        console.error('Error:', error);
+        e.target.checked = !destacado; // Revertir el cambio
+        alert('Error al cambiar el estado destacado del producto');
+      }
+    }
+  });
+
   // Carga inicial de productos
   cargarProductos();
   // Re-renderiza al cambiar tamaño de ventana (responsive)
   window.addEventListener('resize', cargarProductos);
 });
+
+// Función para obtener color según género
+function getGeneroColor(genero) {
+  switch(genero) {
+    case 'Hombre': return '#87CEEB'; // Azul claro
+    case 'Mujer': return '#FFB6C1'; // Rosa claro
+    case 'Unisex': return '#98FB98'; // Verde claro
+    default: return '#F0F0F0'; // Gris claro
+  }
+}

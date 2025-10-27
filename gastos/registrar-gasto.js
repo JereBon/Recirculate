@@ -21,26 +21,17 @@ function leerDatos(key) {
 }
 
 function validarGasto(gasto) {
-  if (!gasto.proveedor || gasto.proveedor.trim() === '') {
+  if (!gasto.categoria || gasto.categoria.trim() === '') {
     return 'El proveedor es obligatorio.';
   }
-  if (!gasto.concepto || gasto.concepto.trim() === '') {
+  if (!gasto.descripcion || gasto.descripcion.trim() === '') {
     return 'El concepto es obligatorio.';
   }
   if (!gasto.monto || gasto.monto <= 0) {
     return 'El monto debe ser mayor a 0.';
   }
-  if (!gasto.metodoPago || gasto.metodoPago === '') {
+  if (!gasto.metodo_pago || gasto.metodo_pago === '') {
     return 'Debe seleccionar un método de pago.';
-  }
-  // Si el método es Cripto aceptamos que el usuario ingrese monto en pesos (montoPesos)
-  // o directamente en cripto (montoCripto). Requerimos al menos uno válido.
-  if (gasto.metodoPago === 'Cripto') {
-    const aceptaPesos = typeof gasto.montoPesos === 'number' && gasto.montoPesos > 0;
-    const aceptaCripto = typeof gasto.montoCripto === 'number' && gasto.montoCripto > 0;
-    if (!aceptaPesos && !aceptaCripto) {
-      return 'Debe ingresar un monto válido (pesos o cripto).';
-    }
   }
   return true;
 }
@@ -120,14 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
     successMsg.textContent = '';
 
     const gasto = {
-      proveedor: document.getElementById('proveedor').value,
-      concepto: document.getElementById('concepto').value,
+      descripcion: document.getElementById('concepto').value,
+      categoria: document.getElementById('proveedor').value, // El proveedor se usará como categoría
       monto: Number(document.getElementById('monto').value),
-      metodoPago: metodo.value,
-      montoPesos: metodo.value === 'Cripto' ? Number(montoPesosInput.value) : null,
-      montoCripto: null,
-      criptoTipo: null,
-      total: 0 // Se calcula abajo
+      fecha: new Date().toISOString().split('T')[0], // Fecha actual en formato YYYY-MM-DD
+      metodo_pago: metodo.value
     };
 
     const valid = validarGasto(gasto);
@@ -136,27 +124,14 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (valid.includes('concepto')) document.getElementById('e-concepto').textContent = valid;
       else if (valid.includes('monto')) document.getElementById('e-monto').textContent = valid;
       else if (valid.includes('método')) document.getElementById('e-metodo').textContent = valid;
-      else if (valid.includes('cripto')) document.getElementById('e-cripto').textContent = valid;
       return;
-    }
-
-    if (gasto.metodoPago === 'Cripto') {
-      if (!gasto.montoPesos || gasto.montoPesos <= 0) {
-        document.getElementById('e-cripto').textContent = 'Debe ingresar un monto en pesos.';
-        return;
-      }
-      const montoCripto = await convertirPesosACripto(gasto.montoPesos, tipoCripto.value || 'bitcoin');
-      gasto.montoCripto = Number(montoCripto.toFixed(8));
-      gasto.total = gasto.montoPesos;
-      gasto.criptoTipo = tipoCripto.value || 'bitcoin';
-    } else {
-      gasto.total = gasto.monto;
     }
 
     try {
       const token = localStorage.getItem('authToken');
       if (!token) {
         successMsg.textContent = 'Debe estar autenticado para registrar gastos';
+        successMsg.style.color = '#e74c3c'; // Color rojo para errores
         return;
       }
 
@@ -168,13 +143,20 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         body: JSON.stringify(gasto)
       });
-      if (!res.ok) throw new Error('Error al registrar el gasto');
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Error al registrar el gasto');
+      }
+      
       successMsg.textContent = '✅ Gasto registrado con éxito';
+      successMsg.style.color = '#27ae60'; // Color verde para éxito
       form.reset();
       grupoCripto.style.display = 'none';
       conversionCripto.textContent = '';
     } catch (err) {
-      successMsg.textContent = err.message;
+      successMsg.textContent = `❌ ${err.message}`;
+      successMsg.style.color = '#e74c3c'; // Color rojo para errores
     }
   });
 });

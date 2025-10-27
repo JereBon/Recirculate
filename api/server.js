@@ -166,6 +166,52 @@ app.get('/api/productos/:id', async (req, res) => {
   }
 });
 
+// Obtener productos destacados
+app.get('/api/productos/categoria/destacados', async (req, res) => {
+  try {
+    console.log('⭐ GET /api/productos/categoria/destacados - Solicitando productos destacados...');
+    const productos = await Product.findFeatured(8);
+    console.log(`⭐ Productos destacados encontrados: ${productos.length}`);
+    res.json(productos);
+  } catch (error) {
+    console.error('❌ Error obteniendo productos destacados:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// Obtener productos por género
+app.get('/api/productos/genero/:genero', async (req, res) => {
+  try {
+    const { genero } = req.params;
+    console.log(`👔 GET /api/productos/genero/${genero} - Solicitando productos por género...`);
+    
+    const productos = await Product.findByGenero(genero);
+    console.log(`👔 Productos encontrados para ${genero}: ${productos.length}`);
+    res.json(productos);
+  } catch (error) {
+    console.error('❌ Error obteniendo productos por género:', error);
+    res.status(500).json({ error: error.message || 'Error interno del servidor' });
+  }
+});
+
+// Toggle destacado de un producto (solo admin)
+app.patch('/api/productos/:id/destacado', verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const { destacado } = req.body;
+    console.log(`⭐ PATCH /api/productos/${req.params.id}/destacado - Cambiando destacado a: ${destacado}`);
+    
+    const producto = await Product.toggleDestacado(req.params.id, destacado);
+    if (!producto) {
+      return res.status(404).json({ error: 'Producto no encontrado' });
+    }
+    
+    res.json(producto);
+  } catch (error) {
+    console.error('❌ Error cambiando estado destacado:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 // Crear producto (solo admin)
 app.post('/api/productos', verifyToken, verifyAdmin, async (req, res) => {
   try {
