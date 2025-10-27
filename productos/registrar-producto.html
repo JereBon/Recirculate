@@ -9,7 +9,7 @@
   <div class="container">
     <h2>Registrar Producto</h2>
     <form id="formProducto" class="form">
-      <label>Nombre:
+      <label>Nombre: *
         <input type="text" id="nombre" required>
       </label>
       
@@ -19,15 +19,6 @@
       
       <label>Categoría:
         <input type="text" id="categoria" placeholder="Ej: Remeras, Pantalones, Zapatillas">
-      </label>
-      
-      <label>Género: *
-        <select id="genero" required>
-          <option value="">-- Seleccionar género --</option>
-          <option value="Hombre">Hombre</option>
-          <option value="Mujer">Mujer</option>
-          <option value="Unisex">Unisex</option>
-        </select>
       </label>
       
       <label>Talle:
@@ -40,6 +31,17 @@
       
       <label>Marca:
         <input type="text" id="marca" placeholder="Ej: Nike, Adidas, Zara">
+      </label>
+      
+      <label>Estado: *
+        <select id="estado" required>
+          <option value="">Seleccionar estado</option>
+          <option value="Nuevo">Nuevo</option>
+          <option value="Muy bueno">Muy bueno</option>
+          <option value="Bueno">Bueno</option>
+          <option value="Regular">Regular</option>
+          <option value="Usado">Usado</option>
+        </select>
       </label>
       
       <label>Género: *

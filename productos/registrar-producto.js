@@ -9,6 +9,7 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
   const descripcion = document.getElementById("descripcion").value.trim();
   const categoria = document.getElementById("categoria").value.trim();
   const genero = document.getElementById("genero").value;
+  const estado = document.getElementById("estado").value;
   const talle = document.getElementById("talle").value.trim();
   const color = document.getElementById("color").value.trim();
   const marca = document.getElementById("marca").value.trim();
@@ -29,6 +30,11 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
     return;
   }
   
+  if (!estado) {
+    mostrarError("Debe seleccionar el estado del producto.");
+    return;
+  }
+  
   if (precio < 0) {
     mostrarError("El precio no puede ser negativo.");
     return;
@@ -45,6 +51,7 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
     descripcion: descripcion || null,
     categoria: categoria || null,
     genero,
+    estado,
     talle: talle || null,
     color: color || null,
     marca: marca || null,
