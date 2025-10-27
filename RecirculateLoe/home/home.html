@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recirculate</title>
+  <link rel="stylesheet" href="../assets/public-styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+  <header class="public-header fixed-header">
+    <nav class="header-nav">
+      <div class="header-left">
+        <button id="menu-btn" class="header-icon menu-icon"><i class="fas fa-bars"></i></button>
+        <div id="search-container" class="search-container">
+          <button id="search-btn" class="header-icon search-icon"><i class="fas fa-search"></i></button>
+          <input type="text" id="search-input" class="search-input" placeholder="Buscar...">
+        </div>
+      </div>
+      <a href="./home.html" class="header-logo">
+        <img src="../assets/images/Recirculate-logo.png" alt="Recirculate Logo" class="logo-image">
+      </a>
+      <div class="header-right">
+        <a href="../../auth/login.html" class="header-icon user-icon" data-tooltip="INICIAR SESIÓN">
+          <i class="fas fa-user"></i>
+        </a>
+        <a href="../carrito/carrito.html" class="header-icon cart-icon">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cart-counter" class="cart-counter">0</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+<div id="sidebar-menu" class="sidebar">
+  <button id="close-btn" class="close-btn">&times;</button>
+  
+  <div class="sidebar-menu-list">
+    <div class="sidebar-category" data-category="hombre">
+      <div class="sidebar-category-header">
+        <span>HOMBRE</span>
+        <i class="fas fa-chevron-right toggle-icon"></i>
+      </div>
+      <div class="sidebar-submenu">
+        <a href="../pages/remeras/remeras.html">Remeras</a>
+        <a href="../pages/buzos/buzos.html">Buzos</a>
+        <a href="../pages/camperas/camperas.html">Camperas</a>
+        <a href="../pages/pantalones/pantalones.html">Pantalones</a>
+        <a href="../pages/camisas/camisas.html">Camisas</a> 
+      </div>
+    </div>
+
+    <div class="sidebar-category" data-category="mujer">
+      <div class="sidebar-category-header">
+        <span>MUJER</span>
+        <i class="fas fa-chevron-right toggle-icon"></i>
+      </div>
+      <div class="sidebar-submenu">
+        <a href="#mujer-remeras">Remeras</a>
+        <a href="#mujer-vestidos">Vestidos</a>
+        <a href="#mujer-faldas">Faldas</a>
+      </div>
+    </div>
+
+    <a href="#descuentos" class="sidebar-main-link">DESCUENTOS</a>
+    <a href="#destacados" class="sidebar-main-link">DESTACADOS</a>
+
+    <hr class="sidebar-divider">
+
+    <div class="sidebar-auth-group">
+        <a href="../../auth/login.html" class="sidebar-main-link">INICIAR SESIÓN</a>
+        <a href="../../auth/registro.html" class="sidebar-main-link">REGISTRARSE</a>
+    </div>
+  </div>
+</div>
+
+</div>
+  <div class="overlay"></div>
+
+  <section class="animated-hero-section">
+    <h1 class="animated-title">Moda Circular para un Futuro
+      <span class="word-wrapper">
+        <span class="word active">Sostenible</span>
+        <span class="word">Consciente</span>
+        <span class="word">Ético</span>
+        <span class="word">Innovador</span>
+      </span>
+    </h1>
+    <p class="hero-subtitle">Descubre prendas únicas y de calidad. Dale una segunda vida a la ropa.</p>
+  </section>
+
+  <main class="public-main">
+    <section class="carrusel-container">
+      <a href="../pages/buzos/buzos.html" class="carrusel-item">
+        <img src="../assets/images/Buzo.png" alt="Buzos">
+        <span class="carrusel-text">Buzos</span>
+      </a>
+      <a href="../pages/camperas/camperas.html" class="carrusel-item">
+        <img src="../assets/images/Campera.png" alt="Camperas">
+        <span class="carrusel-text">Camperas</span>
+      </a>
+      <a href="../pages/camisas/camisas.html" class="carrusel-item">
+        <img src="../assets/images/Camisa.png" alt="Camisas">
+        <span class="carrusel-text">Camisas</span>
+      </a>
+      <a href="../pages/remeras/remeras.html" class="carrusel-item">
+        <img src="../assets/images/Remera.png" alt="Remeras">
+        <span class="carrusel-text">Remeras</span>
+      </a>
+      <a href="../pages/pantalones/pantalones.html" class="carrusel-item">
+        <img src="../assets/images/Pantalon.png" alt="Pantalones">
+        <span class="carrusel-text">Pantalones</span>
+      </a>
+    </section>
+
+    <section class="gender-category-section">
+        <a href="#" class="gender-card" onclick="showComingSoonModal()">
+            <img src="../assets/images/Hombre.png" alt="Categoría Hombre">
+        </a>
+        <a href="#" class="gender-card" onclick="showComingSoonModal()">
+            <img src="../assets/images/Mujer.png" alt="Categoría Mujer">
+        </a>
+    </section>
+
+    <section class="benefits-section">
+      <div class="benefit-item">
+        <i class="fas fa-credit-card benefit-icon"></i>
+        <h4>3 Y 6 CUOTAS SIN INTERÉS</h4>
+        <p>6 cuotas sin interés compra mínima $150.000</p>
+      </div>
+      <div class="benefit-item">
+        <i class="fas fa-box benefit-icon"></i>
+        <h4>ENVÍOS GRATIS</h4>
+        <p>Con compras superiores a $120.000.</p>
+      </div>
+      <div class="benefit-item">
+        <i class="fas fa-lock benefit-icon"></i>
+        <h4>10% OFF EN EL PEDIDO</h4>
+        <p>Pagos por transferencia.</p>
+      </div>
+    </section>
+
+    <section class="featured-products-section">
+      <div class="product-grid">
+        <div class="product-card">
+          <div class="product-images">
+            <img src="../assets/images/Buzo morley.png" alt="Buzo morley" class="main-image">
+            <img src="../assets/images/buzo morley 2.png" alt="Buzo morley" class="hover-image">
+          </div>
+          <h3>Buzo morley</h3>
+          <p class="precio">$25.500 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
+        <div class="product-card">
+          <div class="product-images">
+            <img src="../assets/images/Pantalon corderoy.png" alt="Pantalón Corderoy" class="main-image">
+            <img src="../assets/images/Pantalon corderoy 2.png" alt="Pantalón Corderoy" class="hover-image">
+          </div>
+          <h3>Pantalón Corderoy</h3>
+          <p class="precio">$33.200 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
+        <div class="product-card">
+          <div class="product-images">
+            <img src="../assets/images/Camisa lineas.png" alt="Camisa BLUE" class="main-image">
+            <img src="../assets/images/Camisa lineas 2.png" alt="Camisa BLUE" class="hover-image">
+          </div>
+          <h3>Camisa BLEU</h3>
+          <p class="precio">$46.000 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="discount-section">
+      <h2>Descuentos</h2>
+    </section>
+
+    <section class="featured-products-section">
+      <div class="product-grid">
+        <div class="product-card">
+          <div class="discount-tag">23% OFF</div>
+          <div class="product-images">
+            <img src="../assets/images/Buzo morley.png" alt="Buzo morley" class="main-image">
+            <img src="../assets/images/buzo morley 2.png" alt="Buzo morley" class="hover-image">
+          </div>
+          <h3>Buzo morley</h3>
+          <p class="precio">$25.500 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
+        <div class="product-card">
+          <div class="discount-tag">15% OFF</div>
+          <div class="product-images">
+            <img src="../assets/images/Pantalon corderoy.png" alt="Pantalón Corderoy" class="main-image">
+            <img src="../assets/images/Pantalon corderoy 2.png" alt="Pantalón Corderoy" class="hover-image">
+          </div>
+          <h3>Pantalón Corderoy</h3>
+          <p class="precio">$33.200 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
+        <div class="product-card">
+          <div class="discount-tag">30% OFF</div>
+          <div class="product-images">
+            <img src="../assets/images/Camisa lineas.png" alt="Camisa BLUE" class="main-image">
+            <img src="../assets/images/Camisa lineas 2.png" alt="Camisa BLUE" class="hover-image">
+          </div>
+          <h3>Camisa BLEU</h3>
+          <p class="precio">$46.000 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="public-footer">
+    <div class="footer-container">
+      <div class="footer-column">
+        <h4>Recirculate</h4>
+        <p>Moda circular para un futuro sostenible.</p>
+      </div>
+      <div class="footer-column">
+        <h4>Navegación</h4>
+        <ul>
+          <li><a href="./home.html">Inicio</a></li>
+          <li><a href="../pages/remeras/remeras.html">Remeras</a></li>
+          <li><a href="../pages/pantalones/pantalones.html">Pantalones</a></li>
+          <li><a href="../pages/buzos/buzos.html">Buzos</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="mailto:info@recirculate.com">info@recirculate.com</a></li>
+          <li><a href="tel:+5492615095558">+54 261 5095558</a></li>
+          <li>Alpatacal 1434 - Quinta Sección</li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Síguenos</h4>
+        <div class="social-icons">
+          <a href="https://www.facebook.com/people/Recirculate-Mendoza/100083294088879/?rdid=SXQua37IAhAE19YO&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1BjxzuZgUi%2F" target="_blank"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/recirculate_mdz" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Recirculate. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- Modal Coming Soon -->
+  <div id="comingSoonModal" class="coming-soon-modal">
+    <div class="coming-soon-content">
+      <div class="construction-container">
+        <div class="construction-character">
+          <div class="character-body"></div>
+          <div class="character-head">
+            <div class="hard-hat"></div>
+          </div>
+          <div class="character-arms"></div>
+        </div>
+        <div class="construction-barrier">
+          <div class="barrier-stripe"></div>
+          <div class="barrier-stripe"></div>
+          <div class="barrier-stripe"></div>
+        </div>
+        <div class="traffic-cone"></div>
+        <div class="traffic-cone cone-2"></div>
+      </div>
+      
+      <div class="coming-soon-text">
+        <h2>PRÓXIMAMENTE!</h2>
+        <p>Estamos trabajando en la construcción de esta sección.</p>
+      </div>
+      
+      <button onclick="closeComingSoonModal()" class="back-to-home-btn">
+        <i class="fas fa-home"></i> Volver al Inicio
+      </button>
+    </div>
+  </div>
+
+  <style>
+  .coming-soon-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    animation: fadeIn 0.3s;
+  }
+
+  .coming-soon-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #ffd84d, #ffeb99);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    width: 90%;
+  }
+
+  .construction-container {
+    position: relative;
+    margin-bottom: 30px;
+    height: 120px;
+  }
+
+  .construction-character {
+    position: absolute;
+    left: 50%;
+    top: 20px;
+    transform: translateX(-50%);
+    animation: bounce 2s infinite;
+  }
+
+  .character-body {
+    width: 40px;
+    height: 60px;
+    background: #ddd;
+    border-radius: 20px;
+    position: relative;
+  }
+
+  .character-head {
+    width: 30px;
+    height: 30px;
+    background: #f4c2a1;
+    border-radius: 50%;
+    position: absolute;
+    top: -25px;
+    left: 5px;
+  }
+
+  .hard-hat {
+    width: 35px;
+    height: 20px;
+    background: #ffd84d;
+    border-radius: 50% 50% 0 0;
+    position: absolute;
+    top: -15px;
+    left: -2.5px;
+  }
+
+  .character-arms {
+    position: absolute;
+    top: 15px;
+    left: -15px;
+    width: 15px;
+    height: 30px;
+    background: #f4c2a1;
+    border-radius: 10px;
+    animation: wave 1.5s infinite;
+  }
+
+  .character-arms::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    width: 15px;
+    height: 30px;
+    background: #f4c2a1;
+    border-radius: 10px;
+    animation: wave 1.5s infinite reverse;
+  }
+
+  .construction-barrier {
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+    width: 100px;
+    height: 20px;
+    background: #ff6b6b;
+    transform: rotate(-10deg);
+  }
+
+  .barrier-stripe {
+    height: 33.33%;
+    background: repeating-linear-gradient(
+      45deg,
+      #ff6b6b,
+      #ff6b6b 10px,
+      white 10px,
+      white 20px
+    );
+  }
+
+  .traffic-cone {
+    position: absolute;
+    bottom: 0;
+    right: 30px;
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 40px solid #ff8c42;
+  }
+
+  .traffic-cone::after {
+    content: '';
+    position: absolute;
+    bottom: -35px;
+    left: -12px;
+    width: 24px;
+    height: 8px;
+    background: white;
+    border-radius: 2px;
+  }
+
+  .cone-2 {
+    right: 80px;
+    transform: scale(0.8);
+  }
+
+  .coming-soon-text h2 {
+    color: #ff6b42;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0 0 15px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .coming-soon-text p {
+    color: #333;
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+  }
+
+  .back-to-home-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+  }
+
+  .back-to-home-btn:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+  }
+
+  .back-to-home-btn i {
+    margin-right: 8px;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+    40% { transform: translateX(-50%) translateY(-10px); }
+    60% { transform: translateX(-50%) translateY(-5px); }
+  }
+
+  @keyframes wave {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(20deg); }
+  }
+
+  @media (max-width: 600px) {
+    .coming-soon-content {
+      padding: 30px 20px;
+      margin: 20px;
+    }
+    
+    .coming-soon-text h2 {
+      font-size: 2rem;
+    }
+  }
+  </style>
+
+  <script>
+  function showComingSoonModal() {
+    document.getElementById('comingSoonModal').style.display = 'block';
+    document.body.style.overflow = 'hidden'; // Prevenir scroll
+  }
+
+  function closeComingSoonModal() {
+    document.getElementById('comingSoonModal').style.display = 'none';
+    document.body.style.overflow = 'auto'; // Restaurar scroll
+  }
+
+  // Cerrar modal al hacer click fuera del contenido
+  document.getElementById('comingSoonModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeComingSoonModal();
+    }
+  });
+  </script>
+  
+  <script type="module" src="home.js"></script>
+</body>
+</html>
