@@ -7,6 +7,8 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
   e.preventDefault();
   limpiarMensajes();
 
+  console.log("🚀 Iniciando proceso de guardado...");
+
   // Obtener todos los valores del formulario
   const nombre = document.getElementById("nombre").value.trim();
   const descripcion = document.getElementById("descripcion").value.trim();
@@ -21,7 +23,9 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
   const proveedor = document.getElementById("proveedor").value.trim();
   const destacado = document.getElementById("destacado").checked;
 
-  // Validaciones
+  console.log("📝 Datos del formulario:", { nombre, estado, precio, stock, generoSeleccionado });
+
+  // Validaciones básicas
   if (!nombre) {
     mostrarError("El nombre es obligatorio.");
     return;
@@ -32,11 +36,24 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
     return;
   }
   
+  if (precio <= 0) {
+    mostrarError("El precio debe ser mayor a 0.");
+    return;
+  }
+  
+  if (stock < 0) {
+    mostrarError("El stock no puede ser negativo.");
+    return;
+  }
+  
   // Si no hay género seleccionado, mostrar popup
   if (!generoSeleccionado) {
+    console.log("⚠️ No hay género seleccionado, mostrando popup...");
     mostrarPopupGenero();
     return;
   }
+  
+  console.log("✅ Todas las validaciones pasaron, procediendo a guardar...");
   
   if (precio < 0) {
     mostrarError("El precio no puede ser negativo.");
@@ -72,6 +89,8 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
       return;
     }
 
+    console.log("📤 Enviando datos al servidor:", productoData);
+
     const res = await fetch(API_URL, {
       method: "POST",
       headers: { 
@@ -81,9 +100,12 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
       body: JSON.stringify(productoData)
     });
     
+    console.log("📡 Respuesta del servidor:", res.status, res.statusText);
+    
     if (!res.ok) {
       const errorData = await res.json();
-      throw new Error(errorData.error || "Error al guardar el producto");
+      console.error("❌ Error del servidor:", errorData);
+      throw new Error(errorData.error || `Error ${res.status}: ${res.statusText}`);
     }
     
     const nuevoProducto = await res.json();
@@ -110,26 +132,42 @@ function limpiarMensajes() {
 
 // --- FUNCIONES DEL POPUP DE GÉNERO ---
 function mostrarPopupGenero() {
-  document.getElementById('generoPopup').style.display = 'flex';
-  document.body.style.overflow = 'hidden'; // Evitar scroll
+  console.log("🎯 Mostrando popup de género...");
+  const popup = document.getElementById('generoPopup');
+  if (popup) {
+    popup.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    console.log("✅ Popup mostrado correctamente");
+  } else {
+    console.error("❌ No se encontró el elemento del popup");
+  }
 }
 
 function cerrarPopupGenero() {
-  document.getElementById('generoPopup').style.display = 'none';
-  document.body.style.overflow = 'auto';
+  console.log("❌ Cerrando popup de género...");
+  const popup = document.getElementById('generoPopup');
+  if (popup) {
+    popup.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
 }
 
 function seleccionarGenero(genero) {
+  console.log(`🎯 Género seleccionado: ${genero}`);
   generoSeleccionado = genero;
   cerrarPopupGenero();
   
   // Mostrar confirmación
-  mostrarExito(`Género seleccionado: ${genero}. Ahora puedes guardar el producto.`);
+  mostrarExito(`Género seleccionado: ${genero}. Guardando producto...`);
   
   // Reenviar el formulario automáticamente
   setTimeout(() => {
-    document.getElementById("formProducto").dispatchEvent(new Event('submit'));
-  }, 1000);
+    console.log("🔄 Reenviando formulario con género seleccionado...");
+    const form = document.getElementById("formProducto");
+    if (form) {
+      form.dispatchEvent(new Event('submit'));
+    }
+  }, 1500);
 }
 
 // Inicializar campos al cargar la página
