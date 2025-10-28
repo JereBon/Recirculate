@@ -1,7 +1,8 @@
 const API_URL = "https://recirculate-api.onrender.com/api/productos";
 
-// Variable global para almacenar el género seleccionado
+// Variables globales
 let generoSeleccionado = null;
+let datosProductoTemp = null;
 
 document.getElementById("formProducto").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -46,31 +47,11 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
     return;
   }
   
-  // Si no hay género seleccionado, mostrar popup
-  if (!generoSeleccionado) {
-    console.log("⚠️ No hay género seleccionado, mostrando popup...");
-    mostrarPopupGenero();
-    return;
-  }
-  
-  console.log("✅ Todas las validaciones pasaron, procediendo a guardar...");
-  
-  if (precio < 0) {
-    mostrarError("El precio no puede ser negativo.");
-    return;
-  }
-  
-  if (stock < 0) {
-    mostrarError("El stock no puede ser negativo.");
-    return;
-  }
-
-  // Preparar datos para enviar
-  const productoData = {
+  // Almacenar datos temporalmente
+  datosProductoTemp = {
     nombre,
     descripcion: descripcion || null,
     categoria: categoria || null,
-    genero: generoSeleccionado,
     estado,
     talle: talle || null,
     color: color || null,
@@ -80,6 +61,31 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
     imagen_url: imagen_url || null,
     proveedor: proveedor || null,
     destacado
+  };
+  
+  // Si no hay género seleccionado, mostrar popup
+  if (!generoSeleccionado) {
+    console.log("⚠️ No hay género seleccionado, mostrando popup...");
+    mostrarPopupGenero();
+    return;
+  }
+  
+  // Si ya hay género, proceder directamente
+  console.log("✅ Todas las validaciones pasaron, procediendo a guardar...");
+  await guardarProductoConGenero();
+});
+
+// Función separada para guardar el producto con género
+async function guardarProductoConGenero() {
+  if (!datosProductoTemp || !generoSeleccionado) {
+    mostrarError("Error interno: datos del producto o género no disponibles.");
+    return;
+  }
+
+  // Preparar datos para enviar
+  const productoData = {
+    ...datosProductoTemp,
+    genero: generoSeleccionado
   };
 
   try {
@@ -107,24 +113,31 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
       console.error("❌ Error del servidor:", errorData);
       throw new Error(errorData.error || `Error ${res.status}: ${res.statusText}`);
     }
-    
+
     const nuevoProducto = await res.json();
-    mostrarExito(`Producto "${nuevoProducto.nombre}" guardado correctamente ✅`);
-    document.getElementById("formProducto").reset();
+    mostrarExito("¡Producto guardado exitosamente!");
     
-    // Marcar destacado por defecto de nuevo
+    // Limpiar formulario y variables
+    document.getElementById("formProducto").reset();
     document.getElementById("destacado").checked = true;
+    generoSeleccionado = null;
+    datosProductoTemp = null;
+    
+    console.log("✅ Producto creado:", nuevoProducto);
   } catch (err) {
+    console.error("❌ Error guardando producto:", err);
     mostrarError(err.message);
   }
-});
+}
 
 function mostrarError(msg) {
   document.getElementById("errorProducto").textContent = msg;
 }
+
 function mostrarExito(msg) {
   document.getElementById("successProducto").textContent = msg;
 }
+
 function limpiarMensajes() {
   mostrarError("");
   mostrarExito("");
@@ -160,14 +173,11 @@ function seleccionarGenero(genero) {
   // Mostrar confirmación
   mostrarExito(`Género seleccionado: ${genero}. Guardando producto...`);
   
-  // Reenviar el formulario automáticamente
-  setTimeout(() => {
-    console.log("🔄 Reenviando formulario con género seleccionado...");
-    const form = document.getElementById("formProducto");
-    if (form) {
-      form.dispatchEvent(new Event('submit'));
-    }
-  }, 1500);
+  // Proceder a guardar automáticamente
+  setTimeout(async () => {
+    console.log("🔄 Guardando producto con género seleccionado...");
+    await guardarProductoConGenero();
+  }, 1000);
 }
 
 // Inicializar campos al cargar la página
@@ -201,5 +211,5 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   // Mensaje informativo
-  console.log('Formulario de productos inicializado con popup de género');
+  console.log('✅ Formulario de productos inicializado con popup de género');
 });
