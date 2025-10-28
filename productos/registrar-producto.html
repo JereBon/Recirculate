@@ -3,7 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <title>Registrar Producto</title>
-  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/style.css?v=2024-10-28">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <style>
+    /* Estilos específicos para dropdowns */
+    select {
+      width: 100%;
+      padding: 12px;
+      font-size: 14px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      background-color: white;
+      color: #333;
+      cursor: pointer;
+      appearance: menulist;
+      -webkit-appearance: menulist;
+      -moz-appearance: menulist;
+    }
+    
+    select:focus {
+      border-color: #ffd84d;
+      outline: none;
+      box-shadow: 0 0 5px rgba(255, 216, 77, 0.5);
+    }
+    
+    select option {
+      padding: 8px;
+      background-color: white;
+      color: #333;
+    }
+    
+    /* Asegurar que los labels sean visibles */
+    label {
+      display: block;
+      margin-bottom: 15px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    /* Destacar campos obligatorios */
+    label:has(select[required]):after,
+    label:has(input[required]):after {
+      content: " *";
+      color: red;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -33,23 +80,23 @@
         <input type="text" id="marca" placeholder="Ej: Nike, Adidas, Zara">
       </label>
       
-      <label>Estado: *
-        <select id="estado" required>
-          <option value="">Seleccionar estado</option>
-          <option value="Nuevo">Nuevo</option>
-          <option value="Muy bueno">Muy bueno</option>
-          <option value="Bueno">Bueno</option>
-          <option value="Regular">Regular</option>
-          <option value="Usado">Usado</option>
+      <label for="estado">Estado del Producto: *
+        <select id="estado" name="estado" required>
+          <option value="">-- Seleccionar estado del producto --</option>
+          <option value="Nueva">🆕 Nueva (sin usar)</option>
+          <option value="Poco uso">✨ Poco uso (excelente estado)</option>
+          <option value="Buen estado">👍 Buen estado (algunas marcas mínimas)</option>
+          <option value="Usada">👕 Usada (signos de uso visibles)</option>
+          <option value="Muy usada">⚠️ Muy usada (desgaste considerable)</option>
         </select>
       </label>
       
-      <label>Género: *
-        <select id="genero" required>
-          <option value="">Seleccionar género</option>
-          <option value="Hombre">Hombre</option>
-          <option value="Mujer">Mujer</option>
-          <option value="Unisex">Unisex</option>
+      <label for="genero">Género del Producto: *
+        <select id="genero" name="genero" required>
+          <option value="">-- Seleccionar género del producto --</option>
+          <option value="Hombre">👨 Hombre</option>
+          <option value="Mujer">👩 Mujer</option>
+          <option value="Unisex">👥 Unisex</option>
         </select>
       </label>
       

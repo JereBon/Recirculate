@@ -104,3 +104,29 @@ function limpiarMensajes() {
   mostrarError("");
   mostrarExito("");
 }
+
+// Inicializar campos al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+  // Destacar visualmente los campos obligatorios
+  const camposObligatorios = ['nombre', 'genero', 'estado', 'precio', 'stock'];
+  
+  camposObligatorios.forEach(campoId => {
+    const campo = document.getElementById(campoId);
+    if (campo) {
+      campo.style.borderColor = '#ff9999';
+      campo.style.borderWidth = '2px';
+      
+      // Cuando el usuario selecciona algo, cambiar a verde
+      campo.addEventListener('change', function() {
+        if (this.value) {
+          this.style.borderColor = '#99ff99';
+        } else {
+          this.style.borderColor = '#ff9999';
+        }
+      });
+    }
+  });
+  
+  // Mensaje informativo
+  console.log('Formulario de productos inicializado. Campos obligatorios: Nombre, Género, Estado, Precio y Stock');
+});
