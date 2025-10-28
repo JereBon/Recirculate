@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Camperas - Recirculate</title>
   <link rel="stylesheet" href="../../assets/public-styles.css">
-  <link rel="stylesheet" href="camperas.css"> 
+  <link rel="stylesheet" href="/RecirculateLoe/assets/catalogo-styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -33,6 +33,7 @@
     </nav>
   </header>
 
+<!-- SIDEBAR MENU-->
 <div id="sidebar-menu" class="sidebar">
   <button id="close-btn" class="close-btn">&times;</button>
   
@@ -72,6 +73,52 @@
         <a href="../../auth/login.html" class="sidebar-main-link">INICIAR SESIÓN</a>
         <a href="../../auth/registro.html" class="sidebar-main-link">REGISTRARSE</a>
     </div>
+  </div>
+</div>
+
+<!-- SIDEBAR FILTRO-->
+<div id="filter-sidebar" class="filter-sidebar">
+  <div class="filter-sidebar-header">
+    <button id="close-filter-btn" class="close-btn">&times;</button>
+  </div>
+  <div class="filter-sidebar-content">
+    
+    <div class="filter-section">
+      <h4>Precio</h4>
+      <div class="price-range-slider">
+        <div class="price-inputs">
+          <input type="number" id="min-price" value="30000" placeholder="Mín">
+          <span>-</span>
+          <input type="number" id="max-price" value="50000" placeholder="Máx">
+        </div>
+        <input type="range" class="price-slider" disabled> 
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <h4>Color</h4>
+      <div class="filter-options color-options">
+        <button class="filter-option" data-color="negro" style="background-color: black;"></button>
+        <button class="filter-option" data-color="blanco" style="background-color: white; border: 1px solid #ccc;"></button>
+        <button class="filter-option" data-color="gris" style="background-color: grey;"></button>
+        <button class="filter-option" data-color="azul" style="background-color: blue;"></button>
+        <button class="filter-option" data-color="rojo" style="background-color: red;"></button>
+        </div>
+    </div>
+
+    <div class="filter-section">
+      <h4>Talle</h4>
+      <div class="filter-options size-options">
+        <button class="filter-option" data-size="S">S</button>
+        <button class="filter-option" data-size="M">M</button>
+        <button class="filter-option" data-size="L">L</button>
+        <button class="filter-option" data-size="XL">XL</button>
+        </div>
+    </div>
+  </div>
+
+  <div class="filter-sidebar-footer">
+    <button id="apply-filters-btn" class="apply-filters-btn">Añadir filtro</button>
   </div>
 </div>
 
