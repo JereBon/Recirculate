@@ -14,6 +14,42 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
+    
+      // --- LÓGICA PARA EL CHATBOT FLOTANTE ---
+  const chatbotContainer = document.querySelector('.chatbot-container');
+  const chatbotToggle = document.getElementById('chatbot-toggle');
+  const chatbotWindow = document.getElementById('chatbot-window');
+  const chatbotClose = document.getElementById('chatbot-close');
+
+  // Ocultar chatbot en la página de login (si este archivo se usara allí)
+  // const isLoginPage = window.location.pathname.includes('login.html');
+  // if (isLoginPage && chatbotContainer) {
+  //   chatbotContainer.style.display = 'none';
+  // } else if (chatbotContainer) {
+    
+  if (chatbotContainer) { // Asegura que el contenedor exista antes de añadir listeners
+      // Mostrar/Ocultar ventana del chat al hacer clic en el globito
+      if (chatbotToggle && chatbotWindow) {
+          chatbotToggle.addEventListener('click', () => {
+              chatbotWindow.classList.toggle('active');
+          });
+      }
+      
+      // Cerrar ventana del chat al hacer clic en la 'X'
+      if (chatbotClose && chatbotWindow) {
+          chatbotClose.addEventListener('click', () => {
+              chatbotWindow.classList.remove('active');
+          });
+      }
+
+      window.addEventListener('click', (event) => {
+         if (chatbotWindow && chatbotWindow.classList.contains('active') && 
+             !chatbotContainer.contains(event.target)) {
+           chatbotWindow.classList.remove('active');
+         }
+       });
+  }
+  // --- FIN LÓGICA CHATBOT ---
 
     // --- Lógica para el panel lateral (Sidebar) ---
     const menuBtn = document.getElementById('menu-btn');
