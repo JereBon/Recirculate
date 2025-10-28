@@ -1,5 +1,8 @@
 const API_URL = "https://recirculate-api.onrender.com/api/productos";
 
+// Variable global para almacenar el género seleccionado
+let generoSeleccionado = null;
+
 document.getElementById("formProducto").addEventListener("submit", async (e) => {
   e.preventDefault();
   limpiarMensajes();
@@ -8,7 +11,6 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
   const nombre = document.getElementById("nombre").value.trim();
   const descripcion = document.getElementById("descripcion").value.trim();
   const categoria = document.getElementById("categoria").value.trim();
-  const genero = document.getElementById("genero").value;
   const estado = document.getElementById("estado").value;
   const talle = document.getElementById("talle").value.trim();
   const color = document.getElementById("color").value.trim();
@@ -25,13 +27,14 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
     return;
   }
   
-  if (!genero) {
-    mostrarError("Debe seleccionar un género.");
+  if (!estado) {
+    mostrarError("Debe seleccionar el estado del producto.");
     return;
   }
   
-  if (!estado) {
-    mostrarError("Debe seleccionar el estado del producto.");
+  // Si no hay género seleccionado, mostrar popup
+  if (!generoSeleccionado) {
+    mostrarPopupGenero();
     return;
   }
   
@@ -50,7 +53,7 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
     nombre,
     descripcion: descripcion || null,
     categoria: categoria || null,
-    genero,
+    genero: generoSeleccionado,
     estado,
     talle: talle || null,
     color: color || null,
@@ -105,10 +108,34 @@ function limpiarMensajes() {
   mostrarExito("");
 }
 
+// --- FUNCIONES DEL POPUP DE GÉNERO ---
+function mostrarPopupGenero() {
+  document.getElementById('generoPopup').style.display = 'flex';
+  document.body.style.overflow = 'hidden'; // Evitar scroll
+}
+
+function cerrarPopupGenero() {
+  document.getElementById('generoPopup').style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+function seleccionarGenero(genero) {
+  generoSeleccionado = genero;
+  cerrarPopupGenero();
+  
+  // Mostrar confirmación
+  mostrarExito(`Género seleccionado: ${genero}. Ahora puedes guardar el producto.`);
+  
+  // Reenviar el formulario automáticamente
+  setTimeout(() => {
+    document.getElementById("formProducto").dispatchEvent(new Event('submit'));
+  }, 1000);
+}
+
 // Inicializar campos al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
   // Destacar visualmente los campos obligatorios
-  const camposObligatorios = ['nombre', 'genero', 'estado', 'precio', 'stock'];
+  const camposObligatorios = ['nombre', 'estado', 'precio', 'stock'];
   
   camposObligatorios.forEach(campoId => {
     const campo = document.getElementById(campoId);
@@ -127,6 +154,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
+  // Configurar botones del popup de género
+  document.querySelectorAll('.genero-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const genero = this.getAttribute('data-genero');
+      seleccionarGenero(genero);
+    });
+  });
+  
   // Mensaje informativo
-  console.log('Formulario de productos inicializado. Campos obligatorios: Nombre, Género, Estado, Precio y Stock');
+  console.log('Formulario de productos inicializado con popup de género');
 });
