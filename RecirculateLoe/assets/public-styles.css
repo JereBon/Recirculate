@@ -728,6 +728,23 @@ body.sidebar-active .overlay {
   background-color: #ffe98a;
 }
 
+/* assets/public-styles.css */
+
+/* ... (cerca de .discount-tag) ... */
+
+.new-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #ffd84d; /* Color amarillo */
+  color: #222; /* Texto oscuro */
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  z-index: 10;
+  font-size: 0.8rem; /* Un poco más pequeño */
+}
+
 /* Animación de entrada de la ventana */
 @keyframes slideUp {
   from {
