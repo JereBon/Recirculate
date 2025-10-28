@@ -156,7 +156,7 @@ const createProductsTable = async () => {
       nombre VARCHAR(255) NOT NULL,
       descripcion TEXT,
       categoria VARCHAR(100),
-      genero VARCHAR(20) NOT NULL CHECK (genero IN ('Hombre', 'Mujer', 'Unisex')),
+      genero VARCHAR(20) DEFAULT 'Unisex' CHECK (genero IN ('Hombre', 'Mujer', 'Unisex')),
       talle VARCHAR(50),
       color VARCHAR(50),
       marca VARCHAR(100),
@@ -211,11 +211,20 @@ const addProveedorColumn = async () => {
 // Función para agregar columna genero a productos existentes
 const addGeneroColumn = async () => {
   try {
+    // Primero agregar la columna como opcional
     await client.query(`
       ALTER TABLE productos 
-      ADD COLUMN IF NOT EXISTS genero VARCHAR(20) CHECK (genero IN ('Hombre', 'Mujer', 'Unisex'))
+      ADD COLUMN IF NOT EXISTS genero VARCHAR(20) DEFAULT 'Unisex' CHECK (genero IN ('Hombre', 'Mujer', 'Unisex'))
     `);
-    console.log('✅ Columna genero agregada/verificada');
+    
+    // Luego actualizar los registros existentes que tengan NULL
+    await client.query(`
+      UPDATE productos 
+      SET genero = 'Unisex' 
+      WHERE genero IS NULL
+    `);
+    
+    console.log('✅ Columna genero agregada/verificada con valores por defecto');
   } catch (error) {
     // Si la columna ya existe, no es un error
     if (error.code !== '42701') {
