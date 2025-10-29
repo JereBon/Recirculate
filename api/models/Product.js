@@ -67,7 +67,11 @@ class Product {
         proveedor
       } = productData;
 
-      // Género opcional - sin validación por ahora
+      // Validar que el género sea válido
+      const generosValidos = ['Hombre', 'Mujer', 'Unisex'];
+      if (!genero || !generosValidos.includes(genero)) {
+        throw new Error('El género es obligatorio y debe ser: Hombre, Mujer o Unisex');
+      }
 
       const query = `
         INSERT INTO productos (
