@@ -14,6 +14,7 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
   const nombre = document.getElementById("nombre").value.trim();
   const descripcion = document.getElementById("descripcion").value.trim();
   const categoria = document.getElementById("categoria").value.trim();
+  const genero = document.getElementById("genero").value; // USAR SELECT DIRECTO
   const estado = document.getElementById("estado").value;
   const talle = document.getElementById("talle").value.trim();
   const color = document.getElementById("color").value.trim();
@@ -24,11 +25,16 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
   const proveedor = document.getElementById("proveedor").value.trim();
   const destacado = document.getElementById("destacado").checked;
 
-  console.log("📝 Datos del formulario:", { nombre, estado, precio, stock, generoSeleccionado });
+  console.log("📝 Datos del formulario:", { nombre, genero, estado, precio, stock });
 
   // Validaciones básicas
   if (!nombre) {
     mostrarError("El nombre es obligatorio.");
+    return;
+  }
+  
+  if (!genero) {
+    mostrarError("Debe seleccionar el género del producto.");
     return;
   }
   
@@ -47,11 +53,12 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
     return;
   }
   
-  // Almacenar datos temporalmente
-  datosProductoTemp = {
+  // Preparar datos para enviar DIRECTAMENTE
+  const productoData = {
     nombre,
     descripcion: descripcion || null,
     categoria: categoria || null,
+    genero, // USAR GÉNERO DEL SELECT
     estado,
     talle: talle || null,
     color: color || null,
@@ -63,31 +70,12 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
     destacado
   };
   
-  // Si no hay género seleccionado, mostrar popup
-  if (!generoSeleccionado) {
-    console.log("⚠️ No hay género seleccionado, mostrando popup...");
-    mostrarPopupGenero();
-    return;
-  }
-  
-  // Si ya hay género, proceder directamente
   console.log("✅ Todas las validaciones pasaron, procediendo a guardar...");
-  await guardarProductoConGenero();
+  await guardarProductoDirectamente(productoData);
 });
 
-// Función separada para guardar el producto con género
-async function guardarProductoConGenero() {
-  if (!datosProductoTemp || !generoSeleccionado) {
-    mostrarError("Error interno: datos del producto o género no disponibles.");
-    return;
-  }
-
-  // Preparar datos para enviar
-  const productoData = {
-    ...datosProductoTemp,
-    genero: generoSeleccionado
-  };
-
+// Función SIMPLIFICADA para guardar producto
+async function guardarProductoDirectamente(productoData) {
   try {
     const token = localStorage.getItem('authToken');
     if (!token) {
@@ -117,11 +105,9 @@ async function guardarProductoConGenero() {
     const nuevoProducto = await res.json();
     mostrarExito("¡Producto guardado exitosamente!");
     
-    // Limpiar formulario y variables
+    // Limpiar formulario
     document.getElementById("formProducto").reset();
     document.getElementById("destacado").checked = true;
-    generoSeleccionado = null;
-    datosProductoTemp = null;
     
     console.log("✅ Producto creado:", nuevoProducto);
   } catch (err) {

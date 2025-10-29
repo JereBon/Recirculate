@@ -91,7 +91,14 @@
         </select>
       </label>
       
-      <!-- El género se selecciona mediante popup al enviar el formulario -->
+      <label for="genero">Género: *
+        <select id="genero" name="genero" required style="width: 100%; padding: 10px; font-size: 14px; border: 2px solid #ddd; border-radius: 5px;">
+          <option value="">🎯 Seleccionar género del producto</option>
+          <option value="Hombre">👨 Hombre</option>
+          <option value="Mujer">👩 Mujer</option>
+          <option value="Unisex">👥 Unisex</option>
+        </select>
+      </label>
       
       <label>Precio: *
         <input type="number" id="precio" min="0" step="0.01" required>
