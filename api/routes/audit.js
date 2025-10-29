@@ -6,19 +6,11 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
+const { verifyToken, verifyAdmin } = require('../middleware/auth');
 const client = require('../database');
 
-// Middleware para verificar que es administrador
-const requireAdmin = (req, res, next) => {
-  if (!req.user || req.user.rol !== 'admin') {
-    return res.status(403).json({ error: 'Acceso denegado: se requieren permisos de administrador' });
-  }
-  next();
-};
-
 // GET /api/audit/productos - Auditoría completa de productos
-router.get('/productos', authenticateToken, requireAdmin, async (req, res) => {
+router.get('/productos', verifyToken, verifyAdmin, async (req, res) => {
   try {
     console.log('🔍 Iniciando auditoría de productos...');
 
@@ -170,7 +162,7 @@ router.get('/productos', authenticateToken, requireAdmin, async (req, res) => {
 });
 
 // GET /api/audit/productos/export - Exportar datos para análisis externo
-router.get('/productos/export', authenticateToken, requireAdmin, async (req, res) => {
+router.get('/productos/export', verifyToken, verifyAdmin, async (req, res) => {
   try {
     const format = req.query.format || 'json';
     
