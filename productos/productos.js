@@ -94,10 +94,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Función para validar campos obligatorios del formulario: nombre, precio >=0, stock >=0
+  // Función para validar campos obligatorios del formulario: nombre, género, precio >=0, stock >=0
   function validarFormulario() {
     let valido = true;
     const nombre = form.nombre.value.trim();
+    const genero = form.genero.value;
     const precio = form.precio.value;
     const stock = form.stock.value;
     if (!nombre) {
@@ -105,6 +106,10 @@ document.addEventListener('DOMContentLoaded', () => {
       valido = false;
     } else {
       document.getElementById('e-nombre').textContent = '';
+    }
+    if (!genero) {
+      alert('⚠️ Debes seleccionar el género del producto');
+      valido = false;
     }
     if (!precio || precio < 0) {
       document.getElementById('e-precio').textContent = 'Precio inválido';
@@ -138,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
       nombre: form.nombre.value.trim(),
       descripcion: form.descripcion.value.trim(),
       categoria: form.categoria.value.trim(),
+      genero: form.genero.value, // AGREGAR GÉNERO
       talle: form.talle.value.trim(),
       color: form.color.value.trim(),
       marca: form.marca.value.trim(),
@@ -205,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
         form.nombre.value = prod.nombre || '';
         form.descripcion.value = prod.descripcion || '';
         form.categoria.value = prod.categoria || '';
+        form.genero.value = prod.genero || '';
         form.talle.value = prod.talle || '';
         form.color.value = prod.color || '';
         form.marca.value = prod.marca || '';
@@ -249,6 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
           form.nombre.value = prod.nombre || '';
           form.descripcion.value = prod.descripcion || '';
           form.categoria.value = prod.categoria || '';
+          form.genero.value = prod.genero || '';
           form.talle.value = prod.talle || '';
           form.color.value = prod.color || '';
           form.marca.value = prod.marca || '';
