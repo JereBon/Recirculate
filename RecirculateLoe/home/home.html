@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recirculate</title>
+  <link rel="stylesheet" href="../assets/public-styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+  <header class="public-header fixed-header">
+    <nav class="header-nav">
+      <div class="header-left">
+        <button id="menu-btn" class="header-icon menu-icon"><i class="fas fa-bars"></i></button>
+        <div id="search-container" class="search-container">
+          <button id="search-btn" class="header-icon search-icon"><i class="fas fa-search"></i></button>
+          <input type="text" id="search-input" class="search-input" placeholder="Buscar...">
+        </div>
+      </div>
+      <a href="javascript:void(0);" class="header-logo" id="home-logo">
+        <img src="../assets/images/Recirculate-logo.png" alt="Recirculate Logo" class="logo-image">
+      </a>
+      <div class="header-right">
+        <a href="../../auth/login.html" class="header-icon user-icon" data-tooltip="INICIAR SESIÓN">
+          <i class="fas fa-user"></i>
+        </a>
+        <a href="../carrito/carrito.html" class="header-icon cart-icon">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cart-counter" class="cart-counter">0</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+<div id="sidebar-menu" class="sidebar">
+  <button id="close-btn" class="close-btn">&times;</button>
+  
+  <div class="sidebar-menu-list">
+    <div class="sidebar-category" data-category="hombre">
+      <div class="sidebar-category-header">
+        <span>HOMBRE</span>
+        <i class="fas fa-chevron-right toggle-icon"></i>
+      </div>
+      <div class="sidebar-submenu">
+        <a href="../pages/hombre/hombre.html"><strong>Ver Todo Hombre</strong></a>
+        <a href="../pages/remeras/remeras.html">Remeras</a>
+        <a href="../pages/buzos/buzos.html">Buzos</a>
+        <a href="../pages/camperas/camperas.html">Camperas</a>
+        <a href="../pages/pantalones/pantalones.html">Pantalones</a>
+        <a href="../pages/camisas/camisas.html">Camisas</a> 
+      </div>
+    </div>
+
+    <div class="sidebar-category" data-category="mujer">
+      <div class="sidebar-category-header">
+        <span>MUJER</span>
+        <i class="fas fa-chevron-right toggle-icon"></i>
+      </div>
+      <div class="sidebar-submenu">
+        <a href="../pages/mujer/mujer.html"><strong>Ver Todo Mujer</strong></a>
+        <a href="../pages/Mremeras/Mremeras.html">Remeras/Tops</a>
+        <a href="../pages/Mvestidos/Mvestidos.html">Vestidos/Monos</a>
+        <a href="../pages/Mpolleras/Mpolleras.html">Polleras/Shorts/Skorts</a>
+      </div>
+    </div>
+
+    <a href="../pages/unisex/unisex.html" class="sidebar-main-link">UNISEX</a>
+    <a href="../pages/ingresos/ingresos.html" class="sidebar-main-link">INGRESOS</a>
+    <a href="../pages/descuentos/descuentos.html" class="sidebar-main-link">DESCUENTOS</a>
+
+    <hr class="sidebar-divider">
+
+    <div class="sidebar-auth-group">
+        <a href="../../auth/login.html" class="sidebar-main-link">INICIAR SESIÓN</a>
+        <a href="../../auth/registro.html" class="sidebar-main-link">REGISTRARSE</a>
+    </div>
+  </div>
+</div>
+
+</div>
+  <div class="overlay"></div>
+
+  <section class="animated-hero-section">
+    <h1 class="animated-title">Moda Circular para un Futuro
+      <span class="word-wrapper">
+        <span class="word active">Sostenible</span>
+        <span class="word">Consciente</span>
+        <span class="word">Ético</span>
+        <span class="word">Innovador</span>
+      </span>
+    </h1>
+    <p class="hero-subtitle">Descubre prendas únicas y de calidad. Dale una segunda vida a la ropa.</p>
+  </section>
+
+  <main class="public-main">
+    <section class="carrusel-container">
+      <a href="../pages/buzos/buzos.html" class="carrusel-item">
+        <img src="../assets/images/Buzo.png" alt="Buzos">
+        <span class="carrusel-text">Buzos</span>
+      </a>
+      <a href="../pages/camperas/camperas.html" class="carrusel-item">
+        <img src="../assets/images/Campera.png" alt="Camperas">
+        <span class="carrusel-text">Camperas</span>
+      </a>
+      <a href="../pages/camisas/camisas.html" class="carrusel-item">
+        <img src="../assets/images/Camisa.png" alt="Camisas">
+        <span class="carrusel-text">Camisas</span>
+      </a>
+      <a href="../pages/remeras/remeras.html" class="carrusel-item">
+        <img src="../assets/images/Remera.png" alt="Remeras">
+        <span class="carrusel-text">Remeras</span>
+      </a>
+      <a href="../pages/pantalones/pantalones.html" class="carrusel-item">
+        <img src="../assets/images/Pantalon.png" alt="Pantalones">
+        <span class="carrusel-text">Pantalones</span>
+      </a>
+    </section>
+
+    <section class="gender-category-section">
+        <a href="../pages/hombre/hombre.html" class="gender-card">
+            <img src="../assets/images/Hombre.png" alt="Categoría Hombre">
+        </a>
+        <a href="../pages/mujer/mujer.html" class="gender-card">
+            <img src="../assets/images/Mujer.png" alt="Categoría Mujer">
+        </a>
+    </section>
+
+    <section class="benefits-section">
+      <div class="benefit-item">
+        <i class="fas fa-credit-card benefit-icon"></i>
+        <h4>3 Y 6 CUOTAS SIN INTERÉS</h4>
+        <p>6 cuotas sin interés compra mínima $150.000</p>
+      </div>
+      <div class="benefit-item">
+        <i class="fas fa-box benefit-icon"></i>
+        <h4>ENVÍOS GRATIS</h4>
+        <p>Con compras superiores a $120.000.</p>
+      </div>
+      <div class="benefit-item">
+        <i class="fas fa-lock benefit-icon"></i>
+        <h4>10% OFF EN EL PEDIDO</h4>
+        <p>Pagos por transferencia.</p>
+      </div>
+    </section>
+
+    <section class="ingresos-section">
+      <h2>Ingresos</h2>
+    </section>
+
+    <section class="featured-products-section">
+      <div class="product-grid">
+        <div class="product-card" data-product-name="Campera Ecocuero">
+          <div class="new-tag">NEW</div>
+          <div class="product-images">
+            <img src="../assets/images/pages/camperas/Campera Ecocuero 1.png" alt="Campera Ecocuero" class="main-image">
+            <img src="../assets/images/pages/camperas/Campera Ecocuero 2.png" alt="Campera Ecocuero" class="hover-image">
+          </div>
+          <h3>Campera Ecocuero</h3>
+          <p class="precio">$70.000 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
+        <div class="product-card" data-product-name="Top Pegaso Bordo">
+          <div class="new-tag">NEW</div>
+          <div class="product-images">
+            <img src="../assets/images/pages/Mremeras/4 Top Pegaso Bordo a.png" alt="Top Pegaso Bordo" class="main-image">
+            <img src="../assets/images/pages/Mremeras/4 Top Pegaso Bordo b.png" alt="Top Pegaso Bordo" class="hover-image">
+          </div>
+          <h3>Top Pegaso Bordo</h3>
+          <p class="precio">$105.000 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
+        <div class="product-card" data-product-name="Pollera Samer">
+          <div class="new-tag">NEW</div>
+          <div class="product-images">
+            <img src="../assets/images/pages/Mpolleras/1 Pollera Samer a.png" alt="Pollera Samer" class="main-image">
+            <img src="../assets/images/pages/Mpolleras/1 Pollera Samer b.png" alt="Pollera Samer" class="hover-image">
+          </div>
+          <h3>Pollera Samer</h3>
+          <p class="precio">$65.000 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="latest-products-section">
+      <h2>Últimos Productos</h2>
+      <div class="product-grid" id="latest-products-container">
+        <div class="loading-indicator">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Cargando últimos productos...</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="discount-section">
+      <h2>Descuentos</h2>
+    </section>
+
+    <section class="featured-products-section">
+      <div class="product-grid">
+        <div class="product-card" data-product-name="Vestido Italo">
+          <div class="discount-tag">22% OFF</div>
+          <div class="product-images">
+            <img src="../assets/images/pages/Mvestidos/6 Vestido Italo a.png" alt="Vestido Italo" class="main-image">
+            <img src="../assets/images/pages/Mvestidos/6 Vestido Italo b.png" alt="Vestido Italo" class="hover-image">
+          </div>
+          <h3>Vestido Italo</h3>
+          <p class="precio">$138.000 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
+        <div class="product-card" data-product-name="Remera Básica Negra">
+          <div class="discount-tag">23% OFF</div>
+          <div class="product-images">
+            <img src="../assets/images/pages/remeras/Remera_gris_1.png" alt="Remera Básica Negra" class="main-image">
+            <img src="../assets/images/pages/remeras/Remera_gris_2.png" alt="Remera Básica Negra" class="hover-image">
+          </div>
+          <h3>Remera Básica Negra</h3>
+          <p class="precio">$29.990 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
+        <div class="product-card" data-product-name="Camisa Kalf Negra">
+          <div class="discount-tag">32% OFF</div>
+          <div class="product-images">
+            <img src="../assets/images/pages/camisas/Camisa Kalf Negra 1.png" alt="Camisa Kalf Negra" class="main-image">
+            <img src="../assets/images/pages/camisas/Camisa Kalf Negra 2.png" alt="Camisa Kalf Negra" class="hover-image">
+          </div>
+          <h3>Camisa Kalf Negra</h3>
+          <p class="precio">$37.000 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="public-footer">
+    <div class="footer-container">
+      <div class="footer-column">
+        <h4>Recirculate</h4>
+        <p>Moda circular para un futuro sostenible.</p>
+      </div>
+      <div class="footer-column">
+        <h4>Navegación</h4>
+        <ul>
+          <li><a href="./home.html">Inicio</a></li>
+          <li><a href="../pages/remeras/remeras.html">Remeras</a></li>
+          <li><a href="../pages/pantalones/pantalones.html">Pantalones</a></li>
+          <li><a href="../pages/buzos/buzos.html">Buzos</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="mailto:info@recirculate.com">info@recirculate.com</a></li>
+          <li><a href="tel:+5492615095558">+54 261 5095558</a></li>
+          <li>Alpatacal 1434 - Quinta Sección</li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Síguenos</h4>
+        <div class="social-icons">
+          <a href="https://www.facebook.com/people/Recirculate-Mendoza/100083294088879/?rdid=SXQua37IAhAE19YO&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1BjxzuZgUi%2F" target="_blank"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/recirculate_mdz" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Línea divisoria -->
+    <div class="footer-divider"></div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 Recirculate. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+<div class="chatbot-container">
+  <button id="chatbot-toggle" class="chatbot-bubble">
+    <i class="fas fa-comment-dots"></i>
+  </button>
+
+  <div id="chatbot-window" class="chatbot-window">
+    <div class="chatbot-header">
+      <span>Asistente Virtual</span>
+      <button id="chatbot-close" class="chatbot-close-btn">&times;</button>
+    </div>
+    <div class="chatbot-body">
+      <div class="chat-message bot">
+        Hola 👋 ¿En qué puedo ayudarte hoy?
+      </div>
+      </div>
+    <div class="chatbot-footer">
+      <input type="text" placeholder="Escribe tu mensaje...">
+      <button><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+</div>
+
+  <script src="../assets/catalog-api.js"></script>
+  <script type="module" src="home.js"></script>
+  <script>
+    // Cargar últimos productos en el home
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        console.log('🏠 Cargando últimos productos en home');
+        const productos = await window.catalogAPI.cargarProductos(null, { limit: 6 });
+        window.catalogAPI.renderizarProductos(productos, 'latest-products-container');
+      } catch (error) {
+        console.error('❌ Error cargando productos en home:', error);
+        // Ocultar sección si hay error
+        const section = document.querySelector('.latest-products-section');
+        if (section) section.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

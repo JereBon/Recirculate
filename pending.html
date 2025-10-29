@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Pendiente - Recirculate</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        .pending-icon {
+            font-size: 64px;
+            color: #ffc107;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #ffc107;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .btn {
+            background: #ffc107;
+            color: #212529;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #e0a800;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="pending-icon">⏳</div>
+        <h1>Pago Pendiente</h1>
+        <p>Tu pago está siendo procesado. Te notificaremos cuando se complete la transacción.</p>
+        <p>Esto puede tomar unos minutos. Por favor, revisa tu email para más detalles.</p>
+        
+        <a href="/app" class="btn">Volver a la tienda</a>
+        <a href="/api/pagos/usuario/historial" class="btn btn-secondary">Ver estado del pago</a>
+    </div>
+
+    <script>
+        // Auto-redirect después de 12 segundos
+        setTimeout(() => {
+            window.location.href = '/app';
+        }, 12000);
+    </script>
+</body>
+</html>

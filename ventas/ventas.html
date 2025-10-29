@@ -1,0 +1,77 @@
+<!--
+  ventas.html - Listado de ventas registradas
+  Muestra la tabla de ventas y permite navegar al formulario de registro.
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ventas</title>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Ventas</h1>
+    <div style="margin-bottom: 18px;">
+      <a href="registrar-venta.html"><button class="primary">+ Registrar venta</button></a>
+      <a href="../index.html"><button style="margin-left:12px;">Volver al panel</button></a>
+    </div>
+  </header>
+  <main class="main">
+
+    <div class="search-bar">
+      <input type="text" placeholder="Buscar" />
+      <div class="order-btn" style="display:inline-block; position:relative; margin-left:8px;">
+        <button id="btn-ordenar">⇅ Ordenar</button>
+        <div id="menu-ordenar" style="display:none; position:absolute; top:36px; left:0; background:#fff; border:1px solid #ccc; border-radius:6px; box-shadow:0 2px 8px #0002; z-index:10; min-width:140px;">
+          <button class="ordenar-opcion" data-orden="monto">Por monto</button><br>
+          <button class="ordenar-opcion" data-orden="fecha">Por fecha</button><br>
+          <button class="ordenar-opcion" data-orden="metodo">Por método de pago</button>
+        </div>
+      <div class="filter-btn" style="display:inline-block; position:relative; margin-left:8px;">
+        <label for="" class="Filtrar">Filtrar</label>
+      </div>
+      </div>
+    </div>
+
+    <table class="ventas-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Fecha</th>
+          <th>Cliente</th>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Total</th>
+          <th>Método de pago</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="ventas-body">
+        <!-- Las filas se llenan dinámicamente con JS -->
+      </tbody>
+    </table>
+    <div class="footer-info" id="ventas-total"></div>
+  </main>
+  <script src="ventas.js"></script>
+
+<input type="checkbox" id="btn-filtros">
+<div class="container-filtros">
+  <div class="cont-filtros">
+    <button type="button" id="cerrar-filtros">X</button>
+    <h2>Filtrar ventas</h2>
+    <form id="form-filtros">
+      <label>Cliente:<br><input type="text" name="cliente" style="width:90%"></label><br>
+      <label>Fecha desde:<br><input type="date" name="fechaDesde" style="width:90%"></label><br>
+      <label>Fecha hasta:<br><input type="date" name="fechaHasta" style="width:90%"></label><br>
+      <label>Método de pago:<br><input type="text" name="metodo" style="width:90%"></label><br>
+      <div style="margin-top:12px; display:flex; gap:8px;">
+        <button type="submit" id="aplicar-filtros">Aplicar Filtro</button>
+        <button type="button" id="limpiar-filtros">Limpiar Filtro</button>
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+</html>
