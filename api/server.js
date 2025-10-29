@@ -119,6 +119,10 @@ app.use('/api/setup', setupRoutes);
 const migrateRoutes = require('./routes/migrate');
 app.use('/api/migrate', migrateRoutes);
 
+// --- RUTAS DE AUDITORÍA ---
+const auditRoutes = require('./routes/audit');
+app.use('/api/audit', auditRoutes);
+
 // --- SOCKET.IO ---
 io.on('connection', (socket) => {
   console.log('Cliente conectado a Socket.IO');
