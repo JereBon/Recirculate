@@ -172,12 +172,20 @@ class UserMenuManager {
         const logoutBtn = document.getElementById('logoutBtn');
         
         if (userIcon) {
-            // Toggle del menú al hacer click en el ícono
-            userIcon.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.toggleUserMenu();
-            });
+                // Si no está logueado, redirigir al login al hacer click
+                if (!this.isLoggedIn) {
+                    userIcon.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        window.location.href = '../../auth/login.html';
+                    });
+                } else {
+                    // Toggle del menú al hacer click en el ícono
+                    userIcon.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.toggleUserMenu();
+                    });
+                }
         }
         
         if (logoutBtn) {
