@@ -1,91 +1,117 @@
+<!--
+  registrar-producto.html - Formulario para registrar un nuevo producto
+  Incluye validaciones, sistema de descuentos y género obligatorio.
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Registrar Producto</title>
-  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/style.css" />
 </head>
 <body>
-  <div class="container">
-    <h2>Registrar Producto</h2>
-    <form id="formProducto" class="form">
-      <div class="form-grid">
-        <label>Nombre:
-          <input type="text" id="nombre" required placeholder="Ej: Remera básica negra">
-        </label>
-        
-        <label>Categoría:
-          <select id="categoria" required>
-            <option value="">Seleccionar categoría</option>
-            <option value="remeras">Remeras</option>
-            <option value="buzos">Buzos</option>
-            <option value="camisas">Camisas</option>
-            <option value="camperas">Camperas</option>
-            <option value="pantalones">Pantalones</option>
-            <option value="vestidos">Vestidos</option>
-            <option value="polleras">Polleras</option>
-            <option value="shorts">Shorts</option>
-            <option value="accesorios">Accesorios</option>
-          </select>
-        </label>
+  <header>
+    <h1>Registrar Producto</h1>
+    <div style="margin-bottom: 18px;">
+      <a href="ver-productos.html"><button>← Volver a Productos</button></a>
+    </div>
+  </header>
+  <main class="main">
+    <form id="formProducto" novalidate>
+      <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" type="text" required aria-required="true" placeholder="Ej: Remera básica negra" />
+        <small class="error-msg" id="e-nombre"></small>
+      </div>
+      
+      <div class="form-group">
+        <label for="categoria">Categoría</label>
+        <select id="categoria" required aria-required="true">
+          <option value="">--Seleccionar--</option>
+          <option value="remeras">Remeras</option>
+          <option value="buzos">Buzos</option>
+          <option value="camisas">Camisas</option>
+          <option value="camperas">Camperas</option>
+          <option value="pantalones">Pantalones</option>
+          <option value="vestidos">Vestidos</option>
+          <option value="polleras">Polleras</option>
+          <option value="shorts">Shorts</option>
+          <option value="accesorios">Accesorios</option>
+        </select>
+        <small class="error-msg" id="e-categoria"></small>
+      </div>
 
-        <label>Género: <span style="color: red;">*</span>
-          <select id="genero" required>
-            <option value="">Seleccionar género</option>
-            <option value="hombre">Hombre</option>
-            <option value="mujer">Mujer</option>
-            <option value="unisex">Unisex</option>
-          </select>
-        </label>
-        
-        <label>Talle:
-          <input type="text" id="talle" placeholder="Ej: M, L, XL, 42">
-        </label>
-        
-        <label>Color:
-          <input type="text" id="color" placeholder="Ej: Negro, Azul, Rojo">
-        </label>
-        
-        <label>Marca:
-          <input type="text" id="marca" placeholder="Ej: Nike, Adidas">
-        </label>
-        
-        <label>Precio: <span style="color: red;">*</span>
-          <input type="number" id="precio" min="0" step="0.01" required placeholder="0.00">
-        </label>
-        
-        <label>Stock: <span style="color: red;">*</span>
-          <input type="number" id="stock" min="0" required placeholder="0">
-        </label>
-        
-        <label>Descuento (%):
-          <input type="number" id="descuento" min="0" max="100" step="1" placeholder="Ej: 25 (para 25% OFF)">
-          <small style="color: #666;">Opcional - Deja vacío si no hay descuento</small>
-        </label>
-        
-        <label>Proveedor:
-          <input type="text" id="proveedor" placeholder="Ej: Distribuidora ABC">
-        </label>
+      <div class="form-group">
+        <label for="genero">Género</label>
+        <select id="genero" required aria-required="true">
+          <option value="">--Seleccionar--</option>
+          <option value="hombre">Hombre</option>
+          <option value="mujer">Mujer</option>
+          <option value="unisex">Unisex</option>
+        </select>
+        <small class="error-msg" id="e-genero"></small>
       </div>
       
-      <label>Descripción:
+      <div class="form-group">
+        <label for="talle">Talle</label>
+        <input id="talle" type="text" placeholder="Ej: M, L, XL, 42" />
+        <small class="error-msg" id="e-talle"></small>
+      </div>
+      
+      <div class="form-group">
+        <label for="color">Color</label>
+        <input id="color" type="text" placeholder="Ej: Negro, Azul, Rojo" />
+        <small class="error-msg" id="e-color"></small>
+      </div>
+      
+      <div class="form-group">
+        <label for="marca">Marca</label>
+        <input id="marca" type="text" placeholder="Ej: Nike, Adidas" />
+        <small class="error-msg" id="e-marca"></small>
+      </div>
+      
+      <div class="form-group">
+        <label for="precio">Precio</label>
+        <input id="precio" type="number" min="0" step="0.01" required aria-required="true" placeholder="0.00" />
+        <small class="error-msg" id="e-precio"></small>
+      </div>
+      
+      <div class="form-group">
+        <label for="stock">Stock</label>
+        <input id="stock" type="number" min="0" required aria-required="true" placeholder="0" />
+        <small class="error-msg" id="e-stock"></small>
+      </div>
+      
+      <div class="form-group">
+        <label for="descuento">Descuento (%)</label>
+        <input id="descuento" type="number" min="0" max="100" step="1" placeholder="Ej: 25 (para 25% OFF)" />
+        <small style="color: #666; display: block; margin-top: 4px;">Opcional - Deja vacío si no hay descuento (0-100%)</small>
+        <small class="error-msg" id="e-descuento"></small>
+      </div>
+      
+      <div class="form-group">
+        <label for="proveedor">Proveedor</label>
+        <input id="proveedor" type="text" placeholder="Ej: Distribuidora ABC" />
+        <small class="error-msg" id="e-proveedor"></small>
+      </div>
+      
+      <div class="form-group">
+        <label for="descripcion">Descripción</label>
         <textarea id="descripcion" rows="3" placeholder="Descripción detallada del producto..."></textarea>
-      </label>
-      
-      <label>URL de Imagen:
-        <input type="url" id="imagen_url" placeholder="https://ejemplo.com/imagen.jpg">
-      </label>
-      
-      <div class="form-note">
-        <small><span style="color: red;">*</span> Campos obligatorios</small>
+        <small class="error-msg" id="e-descripcion"></small>
       </div>
       
-      <button type="submit" class="btn">Guardar Producto</button>
-      <div id="errorProducto" class="error"></div>
-      <div id="successProducto" class="success"></div>
+      <div class="form-group">
+        <label for="imagen_url">URL de Imagen</label>
+        <input id="imagen_url" type="url" placeholder="https://ejemplo.com/imagen.jpg" />
+        <small class="error-msg" id="e-imagen_url"></small>
+      </div>
+      
+      <button type="submit" class="primary">Guardar Producto</button>
+      <div class="success-msg" id="success-msg"></div>
     </form>
-    <a href="ver-productos.html" class="btn-link">Ver productos</a>
-  </div>
+  </main>
   <script type="module" src="registrar-producto.js"></script>
 </body>
 </html>

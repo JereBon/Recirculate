@@ -20,38 +20,38 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
 
   // Validaciones obligatorias
   if (!nombre) {
-    mostrarError("El nombre del producto es obligatorio.");
+    mostrarError("El nombre del producto es obligatorio.", "nombre");
     return;
   }
 
   if (!genero) {
-    mostrarError("Debes seleccionar un género para la prenda (Hombre/Mujer/Unisex).");
+    mostrarError("Debes seleccionar un género para la prenda (Hombre/Mujer/Unisex).", "genero");
     return;
   }
 
   if (!categoria) {
-    mostrarError("Debes seleccionar una categoría.");
+    mostrarError("Debes seleccionar una categoría.", "categoria");
     return;
   }
 
   if (precio <= 0) {
-    mostrarError("El precio debe ser mayor a 0.");
+    mostrarError("El precio debe ser mayor a 0.", "precio");
     return;
   }
 
   if (stock < 0) {
-    mostrarError("El stock no puede ser negativo.");
+    mostrarError("El stock no puede ser negativo.", "stock");
     return;
   }
 
   if (descuento < 0 || descuento > 100) {
-    mostrarError("El descuento debe estar entre 0 y 100%.");
+    mostrarError("El descuento debe estar entre 0 y 100%.", "descuento");
     return;
   }
 
   // Validación de URL de imagen (si se proporciona)
   if (imagen_url && !isValidURL(imagen_url)) {
-    mostrarError("La URL de imagen no es válida.");
+    mostrarError("La URL de imagen no es válida.", "imagen_url");
     return;
   }
 
@@ -112,40 +112,120 @@ function isValidURL(string) {
   }
 }
 
-// Validación en tiempo real del campo género
-document.getElementById("genero").addEventListener("change", function() {
-  const genero = this.value;
-  if (genero) {
-    this.style.borderColor = "#28a745";
-    this.style.backgroundColor = "#f8fff8";
-  } else {
+// Validaciones en tiempo real
+document.getElementById("nombre").addEventListener("blur", function() {
+  const errorEl = document.getElementById("e-nombre");
+  if (!this.value.trim()) {
+    errorEl.textContent = "El nombre es obligatorio";
     this.style.borderColor = "#dc3545";
-    this.style.backgroundColor = "#fff5f5";
+  } else {
+    errorEl.textContent = "";
+    this.style.borderColor = "#28a745";
   }
 });
 
-// Mostrar indicador visual para campos obligatorios
-document.querySelectorAll("input[required], select[required]").forEach(field => {
-  field.addEventListener("blur", function() {
-    if (!this.value.trim()) {
-      this.style.borderColor = "#dc3545";
-    } else {
-      this.style.borderColor = "#28a745";
-    }
-  });
+document.getElementById("genero").addEventListener("change", function() {
+  const errorEl = document.getElementById("e-genero");
+  if (!this.value) {
+    errorEl.textContent = "Debes seleccionar un género";
+    this.style.borderColor = "#dc3545";
+  } else {
+    errorEl.textContent = "";
+    this.style.borderColor = "#28a745";
+  }
 });
 
-function mostrarError(msg) {
-  document.getElementById("errorProducto").textContent = msg;
-  document.getElementById("errorProducto").scrollIntoView({ behavior: 'smooth', block: 'center' });
+document.getElementById("categoria").addEventListener("change", function() {
+  const errorEl = document.getElementById("e-categoria");
+  if (!this.value) {
+    errorEl.textContent = "Debes seleccionar una categoría";
+    this.style.borderColor = "#dc3545";
+  } else {
+    errorEl.textContent = "";
+    this.style.borderColor = "#28a745";
+  }
+});
+
+document.getElementById("precio").addEventListener("blur", function() {
+  const errorEl = document.getElementById("e-precio");
+  const precio = Number(this.value);
+  if (!this.value || precio <= 0) {
+    errorEl.textContent = "El precio debe ser mayor a 0";
+    this.style.borderColor = "#dc3545";
+  } else {
+    errorEl.textContent = "";
+    this.style.borderColor = "#28a745";
+  }
+});
+
+document.getElementById("stock").addEventListener("blur", function() {
+  const errorEl = document.getElementById("e-stock");
+  const stock = Number(this.value);
+  if (this.value === "" || stock < 0) {
+    errorEl.textContent = "El stock no puede ser negativo";
+    this.style.borderColor = "#dc3545";
+  } else {
+    errorEl.textContent = "";
+    this.style.borderColor = "#28a745";
+  }
+});
+
+document.getElementById("descuento").addEventListener("blur", function() {
+  const errorEl = document.getElementById("e-descuento");
+  const descuento = Number(this.value);
+  if (this.value !== "" && (descuento < 0 || descuento > 100)) {
+    errorEl.textContent = "El descuento debe estar entre 0 y 100%";
+    this.style.borderColor = "#dc3545";
+  } else {
+    errorEl.textContent = "";
+    this.style.borderColor = this.value ? "#28a745" : "";
+  }
+});
+
+document.getElementById("imagen_url").addEventListener("blur", function() {
+  const errorEl = document.getElementById("e-imagen_url");
+  if (this.value && !isValidURL(this.value)) {
+    errorEl.textContent = "La URL no es válida";
+    this.style.borderColor = "#dc3545";
+  } else {
+    errorEl.textContent = "";
+    this.style.borderColor = this.value ? "#28a745" : "";
+  }
+});
+
+function mostrarError(msg, fieldId = null) {
+  // Limpiar errores previos
+  document.querySelectorAll(".error-msg").forEach(el => el.textContent = "");
+  
+  if (fieldId) {
+    // Mostrar error en campo específico
+    const errorEl = document.getElementById(`e-${fieldId}`);
+    if (errorEl) {
+      errorEl.textContent = msg;
+      document.getElementById(fieldId).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  } else {
+    // Mostrar error general
+    const successMsg = document.getElementById("success-msg");
+    successMsg.textContent = msg;
+    successMsg.style.color = "#dc3545";
+    successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }
 
 function mostrarExito(msg) {
-  document.getElementById("successProducto").textContent = msg;
-  document.getElementById("successProducto").scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // Limpiar errores previos
+  document.querySelectorAll(".error-msg").forEach(el => el.textContent = "");
+  
+  const successMsg = document.getElementById("success-msg");
+  successMsg.textContent = msg;
+  successMsg.style.color = "#28a745";
+  successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 function limpiarMensajes() {
-  document.getElementById("errorProducto").textContent = "";
-  document.getElementById("successProducto").textContent = "";
+  document.querySelectorAll(".error-msg").forEach(el => el.textContent = "");
+  const successMsg = document.getElementById("success-msg");
+  successMsg.textContent = "";
+  successMsg.style.color = "";
 }
