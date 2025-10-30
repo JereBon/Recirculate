@@ -94,43 +94,52 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Detecta si es mobile para layout diferente
     const isMobile = window.matchMedia('(max-width: 600px)').matches;
     // Crea fila por cada producto con todos los atributos
-    productosFiltrados.forEach((prod, idx) => {
-      const idVisual = idx + 1;
-      if (isMobile) {
-        // Agrega fila extra para mobile con número de producto
-        const trProd = document.createElement('tr');
-        trProd.className = 'producto-num-mobile';
-        trProd.innerHTML = `<td colspan="18" class="producto-num-mobile-td">Producto #${idVisual}</td>`;
-        tabla.appendChild(trProd);
-      }
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td data-label="Imagen">
-          ${prod.imagen_url ? `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" />` : ''}
-        </td>
-        <td data-label="Nombre">${prod.nombre || ''}</td>
-        <td data-label="Descripción">${prod.descripcion || ''}</td>
-        <td data-label="Categoría">${prod.categoria || ''}</td>
-        <td data-label="Talle">${prod.talle || ''}</td>
-  <td data-label="Color">${prod.color || ''}</td>
-  <td data-label="Género">${prod.genero || ''}</td>
-  <td data-label="Marca">${prod.marca || ''}</td>
-        <td data-label="Estado">${prod.estado || ''}</td>
-        <td data-label="Precio">${prod.precio != null ? '$' + prod.precio : ''}</td>
-        <td data-label="Descuento">${prod.descuento ? prod.descuento + '%' : '0%'}</td>
-        <td data-label="Moneda">ARS</td>
-        <td data-label="Proveedor">${prod.proveedor || '-'}</td>
-        <td data-label="Stock">${prod.stock != null ? prod.stock : ''}</td>
-        <td data-label="Activo">Sí</td>
-        <td data-label="Creado">${prod.fecha_creacion ? new Date(prod.fecha_creacion).toLocaleString() : ''}</td>
-        <td data-label="Actualizado">${prod.fecha_actualizacion ? new Date(prod.fecha_actualizacion).toLocaleString() : ''}</td>
-        <td data-label="Acciones">
-          <button data-edit="${prod.id}" class="primary">Editar</button>
-          <button data-delete="${prod.id}" style="background:#e74c3c; color:#fff; margin-left:8px;">Eliminar</button>
-        </td>
-      `;
-      tabla.appendChild(tr);
-    });
+      productosFiltrados.forEach((prod, idx) => {
+        const idVisual = idx + 1;
+        if (isMobile) {
+          const trProd = document.createElement('tr');
+          trProd.className = 'producto-num-mobile';
+          trProd.innerHTML = `<td colspan="18" class="producto-num-mobile-td">Producto #${idVisual}</td>`;
+          tabla.appendChild(trProd);
+        }
+        const tr = document.createElement('tr');
+        // --- IMAGEN CON HOVER ---
+        let imagenHtml = '';
+        if (prod.imagen_url) {
+          // Si hay imagen_hover, agrega eventos para cambiar la imagen al hacer hover
+          if (prod.imagen_hover) {
+            imagenHtml = `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" onmouseover="this.src='${prod.imagen_hover}'" onmouseout="this.src='${prod.imagen_url}'" />`;
+          } else {
+            imagenHtml = `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" />`;
+          }
+        }
+        tr.innerHTML = `
+          <td data-label="Imagen">
+            ${imagenHtml}
+          </td>
+          <td data-label="Nombre">${prod.nombre || ''}</td>
+          <td data-label="Descripción">${prod.descripcion || ''}</td>
+          <td data-label="Categoría">${prod.categoria || ''}</td>
+          <td data-label="Talle">${prod.talle || ''}</td>
+          <td data-label="Color">${prod.color || ''}</td>
+          <td data-label="Género">${prod.genero || ''}</td>
+          <td data-label="Marca">${prod.marca || ''}</td>
+          <td data-label="Estado">${prod.estado || ''}</td>
+          <td data-label="Precio">${prod.precio != null ? '$' + prod.precio : ''}</td>
+          <td data-label="Descuento">${prod.descuento ? prod.descuento + '%' : '0%'}</td>
+          <td data-label="Moneda">ARS</td>
+          <td data-label="Proveedor">${prod.proveedor || '-'} </td>
+          <td data-label="Stock">${prod.stock != null ? prod.stock : ''}</td>
+          <td data-label="Activo">Sí</td>
+          <td data-label="Creado">${prod.fecha_creacion ? new Date(prod.fecha_creacion).toLocaleString() : ''}</td>
+          <td data-label="Actualizado">${prod.fecha_actualizacion ? new Date(prod.fecha_actualizacion).toLocaleString() : ''}</td>
+          <td data-label="Acciones">
+            <button data-edit="${prod.id}" class="primary">Editar</button>
+            <button data-delete="${prod.id}" style="background:#e74c3c; color:#fff; margin-left:8px;">Eliminar</button>
+          </td>
+        `;
+        tabla.appendChild(tr);
+      });
   }
 
   // Evento click en tabla para manejar botones de editar y eliminar
