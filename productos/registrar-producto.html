@@ -102,10 +102,66 @@
         <small class="error-msg" id="e-descripcion"></small>
       </div>
       
+      <!-- Sección de subida de imágenes con Cloudinary -->
       <div class="form-group">
-        <label for="imagen_url">URL de Imagen</label>
-        <input id="imagen_url" type="url" placeholder="https://ejemplo.com/imagen.jpg" />
-        <small class="error-msg" id="e-imagen_url"></small>
+        <label>Imágenes del Producto (Obligatorio)</label>
+        <small style="color: #666; display: block; margin-bottom: 10px;">
+          Sube 2 imágenes: frente y espalda del producto. Arrastra las imágenes aquí o haz clic para seleccionarlas.
+        </small>
+        
+        <div class="images-upload-container">
+          <!-- Imagen Frente -->
+          <div class="image-upload-zone" id="upload-frente">
+            <div class="upload-content">
+              <div class="upload-icon">📷</div>
+              <div class="upload-text">
+                <strong>Imagen Frente</strong>
+                <p>Arrastra aquí o haz clic</p>
+              </div>
+              <input type="file" id="file-frente" accept="image/*" style="display: none;">
+            </div>
+            <div class="image-preview" id="preview-frente" style="display: none;">
+              <img id="img-frente" src="" alt="Vista previa frente">
+              <div class="image-actions">
+                <button type="button" class="btn-remove" onclick="removeImage('frente')">✖</button>
+                <span class="image-label">FRENTE</span>
+              </div>
+            </div>
+            <div class="upload-progress" id="progress-frente" style="display: none;">
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+              </div>
+              <span class="progress-text">Subiendo...</span>
+            </div>
+          </div>
+
+          <!-- Imagen Espalda -->
+          <div class="image-upload-zone" id="upload-espalda">
+            <div class="upload-content">
+              <div class="upload-icon">📷</div>
+              <div class="upload-text">
+                <strong>Imagen Espalda</strong>
+                <p>Arrastra aquí o haz clic</p>
+              </div>
+              <input type="file" id="file-espalda" accept="image/*" style="display: none;">
+            </div>
+            <div class="image-preview" id="preview-espalda" style="display: none;">
+              <img id="img-espalda" src="" alt="Vista previa espalda">
+              <div class="image-actions">
+                <button type="button" class="btn-remove" onclick="removeImage('espalda')">✖</button>
+                <span class="image-label">ESPALDA</span>
+              </div>
+            </div>
+            <div class="upload-progress" id="progress-espalda" style="display: none;">
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+              </div>
+              <span class="progress-text">Subiendo...</span>
+            </div>
+          </div>
+        </div>
+        
+        <small class="error-msg" id="e-imagenes"></small>
       </div>
       
       <button type="submit" class="primary">Guardar Producto</button>

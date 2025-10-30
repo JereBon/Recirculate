@@ -76,6 +76,71 @@ router.get('/add-proveedor-column', async (req, res) => {
   }
 });
 
+// Endpoint para agregar columna imagen_espalda_url
+router.get('/add-imagen-espalda-column', async (req, res) => {
+  const client = new Client(config);
+  
+  try {
+    await client.connect();
+    
+    console.log('🔧 Agregando columna imagen_espalda_url...');
+    
+    // Verificar si la columna existe
+    const columnExists = await client.query(`
+      SELECT column_name 
+      FROM information_schema.columns 
+      WHERE table_name = 'productos' AND column_name = 'imagen_espalda_url'
+    `);
+    
+    if (columnExists.rows.length === 0) {
+      // La columna no existe, crearla
+      await client.query(`
+        ALTER TABLE productos 
+        ADD COLUMN imagen_espalda_url TEXT
+      `);
+      
+      // Agregar comentario
+      await client.query(`
+        COMMENT ON COLUMN productos.imagen_espalda_url 
+        IS 'URL de la imagen de espalda del producto (Cloudinary)'
+      `);
+      
+      console.log('✅ Columna imagen_espalda_url agregada exitosamente');
+    } else {
+      console.log('✅ Columna imagen_espalda_url ya existe');
+    }
+    
+    // Verificar estructura actual de la tabla
+    const tableStructure = await client.query(`
+      SELECT column_name, data_type, is_nullable 
+      FROM information_schema.columns 
+      WHERE table_name = 'productos'
+      ORDER BY ordinal_position
+    `);
+    
+    console.log('📋 Estructura actualizada de la tabla productos:');
+    tableStructure.rows.forEach(col => {
+      console.log(`- ${col.column_name}: ${col.data_type} (nullable: ${col.is_nullable})`);
+    });
+    
+    res.json({
+      success: true,
+      message: 'Migración de imagen_espalda_url completada',
+      columnExists: columnExists.rows.length > 0,
+      tableStructure: tableStructure.rows
+    });
+    
+  } catch (error) {
+    console.error('❌ Error en migración imagen_espalda_url:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  } finally {
+    await client.end();
+  }
+});
+
 // Endpoint para verificar productos y sus proveedores
 router.get('/check-productos', async (req, res) => {
   const client = new Client(config);
@@ -84,7 +149,7 @@ router.get('/check-productos', async (req, res) => {
     await client.connect();
     
     const productos = await client.query(`
-      SELECT id, nombre, proveedor, fecha_creacion 
+      SELECT id, nombre, proveedor, imagen_url, imagen_espalda_url, fecha_creacion 
       FROM productos 
       ORDER BY id DESC 
       LIMIT 5

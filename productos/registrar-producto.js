@@ -1,5 +1,190 @@
 const API_URL = "https://recirculate-api.onrender.com/api/productos";
+const UPLOAD_URL = "https://recirculate-api.onrender.com/api/upload";
 
+// ===== SISTEMA DE SUBIDA DE IMÁGENES =====
+let imageUrls = {
+  frente: null,
+  espalda: null
+};
+
+// Inicializar sistema de drag & drop cuando carga la página
+document.addEventListener('DOMContentLoaded', function() {
+  initializeImageUpload();
+});
+
+function initializeImageUpload() {
+  // Configurar drag & drop para ambas zonas
+  ['frente', 'espalda'].forEach(type => {
+    const uploadZone = document.getElementById(`upload-${type}`);
+    const fileInput = document.getElementById(`file-${type}`);
+    
+    // Click para abrir selector de archivos
+    uploadZone.addEventListener('click', () => {
+      if (!uploadZone.querySelector('.image-preview').style.display.includes('block')) {
+        fileInput.click();
+      }
+    });
+    
+    // Cambio en input de archivo
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) {
+        handleImageUpload(e.target.files[0], type);
+      }
+    });
+    
+    // Eventos de drag & drop
+    uploadZone.addEventListener('dragover', handleDragOver);
+    uploadZone.addEventListener('dragenter', handleDragEnter);
+    uploadZone.addEventListener('dragleave', handleDragLeave);
+    uploadZone.addEventListener('drop', (e) => handleDrop(e, type));
+  });
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+}
+
+function handleDragEnter(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+}
+
+function handleDragLeave(e) {
+  e.preventDefault();
+  if (!e.currentTarget.contains(e.relatedTarget)) {
+    e.currentTarget.classList.remove('drag-over');
+  }
+}
+
+function handleDrop(e, type) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  
+  const files = e.dataTransfer.files;
+  if (files.length > 0) {
+    const file = files[0];
+    if (file.type.startsWith('image/')) {
+      handleImageUpload(file, type);
+    } else {
+      alert('Por favor, sube solo archivos de imagen.');
+    }
+  }
+}
+
+async function handleImageUpload(file, type) {
+  // Validar tipo de archivo
+  if (!file.type.startsWith('image/')) {
+    alert('Por favor, selecciona un archivo de imagen válido.');
+    return;
+  }
+  
+  // Validar tamaño (max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    alert('La imagen es muy grande. El tamaño máximo es 5MB.');
+    return;
+  }
+  
+  // Mostrar vista previa inmediata
+  showImagePreview(file, type);
+  
+  // Mostrar progreso de subida
+  showUploadProgress(type, true);
+  
+  try {
+    // Preparar FormData para Cloudinary
+    const formData = new FormData();
+    formData.append('imagen', file);
+    
+    // Subir a Cloudinary
+    const response = await fetch(UPLOAD_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      },
+      body: formData
+    });
+    
+    if (!response.ok) {
+      throw new Error('Error al subir la imagen');
+    }
+    
+    const result = await response.json();
+    
+    // Guardar URL de Cloudinary
+    imageUrls[type] = result.url;
+    
+    // Ocultar progreso y mostrar éxito
+    showUploadProgress(type, false);
+    document.getElementById(`upload-${type}`).classList.add('success');
+    
+    console.log(`✅ Imagen ${type} subida:`, result.url);
+    
+  } catch (error) {
+    console.error('Error al subir imagen:', error);
+    showUploadProgress(type, false);
+    document.getElementById(`upload-${type}`).classList.add('error');
+    alert(`Error al subir la imagen de ${type}. Inténtalo de nuevo.`);
+    
+    // Limpiar vista previa si falló la subida
+    removeImage(type);
+  }
+}
+
+function showImagePreview(file, type) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const preview = document.getElementById(`preview-${type}`);
+    const img = document.getElementById(`img-${type}`);
+    const uploadContent = document.querySelector(`#upload-${type} .upload-content`);
+    
+    img.src = e.target.result;
+    preview.style.display = 'block';
+    uploadContent.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function showUploadProgress(type, show) {
+  const progress = document.getElementById(`progress-${type}`);
+  progress.style.display = show ? 'flex' : 'none';
+  
+  if (show) {
+    // Animar barra de progreso
+    const progressFill = progress.querySelector('.progress-fill');
+    progressFill.style.width = '0%';
+    
+    setTimeout(() => {
+      progressFill.style.width = '70%';
+    }, 100);
+    
+    setTimeout(() => {
+      progressFill.style.width = '100%';
+    }, 1000);
+  }
+}
+
+function removeImage(type) {
+  // Limpiar URL guardada
+  imageUrls[type] = null;
+  
+  // Resetear elementos visuales
+  const uploadZone = document.getElementById(`upload-${type}`);
+  const preview = document.getElementById(`preview-${type}`);
+  const uploadContent = document.querySelector(`#upload-${type} .upload-content`);
+  const fileInput = document.getElementById(`file-${type}`);
+  
+  preview.style.display = 'none';
+  uploadContent.style.display = 'flex';
+  fileInput.value = '';
+  
+  // Limpiar clases de estado
+  uploadZone.classList.remove('success', 'error');
+  
+  console.log(`🗑️ Imagen ${type} eliminada`);
+}
+
+// ===== FORMULARIO PRINCIPAL =====
 document.getElementById("formProducto").addEventListener("submit", async (e) => {
   e.preventDefault();
   limpiarMensajes();
@@ -49,9 +234,9 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
     return;
   }
 
-  // Validación de URL de imagen (si se proporciona)
-  if (imagen_url && !isValidURL(imagen_url)) {
-    mostrarError("La URL de imagen no es válida.", "imagen_url");
+  // Validación de imágenes obligatorias
+  if (!imageUrls.frente || !imageUrls.espalda) {
+    mostrarError("Debes subir ambas imágenes: frente y espalda del producto.", "imagenes");
     return;
   }
 
@@ -68,7 +253,8 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
     stock,
     descuento, // Nuevo campo de descuento
     proveedor: proveedor || null,
-    imagen_url: imagen_url || null,
+    imagen_url: imageUrls.frente, // Imagen principal (frente)
+    imagen_espalda_url: imageUrls.espalda, // Nueva: imagen de espalda
     estado: stock > 0 ? 'Disponible' : 'Sin stock'
   };
 
@@ -88,13 +274,17 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
     }
 
     const result = await res.json();
-    mostrarExito(`Producto "${nombre}" guardado correctamente en la sección ${genero.toUpperCase()} ✅`);
-    document.getElementById("formProducto").reset();
+    mostrarExito(`Producto "${nombre}" guardado correctamente con imágenes en la sección ${genero.toUpperCase()} ✅`);
     
-    // Opcional: Redirigir a la lista de productos después de 2 segundos
+    // Limpiar formulario y imágenes
+    document.getElementById("formProducto").reset();
+    removeImage('frente');
+    removeImage('espalda');
+    
+    // Opcional: Redirigir a la lista de productos después de 3 segundos
     setTimeout(() => {
       window.location.href = 'ver-productos.html';
-    }, 2000);
+    }, 3000);
 
   } catch (err) {
     console.error("Error:", err);
@@ -182,16 +372,17 @@ document.getElementById("descuento").addEventListener("blur", function() {
   }
 });
 
-document.getElementById("imagen_url").addEventListener("blur", function() {
-  const errorEl = document.getElementById("e-imagen_url");
-  if (this.value && !isValidURL(this.value)) {
-    errorEl.textContent = "La URL no es válida";
-    this.style.borderColor = "#dc3545";
+// Validación de imágenes en tiempo real
+function validateImages() {
+  const errorEl = document.getElementById("e-imagenes");
+  if (!imageUrls.frente || !imageUrls.espalda) {
+    errorEl.textContent = "Debes subir ambas imágenes del producto";
+    return false;
   } else {
     errorEl.textContent = "";
-    this.style.borderColor = this.value ? "#28a745" : "";
+    return true;
   }
-});
+}
 
 function mostrarError(msg, fieldId = null) {
   // Limpiar errores previos
