@@ -52,7 +52,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (filtros.marca) {
       filtered = filtered.filter(p => p.marca && p.marca.toLowerCase().includes(filtros.marca.toLowerCase()));
     }
-    // Proveedor no existe en PostgreSQL - removido
+    // Filtrado por género para mostrar en ambas secciones
+    if (filtros.genero) {
+      filtered = filtered.filter(p => p.genero && p.genero.toLowerCase() === filtros.genero.toLowerCase());
+    }
     if (filtros.precioDesde) {
       filtered = filtered.filter(p => p.precio != null && p.precio >= parseFloat(filtros.precioDesde));
     }
@@ -71,8 +74,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (filtros.fechaHasta) {
       filtered = filtered.filter(p => p.fecha_creacion && new Date(p.fecha_creacion) <= new Date(filtros.fechaHasta));
     }
-    // Campo activo no existe en PostgreSQL - removido
-
     return filtered;
   }
 
@@ -109,6 +110,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           // Si hay imagen_hover, agrega eventos para cambiar la imagen al hacer hover
           if (prod.imagen_hover) {
             imagenHtml = `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" onmouseover="this.src='${prod.imagen_hover}'" onmouseout="this.src='${prod.imagen_url}'" />`;
+          } else if (prod.imagen_espalda_url) {
+            imagenHtml = `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" onmouseover="this.src='${prod.imagen_espalda_url}'" onmouseout="this.src='${prod.imagen_url}'" />`;
           } else {
             imagenHtml = `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" />`;
           }
@@ -154,7 +157,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       const id = e.target.dataset.delete;
       if (confirm('¿Seguro que deseas eliminar este producto?')) {
         try {
-          await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+          const token = localStorage.getItem('authToken');
+          const res = await fetch(`${API_URL}/${id}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          if (!res.ok) {
+            const data = await res.json();
+            alert('Error al eliminar producto: ' + (data.message || res.status));
+            return;
+          }
           allProductos = allProductos.filter(p => p.id !== id); // Actualiza cache
           cargarProductos(); // Refresca tabla
         } catch (err) {

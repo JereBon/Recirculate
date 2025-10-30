@@ -185,123 +185,150 @@ function removeImage(type) {
 }
 
 // ===== FORMULARIO PRINCIPAL =====
-document.getElementById("formProducto").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  limpiarMensajes();
 
-  // Obtener todos los valores del formulario
-  const nombre = document.getElementById("nombre").value.trim();
-  const categoria = document.getElementById("categoria").value.trim();
-  const genero = document.getElementById("genero").value.trim();
-  const talle = document.getElementById("talle").value.trim();
-  const color = document.getElementById("color").value.trim();
-  const marca = document.getElementById("marca").value.trim();
-  const precio = Number(document.getElementById("precio").value);
-  const stock = Number(document.getElementById("stock").value);
-  const descuento = Number(document.getElementById("descuento").value) || 0;
-  const proveedor = document.getElementById("proveedor").value.trim();
-  const descripcion = document.getElementById("descripcion").value.trim();
-
-  console.log("📝 Datos del formulario:", {
-    nombre, categoria, genero, talle, color, marca, precio, stock, descuento, proveedor, descripcion
-  });
-  
-  console.log("🖼️ URLs de imágenes:", imageUrls);
-
-  // Validaciones obligatorias
-  if (!nombre) {
-    mostrarError("El nombre del producto es obligatorio.", "nombre");
-    return;
+// --- SOPORTE EDICIÓN DE PRODUCTO ---
+document.addEventListener('DOMContentLoaded', () => {
+  // Si hay id en la URL, cargar datos y usar PUT en submit
+  const urlParams = new URLSearchParams(window.location.search);
+  const editId = urlParams.get('id');
+  if (editId) {
+    fetch(`${API_URL}/${editId}`)
+      .then(res => res.json())
+      .then(prod => {
+        if (prod) {
+          document.getElementById('nombre').value = prod.nombre || '';
+          document.getElementById('categoria').value = prod.categoria || '';
+          document.getElementById('genero').value = prod.genero || '';
+          document.getElementById('talle').value = prod.talle || '';
+          document.getElementById('color').value = prod.color || '';
+          document.getElementById('marca').value = prod.marca || '';
+          document.getElementById('precio').value = prod.precio || '';
+          document.getElementById('stock').value = prod.stock || '';
+          document.getElementById('descuento').value = prod.descuento || '';
+          document.getElementById('proveedor').value = prod.proveedor || '';
+          document.getElementById('descripcion').value = prod.descripcion || '';
+          // Cargar imágenes si existen
+          if (prod.imagen_url) {
+            imageUrls.frente = prod.imagen_url;
+            document.getElementById('img-frente').src = prod.imagen_url;
+            document.getElementById('preview-frente').style.display = 'block';
+            document.querySelector('#upload-frente .upload-content').style.display = 'none';
+          }
+          if (prod.imagen_hover) {
+            imageUrls.espalda = prod.imagen_hover;
+            document.getElementById('img-espalda').src = prod.imagen_hover;
+            document.getElementById('preview-espalda').style.display = 'block';
+            document.querySelector('#upload-espalda .upload-content').style.display = 'none';
+          }
+        }
+      });
   }
 
-  if (!genero) {
-    mostrarError("Debes seleccionar un género para la prenda (Hombre/Mujer/Unisex).", "genero");
-    return;
-  }
+  document.getElementById("formProducto").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    limpiarMensajes();
 
-  if (!categoria) {
-    mostrarError("Debes seleccionar una categoría.", "categoria");
-    return;
-  }
+    // Obtener todos los valores del formulario
+    const nombre = document.getElementById("nombre").value.trim();
+    const categoria = document.getElementById("categoria").value.trim();
+    const genero = document.getElementById("genero").value.trim();
+    const talle = document.getElementById("talle").value.trim();
+    const color = document.getElementById("color").value.trim();
+    const marca = document.getElementById("marca").value.trim();
+    const precio = Number(document.getElementById("precio").value);
+    const stock = Number(document.getElementById("stock").value);
+    const descuento = Number(document.getElementById("descuento").value) || 0;
+    const proveedor = document.getElementById("proveedor").value.trim();
+    const descripcion = document.getElementById("descripcion").value.trim();
 
-  if (precio <= 0) {
-    mostrarError("El precio debe ser mayor a 0.", "precio");
-    return;
-  }
-
-  if (stock < 0) {
-    mostrarError("El stock no puede ser negativo.", "stock");
-    return;
-  }
-
-  if (descuento < 0 || descuento > 100) {
-    mostrarError("El descuento debe estar entre 0 y 100%.", "descuento");
-    return;
-  }
-
-  // Validación de imágenes obligatorias
-  if (!imageUrls.frente || !imageUrls.espalda) {
-    mostrarError("Debes subir ambas imágenes: frente y espalda del producto.", "imagenes");
-    return;
-  }
-
-  // Preparar datos para enviar
-  const productData = {
-    nombre,
-    descripcion: descripcion || null,
-    categoria,
-    genero, // Campo obligatorio
-    talle: talle || null,
-    color: color || null,
-    marca: marca || null,
-    precio,
-    stock,
-    descuento, // Nuevo campo de descuento
-    proveedor: proveedor || null,
-    imagen_url: imageUrls.frente, // Imagen principal (frente)
-    imagen_espalda_url: imageUrls.espalda, // Nueva: imagen de espalda
-    estado: stock > 0 ? 'Disponible' : 'Sin stock'
-  };
-
-  console.log("📤 Enviando datos:", productData);
-  console.log("🔗 URL de la API:", API_URL);
-
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { 
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem('authToken')}` // Si requiere autenticación
-      },
-      body: JSON.stringify(productData)
-    });
-
-    console.log("📡 Respuesta del servidor:", res.status, res.statusText);
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      console.error("❌ Error del servidor:", errorData);
-      throw new Error(errorData.message || "Error al guardar el producto");
+    // Validaciones obligatorias
+    if (!nombre) {
+      mostrarError("El nombre del producto es obligatorio.", "nombre");
+      return;
+    }
+    if (!genero) {
+      mostrarError("Debes seleccionar un género para la prenda (Hombre/Mujer/Unisex).", "genero");
+      return;
+    }
+    if (!categoria) {
+      mostrarError("Debes seleccionar una categoría.", "categoria");
+      return;
+    }
+    if (precio <= 0) {
+      mostrarError("El precio debe ser mayor a 0.", "precio");
+      return;
+    }
+    if (stock < 0) {
+      mostrarError("El stock no puede ser negativo.", "stock");
+      return;
+    }
+    if (descuento < 0 || descuento > 100) {
+      mostrarError("El descuento debe estar entre 0 y 100%.", "descuento");
+      return;
+    }
+    if (!imageUrls.frente || !imageUrls.espalda) {
+      mostrarError("Debes subir ambas imágenes: frente y espalda del producto.", "imagenes");
+      return;
     }
 
-    const result = await res.json();
-    mostrarExito(`Producto "${nombre}" guardado correctamente con imágenes en la sección ${genero.toUpperCase()} ✅`);
-    
-    // Limpiar formulario y imágenes
-    document.getElementById("formProducto").reset();
-    removeImage('frente');
-    removeImage('espalda');
-    
-    // Opcional: Redirigir a la lista de productos después de 3 segundos
-    setTimeout(() => {
-      window.location.href = 'ver-productos.html';
-    }, 3000);
+    // Preparar datos para enviar
+    const productData = {
+      nombre,
+      descripcion: descripcion || null,
+      categoria,
+      genero,
+      talle: talle || null,
+      color: color || null,
+      marca: marca || null,
+      precio,
+      stock,
+      descuento,
+      proveedor: proveedor || null,
+      imagen_url: imageUrls.frente,
+      imagen_hover: imageUrls.espalda,
+      estado: stock > 0 ? 'Disponible' : 'Sin stock'
+    };
 
-  } catch (err) {
-    console.error("❌ Error completo:", err);
-    console.error("❌ Stack trace:", err.stack);
-    mostrarError(`Error al guardar: ${err.message}`);
-  }
+    try {
+      let res;
+      if (editId) {
+        // Modo edición: PUT
+        res = await fetch(`${API_URL}/${editId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem('authToken')}`
+          },
+          body: JSON.stringify(productData)
+        });
+      } else {
+        // Modo alta: POST
+        res = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem('authToken')}`
+          },
+          body: JSON.stringify(productData)
+        });
+      }
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Error al guardar el producto");
+      }
+
+      mostrarExito(`Producto "${nombre}" ${editId ? 'actualizado' : 'guardado'} correctamente ✅`);
+      document.getElementById("formProducto").reset();
+      removeImage('frente');
+      removeImage('espalda');
+      setTimeout(() => {
+        window.location.href = 'ver-productos.html';
+      }, 2000);
+    } catch (err) {
+      mostrarError(`Error al guardar: ${err.message}`);
+    }
+  });
 });
 
 // Función para validar URL
