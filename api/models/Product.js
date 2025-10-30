@@ -83,7 +83,7 @@ class Product {
             });
 
             // Primero crear el producto
-            const query = `
+            const insertQuery = `
               INSERT INTO productos (
                 nombre, descripcion, categoria, talle, color, marca, 
                 precio, stock, estado, imagen_url, imagen_espalda_url, usuario_id, proveedor, genero, descuento
@@ -95,6 +95,7 @@ class Product {
               nombre, descripcion, categoria, talle, color, marca,
               precio, stock, estado, imagen_url, imagen_espalda_url, usuario_id, proveedor, genero, descuento
             ];
+            const result = await client.query(insertQuery, values);
     } catch (error) {
       console.error('Error creando producto:', error);
       throw error;
