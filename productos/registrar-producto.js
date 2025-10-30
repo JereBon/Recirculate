@@ -201,7 +201,12 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
   const descuento = Number(document.getElementById("descuento").value) || 0;
   const proveedor = document.getElementById("proveedor").value.trim();
   const descripcion = document.getElementById("descripcion").value.trim();
-  const imagen_url = document.getElementById("imagen_url").value.trim();
+
+  console.log("📝 Datos del formulario:", {
+    nombre, categoria, genero, talle, color, marca, precio, stock, descuento, proveedor, descripcion
+  });
+  
+  console.log("🖼️ URLs de imágenes:", imageUrls);
 
   // Validaciones obligatorias
   if (!nombre) {
@@ -258,6 +263,9 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
     estado: stock > 0 ? 'Disponible' : 'Sin stock'
   };
 
+  console.log("📤 Enviando datos:", productData);
+  console.log("🔗 URL de la API:", API_URL);
+
   try {
     const res = await fetch(API_URL, {
       method: "POST",
@@ -268,8 +276,11 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
       body: JSON.stringify(productData)
     });
 
+    console.log("📡 Respuesta del servidor:", res.status, res.statusText);
+
     if (!res.ok) {
       const errorData = await res.json();
+      console.error("❌ Error del servidor:", errorData);
       throw new Error(errorData.message || "Error al guardar el producto");
     }
 
@@ -287,8 +298,9 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
     }, 3000);
 
   } catch (err) {
-    console.error("Error:", err);
-    mostrarError(err.message);
+    console.error("❌ Error completo:", err);
+    console.error("❌ Stack trace:", err.stack);
+    mostrarError(`Error al guardar: ${err.message}`);
   }
 });
 

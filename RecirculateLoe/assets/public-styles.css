@@ -850,6 +850,23 @@ body.sidebar-active .overlay {
   width: 16px;
 }
 
+/* Estilo especial para el botón de administrador */
+.user-menu-option.admin-option {
+  background-color: #fff3cd;
+  color: #856404;
+  border-left: 3px solid #ffc107;
+  font-weight: 600;
+}
+
+.user-menu-option.admin-option:hover {
+  background-color: #ffeaa7;
+  color: #212529;
+}
+
+.user-menu-option.admin-option i {
+  color: #ffc107;
+}
+
 .user-history-section {
   border-top: 1px solid #eee;
   padding: 15px 20px;

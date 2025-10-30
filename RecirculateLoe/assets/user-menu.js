@@ -120,6 +120,12 @@ class UserMenuManager {
                         <i class="fas fa-home"></i>
                         Volver al Inicio
                     </a>
+                    ${this.isAdmin() ? `
+                    <a href="../../index.html" class="user-menu-option admin-option">
+                        <i class="fas fa-cog"></i>
+                        Panel de Administración
+                    </a>
+                    ` : ''}
                     <button class="user-menu-option" id="logoutBtn">
                         <i class="fas fa-sign-out-alt"></i>
                         Cerrar Sesión
@@ -335,6 +341,11 @@ class UserMenuManager {
         }
         
         window.location.href = productUrl;
+    }
+
+    // Verificar si el usuario actual es administrador
+    isAdmin() {
+        return this.currentUser && this.currentUser.rol === 'admin';
     }
 
     // Método público para que otras páginas puedan registrar visitas

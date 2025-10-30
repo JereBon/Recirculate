@@ -183,11 +183,11 @@ app.post('/api/productos', verifyToken, verifyAdmin, async (req, res) => {
   try {
     console.log('📦 POST /api/productos - Creando producto...');
     console.log('📦 Datos recibidos:', JSON.stringify(req.body, null, 2));
-    console.log('📦 Usuario ID:', req.userId);
+    console.log('📦 Usuario:', req.user);
     
     const nuevo = await Product.create({
       ...req.body,
-      usuario_id: req.userId
+      usuario_id: req.user?.id || null
     });
     
     console.log('✅ Producto creado exitosamente:', JSON.stringify(nuevo, null, 2));
