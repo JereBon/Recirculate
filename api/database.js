@@ -183,6 +183,9 @@ const createProductsTable = async () => {
     
     // Migración: Agregar columna género si no existe
     await addGeneroColumn();
+    
+    // Migración: Agregar columna es_destacado si no existe
+    await addDestacadoColumn();
   } catch (error) {
     console.error('❌ Error creando tabla productos:', error);
   }
@@ -216,6 +219,22 @@ const addGeneroColumn = async () => {
     // Si la columna ya existe, no es un error
     if (error.code !== '42701') {
       console.error('❌ Error agregando columna género:', error.message);
+    }
+  }
+};
+
+// Función para agregar columna es_destacado a productos
+const addDestacadoColumn = async () => {
+  try {
+    await client.query(`
+      ALTER TABLE productos 
+      ADD COLUMN IF NOT EXISTS es_destacado BOOLEAN DEFAULT false
+    `);
+    console.log('✅ Columna es_destacado agregada/verificada');
+  } catch (error) {
+    // Si la columna ya existe, no es un error
+    if (error.code !== '42701') {
+      console.error('❌ Error agregando columna es_destacado:', error.message);
     }
   }
 };

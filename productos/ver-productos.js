@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     tabla.innerHTML = '';
     if (!productosFiltrados.length) {
       // Mensaje si no hay productos o ninguno coincide con búsqueda
-      const colspan = searchTerm.trim() ? 16 : 16;
+      const colspan = 17; // ahora hay 17 columnas (se agregó 'Género')
       tabla.innerHTML = `<tr><td colspan="${colspan}" style="text-align:center; color:#888;">${searchTerm.trim() ? 'No se encontraron productos que coincidan con la búsqueda' : 'No hay productos cargados'}</td></tr>`;
       return;
     }
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Agrega fila extra para mobile con número de producto
         const trProd = document.createElement('tr');
         trProd.className = 'producto-num-mobile';
-        trProd.innerHTML = `<td colspan="16" class="producto-num-mobile-td">Producto #${idVisual}</td>`;
+        trProd.innerHTML = `<td colspan="17" class="producto-num-mobile-td">Producto #${idVisual}</td>`;
         tabla.appendChild(trProd);
       }
       const tr = document.createElement('tr');
@@ -112,8 +112,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td data-label="Descripción">${prod.descripcion || ''}</td>
         <td data-label="Categoría">${prod.categoria || ''}</td>
         <td data-label="Talle">${prod.talle || ''}</td>
-        <td data-label="Color">${prod.color || ''}</td>
-        <td data-label="Marca">${prod.marca || ''}</td>
+  <td data-label="Color">${prod.color || ''}</td>
+  <td data-label="Género">${prod.genero || ''}</td>
+  <td data-label="Marca">${prod.marca || ''}</td>
         <td data-label="Estado">${prod.estado || ''}</td>
         <td data-label="Precio">${prod.precio != null ? '$' + prod.precio : ''}</td>
         <td data-label="Moneda">ARS</td>
@@ -135,8 +136,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   tabla.addEventListener('click', async (e) => {
     if (e.target.dataset.edit !== undefined) {
       // Redirige a página de edición con ID del producto
-      const id = e.target.dataset.edit;
-      window.location.href = `productos.html?id=${id}`;
+  const id = e.target.dataset.edit;
+  // Redirige al formulario de edición con el id del producto
+  window.location.href = `registrar-producto.html?id=${id}`;
     } else if (e.target.dataset.delete !== undefined) {
       // Confirma y elimina producto, luego recarga tabla
       const id = e.target.dataset.delete;
@@ -214,7 +216,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Redirigir a página de productos (formulario original)
   if (btnAgregarProducto) {
     btnAgregarProducto.addEventListener('click', () => {
-      window.location.href = 'productos.html';
+      // Llevar al formulario de registro de producto
+      window.location.href = 'registrar-producto.html';
     });
   }
 

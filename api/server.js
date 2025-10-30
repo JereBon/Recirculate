@@ -127,6 +127,10 @@ app.use('/api/audit', auditRoutes);
 const passwordResetRoutes = require('./routes/password-reset');
 app.use('/api/password-reset', passwordResetRoutes);
 
+// --- RUTAS DE PRODUCTOS ---
+const productRoutes = require('./routes/productos');
+app.use('/api/productos', productRoutes);
+
 // --- SOCKET.IO ---
 io.on('connection', (socket) => {
   console.log('Cliente conectado a Socket.IO');

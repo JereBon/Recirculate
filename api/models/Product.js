@@ -66,6 +66,7 @@ class Product {
         genero = 'unisex'
       } = productData;
 
+      // Primero crear el producto
       const query = `
         INSERT INTO productos (
           nombre, descripcion, categoria, talle, color, marca, 
@@ -80,7 +81,12 @@ class Product {
       ];
 
       const result = await client.query(query, values);
-      return result.rows[0];
+      const newProduct = result.rows[0];
+
+      // Actualizar sistema de destacados
+      await this.updateDestacados();
+
+      return newProduct;
     } catch (error) {
       console.error('Error creando producto:', error);
       throw error;
@@ -154,6 +160,64 @@ class Product {
       return result.rows[0];
     } catch (error) {
       console.error('Error eliminando producto:', error);
+      throw error;
+    }
+  }
+
+  // Obtener productos destacados (últimos 5)
+  static async getDestacados() {
+    try {
+      const query = `
+        SELECT * FROM productos 
+        WHERE es_destacado = true 
+        ORDER BY fecha_creacion DESC 
+        LIMIT 5
+      `;
+      const result = await client.query(query);
+      return result.rows;
+    } catch (error) {
+      console.error('Error obteniendo productos destacados:', error);
+      throw error;
+    }
+  }
+
+  // Obtener productos por género
+  static async getByGenero(genero) {
+    try {
+      const query = `
+        SELECT * FROM productos 
+        WHERE genero = $1 OR genero = 'unisex'
+        ORDER BY fecha_creacion DESC
+      `;
+      const result = await client.query(query, [genero]);
+      return result.rows;
+    } catch (error) {
+      console.error('Error obteniendo productos por género:', error);
+      throw error;
+    }
+  }
+
+  // Sistema de rotación de destacados (últimos 5 productos)
+  static async updateDestacados() {
+    try {
+      // Primero, quitar la marca de destacado de todos los productos
+      await client.query('UPDATE productos SET es_destacado = false');
+
+      // Marcar los últimos 5 productos como destacados
+      const query = `
+        UPDATE productos 
+        SET es_destacado = true 
+        WHERE id IN (
+          SELECT id FROM productos 
+          ORDER BY fecha_creacion DESC 
+          LIMIT 5
+        )
+      `;
+      await client.query(query);
+
+      console.log('✅ Sistema de destacados actualizado - últimos 5 productos marcados');
+    } catch (error) {
+      console.error('Error actualizando destacados:', error);
       throw error;
     }
   }
