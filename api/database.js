@@ -167,6 +167,7 @@ const createProductsTable = async () => {
       stock INTEGER DEFAULT 0,
       estado VARCHAR(50) DEFAULT 'Disponible',
       imagen_url TEXT,
+      imagen_espalda_url TEXT,
       proveedor VARCHAR(255),
       usuario_id INTEGER REFERENCES usuarios(id),
       fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -189,6 +190,9 @@ const createProductsTable = async () => {
     
     // Migración: Agregar columna descuento si no existe
     await addDescuentoColumn();
+
+  // Migración: Agregar columna imagen_espalda_url si no existe
+  await addImagenEspaldaColumn();
   } catch (error) {
     console.error('❌ Error creando tabla productos:', error);
   }
@@ -253,6 +257,21 @@ const addDescuentoColumn = async () => {
   } catch (error) {
     if (error.code !== '42701') {
       console.error('❌ Error agregando columna descuento:', error.message);
+    }
+  }
+};
+
+// Función para agregar columna imagen_espalda_url a productos
+const addImagenEspaldaColumn = async () => {
+  try {
+    await client.query(`
+      ALTER TABLE productos 
+      ADD COLUMN IF NOT EXISTS imagen_espalda_url TEXT
+    `);
+    console.log('✅ Columna imagen_espalda_url agregada/verificada');
+  } catch (error) {
+    if (error.code !== '42701') {
+      console.error('❌ Error agregando columna imagen_espalda_url:', error.message);
     }
   }
 };
