@@ -73,10 +73,10 @@ body, html {
   style.css - Estilos globales para la aplicación de ventas de ropa usada.
   Incluye responsividad, accesibilidad y estilos para formularios, tablas y mensajes.
   Se aplica la regla del 8 para márgenes, paddings y gaps.
+  Incluye todas las media queries y mejoras de Nico para máxima responsividad.
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-
 
 .cont-filtros button {
   background: #ffd84d;
@@ -118,15 +118,55 @@ a[href] > button,
 #menu-ordenar {
   padding: 8px 0;
 }
-.ordenar-opcion {
-  width: 100%;
-  background: none;
-  border: none;
-  text-align: left;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-size: 1rem;
+
+
+/* --- Media queries y responsividad de Nico --- */
+@media (max-width: 1200px) {
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
+@media (max-width: 900px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .producto-num-mobile-td {
+    font-size: 1.1rem;
+    padding: 8px 0;
+    background: #f7f7f7;
+    color: #222;
+    border-radius: 8px;
+    text-align: center;
+  }
+  .product-card {
+    padding: 12px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px #0001;
+  }
+  .header-logo img {
+    width: 120px;
+    height: auto;
+  }
+  .sidebar {
+    width: 100vw;
+    left: 0;
+    right: 0;
+    border-radius: 0;
+  }
+  .cont-filtros {
+    width: 100vw;
+    left: 0;
+    right: 0;
+    border-radius: 0;
+  }
+}
+
 .ordenar-opcion:hover {
   background: #f0f0f0;
 }

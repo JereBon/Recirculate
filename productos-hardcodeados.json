@@ -2,22 +2,7 @@
   "productos_para_agregar_manualmente": [
     
 
-    {
-      "nombre": "Remera Básica B&N",
-      "descripcion": "Remera básica blanca y negra con diseño minimalista",
-      "categoria": "remeras",
-      "genero": "hombre",
-      "talle": "M",
-      "color": "Blanco y Negro",
-      "marca": "Recirculate",
-      "precio": 38000,
-      "stock": 10,
-      "proveedor": "Textil Mendoza",
-      "imagen_url": "../../assets/images/pages/remeras/Remera Basica BN 1.png",
-      "imagen_hover": "../../assets/images/pages/remeras/Remera Basica BN 2.png",
-      "descuento": 0,
-      "estado": "Disponible"
-    },
+   
     {
       "nombre": "Remera Legends Violeta",
       "descripcion": "Remera con estampado Legends en tonos violetas únicos",

@@ -3,6 +3,97 @@
 // ============================================
 // FUNCIONES GLOBALES (Definidas fuera de DOMContentLoaded)
 // ============================================
+// --- Funciones del Carrito y Notificaciones de Nico ---
+function agregarAlCarrito(producto) {
+    let carrito = JSON.parse(localStorage.getItem('recirculate_carrito') || '[]');
+    const productoExistente = carrito.find(item => item.id === producto.id || item.nombre === producto.nombre);
+    if (productoExistente) {
+        productoExistente.cantidad++;
+    } else {
+        carrito.push({ ...producto, cantidad: 1 });
+    }
+    localStorage.setItem('recirculate_carrito', JSON.stringify(carrito));
+    actualizarContadorCarrito();
+    mostrarNotificacion('✔ Producto agregado al carrito');
+}
+
+function actualizarContadorCarrito() {
+    const carrito = JSON.parse(localStorage.getItem('recirculate_carrito') || '[]');
+    const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+    const contador = document.getElementById('cart-counter');
+    if (contador) {
+        contador.textContent = totalItems;
+    }
+}
+
+function mostrarNotificacion(mensaje) {
+    const notificacion = document.createElement('div');
+    notificacion.innerHTML = `<i class="fas fa-check-circle"></i><span>${mensaje}</span>`;
+    notificacion.style.cssText = `
+        position: fixed; top: 100px; right: 20px; background: #27ae60; color: white;
+        padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 10000; display: flex; align-items: center; gap: 0.5rem; font-family: "Poppins", sans-serif;
+        opacity: 1; transform: translateX(0); transition: all 0.3s ease-out;`;
+    document.body.appendChild(notificacion);
+    setTimeout(() => {
+        notificacion.style.opacity = '0';
+        notificacion.style.transform = 'translateX(400px)';
+        setTimeout(() => notificacion.remove(), 300);
+    }, 3000);
+}
+
+// --- Animación de Scroll de Nico ---
+function setupScrollAnimation() {
+    const elementsToAnimate = document.querySelectorAll('.product-card, .benefit-item');
+    if (elementsToAnimate.length === 0) return;
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    elementsToAnimate.forEach(el => {
+        observer.observe(el);
+    });
+}
+
+// --- Filtrado visual con feedback ---
+function filterProducts(minPrice, maxPrice, selectedColors, selectedSizes) {
+    const productCards = document.querySelectorAll('.product-card');
+    let visibleCount = 0;
+    productCards.forEach(card => {
+        const precioTexto = card.querySelector('.precio')?.textContent || '$0 ARS';
+        const precio = parseFloat(precioTexto.replace(/[^\d,.]/g, '').replace(',', '.')) || 0;
+        const color = card.dataset.color || '';
+        const talle = card.dataset.talle || '';
+        let cumpleFiltros = true;
+        if (precio < minPrice || precio > maxPrice) cumpleFiltros = false;
+        if (selectedColors.length > 0 && !selectedColors.includes(color.toLowerCase())) cumpleFiltros = false;
+        if (selectedSizes.length > 0 && !selectedSizes.includes(talle.toUpperCase())) cumpleFiltros = false;
+        if (cumpleFiltros) {
+            card.style.display = 'block';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    const productGrid = document.querySelector('.product-grid');
+    let noResultsMsg = document.querySelector('.no-results-message');
+    if (visibleCount === 0) {
+        if (!noResultsMsg) {
+            noResultsMsg = document.createElement('div');
+            noResultsMsg.className = 'no-results-message';
+            noResultsMsg.style.cssText = `grid-column: 1 / -1; text-align: center; padding: 3rem; font-size: 1.2rem; color: #666;`;
+            noResultsMsg.textContent = 'No se encontraron productos con los filtros seleccionados.';
+            productGrid.appendChild(noResultsMsg);
+        }
+    } else {
+        if (noResultsMsg) noResultsMsg.remove();
+    }
+    mostrarNotificacion(`✔ Filtros aplicados: ${visibleCount} producto(s) encontrado(s)`);
+}
 
 // --- Función para obtener la categoría actual basada en la URL ---
 function getCurrentCategory() {

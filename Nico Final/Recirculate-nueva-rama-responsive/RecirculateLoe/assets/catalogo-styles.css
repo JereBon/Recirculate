@@ -1,0 +1,292 @@
+/* assets/catalogo-styles.css */
+
+/* --- ESTILOS PARA EL SIDEBAR DE FILTROS --- */
+
+.filter-sidebar {
+  height: 100%;
+  width: 0; /* Oculto por defecto */
+  position: fixed;
+  z-index: 1001; /* Encima del overlay */
+  top: 0;
+  right: 0; /* Posicionado a la derecha */
+  background-color: #fff;
+  overflow-x: hidden;
+  transition: width 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-sidebar .close-btn {
+  position: absolute;
+  top: 40px; /* Ajusta si la altura del header del filtro es diferente */
+  right: 25px; /* Posicionado a la derecha dentro del sidebar */
+  font-size: 30px;
+  color: #222;
+  border: none;
+  background: none;
+  cursor: pointer;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1; /* Asegura centrado vertical del '✕' */
+}
+
+.filter-sidebar .close-btn:hover {
+  color: #555; /* Efecto hover sutil */
+}
+
+.filter-sidebar.open {
+  width: 350px; /* Ancho del sidebar */
+}
+
+.filter-sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #ffffff;
+  background-color: #ffffff;
+}
+
+.filter-sidebar-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+.filter-sidebar-content {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.filter-section {
+  margin-bottom: 25px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid #eee;
+}
+
+.filter-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.filter-section h4 {
+  margin: 0 0 15px 0;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+/* Filtro de Precio */
+.price-range-slider .price-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.price-range-slider input[type="number"] {
+  width: 100px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+}
+/* Estilo básico para la barra (se puede mejorar con JS) */
+.price-range-slider input[type="range"] {
+  width: 100%;
+  margin-top: 5px;
+  cursor: not-allowed; /* Deshabilitado por ahora */
+}
+
+
+/* Filtro de Color y Talle (Opciones) */
+.filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filter-option {
+  padding: 8px 15px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.filter-option:hover {
+  background-color: #f1f1f1;
+}
+
+.filter-option.selected {
+  background-color: #ffd84d;
+  border-color: #ffd84d;
+  font-weight: bold;
+}
+
+/* Estilos específicos para Color */
+.color-options .filter-option {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-block;
+  min-width: 30px; /* Asegura tamaño */
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.1) inset; /* Borde interno sutil */
+}
+
+/* Footer del Sidebar de Filtros */
+.filter-sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid #eee;
+  background-color: #f8f8f8;
+  text-align: center;
+}
+
+.apply-filters-btn {
+  background-color: #ffd84d;
+  color: #222;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.apply-filters-btn:hover {
+  background-color: #ffe98a;
+}
+
+/* Responsividad para el sidebar de filtros */
+@media (max-width: 480px) {
+  .filter-sidebar.open {
+    width: 90%; /* Más ancho en móviles */
+  }
+}
+
+/* --- Breadcrumbs --- */
+.breadcrumbs {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto 2rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 100%;
+}
+
+@media (max-width: 600px) {
+  .breadcrumbs {
+    margin-top: 5rem;
+  }
+}
+
+.breadcrumb-item {
+  display: inline-flex;
+  align-items: center;
+  color: #6c757d;
+}
+
+.breadcrumb-item a {
+  color: #222;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumb-item a:hover {
+  color: #ffd84d;
+  text-decoration: none;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: '\203A'; /* Flecha derecha tipográfica › */
+  font-size: 1.3rem;
+  display: inline-block;
+  margin: 0 0.3rem;
+  color: #6c757d;
+  font-weight: 300;
+}
+
+.breadcrumb-item.active {
+  color: #222;
+  font-weight: 500;
+}
+
+/* --- Encabezado de Categoría --- */
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto 2rem;
+  padding: 0 0 1rem 0;
+  border-bottom: 1px solid #ddd;
+  max-width: 100%;
+}
+
+@media (max-width: 420px) {
+  /* Oculta completamente el H1 del category header en pantallas <=420px */
+  .category-header h1,
+  .category-header .page-title { 
+    display: none !important;
+  }
+}
+
+.category-header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  text-align: left;
+}
+
+.filter-toolbar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.filter-toolbar select, .filter-toolbar .filter-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-toolbar select {
+  min-width: 250px;
+}
+
+.filter-toolbar .filter-btn {
+  background-color: #222;
+  color: #fff;
+  border-color: #222;
+}
+
+.filter-toolbar .filter-btn:hover {
+  background-color: #444;
+}
+
+.filter-toolbar select:hover {
+  border-color: #999;
+}
+
+/* --- Grilla de Productos de Categoría --- */
+/* Esta clase hereda los estilos de .product-grid de public-styles.css */
+.category-grid {
+  max-width: 100%;
+  margin: 0 auto 4rem;
+  padding: 0;
+}
