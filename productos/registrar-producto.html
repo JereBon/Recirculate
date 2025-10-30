@@ -26,6 +26,17 @@
       </div>
       
       <div class="form-group">
+        <label for="genero">Género</label>
+        <select id="genero" required aria-required="true">
+          <option value="">--Seleccionar--</option>
+          <option value="hombre">Hombre</option>
+          <option value="mujer">Mujer</option>
+          <option value="unisex">Unisex</option>
+        </select>
+        <small class="error-msg" id="e-genero"></small>
+      </div>
+
+      <div class="form-group">
         <label for="categoria">Categoría</label>
         <select id="categoria" required aria-required="true">
           <option value="">--Seleccionar--</option>
@@ -161,16 +172,14 @@
   </main>
   <script type="module" src="registrar-producto.js"></script>
 <script>
-// Opciones de categoría por género
+// Opciones de categoría por género (sin accesorios, sin categorías cruzadas)
 const categoriasPorGenero = {
   hombre: [
     { value: "remeras", label: "Remeras" },
     { value: "buzos", label: "Buzos" },
     { value: "camisas", label: "Camisas" },
     { value: "camperas", label: "Camperas" },
-    { value: "pantalones", label: "Pantalones" },
-    { value: "shorts", label: "Shorts" },
-    { value: "accesorios", label: "Accesorios" }
+    { value: "pantalones", label: "Pantalones" }
   ],
   mujer: [
     { value: "remeras", label: "Remeras" },
@@ -179,9 +188,7 @@ const categoriasPorGenero = {
     { value: "camperas", label: "Camperas" },
     { value: "pantalones", label: "Pantalones" },
     { value: "vestidos", label: "Vestidos" },
-    { value: "polleras", label: "Polleras" },
-    { value: "shorts", label: "Shorts" },
-    { value: "accesorios", label: "Accesorios" }
+    { value: "polleras", label: "Polleras" }
   ],
   unisex: [
     { value: "remeras", label: "Remeras" },
@@ -189,8 +196,8 @@ const categoriasPorGenero = {
     { value: "camisas", label: "Camisas" },
     { value: "camperas", label: "Camperas" },
     { value: "pantalones", label: "Pantalones" },
-    { value: "shorts", label: "Shorts" },
-    { value: "accesorios", label: "Accesorios" }
+    { value: "vestidos", label: "Vestidos" },
+    { value: "polleras", label: "Polleras" }
   ]
 };
 
@@ -208,7 +215,7 @@ function actualizarCategorias() {
   }
 }
 document.getElementById("genero").addEventListener("change", actualizarCategorias);
-// Inicializar si ya hay género seleccionado (edición)
+window.actualizarCategorias = actualizarCategorias;
 window.addEventListener("DOMContentLoaded", () => {
   actualizarCategorias();
 });

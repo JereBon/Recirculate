@@ -198,9 +198,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (prod) {
           document.getElementById('nombre').value = prod.nombre || '';
           document.getElementById('genero').value = prod.genero || '';
-          // Actualizar categorías según género antes de setear categoría
           if (window.actualizarCategorias) window.actualizarCategorias();
-          document.getElementById('categoria').value = prod.categoria || '';
+          // Esperar un ciclo de render para setear la categoría
+          setTimeout(() => {
+            document.getElementById('categoria').value = prod.categoria || '';
+          }, 0);
           document.getElementById('talle').value = prod.talle || '';
           document.getElementById('color').value = prod.color || '';
           document.getElementById('marca').value = prod.marca || '';
