@@ -9,15 +9,72 @@
   <div class="container">
     <h2>Registrar Producto</h2>
     <form id="formProducto" class="form">
-      <label>Nombre:
-        <input type="text" id="nombre" required>
+      <div class="form-grid">
+        <label>Nombre:
+          <input type="text" id="nombre" required placeholder="Ej: Remera básica negra">
+        </label>
+        
+        <label>Categoría:
+          <select id="categoria" required>
+            <option value="">Seleccionar categoría</option>
+            <option value="remeras">Remeras</option>
+            <option value="buzos">Buzos</option>
+            <option value="camisas">Camisas</option>
+            <option value="camperas">Camperas</option>
+            <option value="pantalones">Pantalones</option>
+            <option value="vestidos">Vestidos</option>
+            <option value="polleras">Polleras</option>
+            <option value="shorts">Shorts</option>
+            <option value="accesorios">Accesorios</option>
+          </select>
+        </label>
+
+        <label>Género: <span style="color: red;">*</span>
+          <select id="genero" required>
+            <option value="">Seleccionar género</option>
+            <option value="hombre">Hombre</option>
+            <option value="mujer">Mujer</option>
+            <option value="unisex">Unisex</option>
+          </select>
+        </label>
+        
+        <label>Talle:
+          <input type="text" id="talle" placeholder="Ej: M, L, XL, 42">
+        </label>
+        
+        <label>Color:
+          <input type="text" id="color" placeholder="Ej: Negro, Azul, Rojo">
+        </label>
+        
+        <label>Marca:
+          <input type="text" id="marca" placeholder="Ej: Nike, Adidas">
+        </label>
+        
+        <label>Precio: <span style="color: red;">*</span>
+          <input type="number" id="precio" min="0" step="0.01" required placeholder="0.00">
+        </label>
+        
+        <label>Stock: <span style="color: red;">*</span>
+          <input type="number" id="stock" min="0" required placeholder="0">
+        </label>
+        
+        <label>Proveedor:
+          <input type="text" id="proveedor" placeholder="Ej: Distribuidora ABC">
+        </label>
+      </div>
+      
+      <label>Descripción:
+        <textarea id="descripcion" rows="3" placeholder="Descripción detallada del producto..."></textarea>
       </label>
-      <label>Stock:
-        <input type="number" id="stock" min="0" required>
+      
+      <label>URL de Imagen:
+        <input type="url" id="imagen_url" placeholder="https://ejemplo.com/imagen.jpg">
       </label>
-      <label>Precio:
-        <input type="number" id="precio" min="0" required>
-      </label>
+      
+      <div class="form-note">
+        <small><span style="color: red;">*</span> Campos obligatorios</small>
+      </div>
+      
       <button type="submit" class="btn">Guardar Producto</button>
       <div id="errorProducto" class="error"></div>
       <div id="successProducto" class="success"></div>

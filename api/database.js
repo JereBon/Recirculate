@@ -180,6 +180,9 @@ const createProductsTable = async () => {
     
     // Migración: Agregar columna proveedor si no existe
     await addProveedorColumn();
+    
+    // Migración: Agregar columna género si no existe
+    await addGeneroColumn();
   } catch (error) {
     console.error('❌ Error creando tabla productos:', error);
   }
@@ -197,6 +200,22 @@ const addProveedorColumn = async () => {
     // Si la columna ya existe, no es un error
     if (error.code !== '42701') {
       console.error('❌ Error agregando columna proveedor:', error.message);
+    }
+  }
+};
+
+// Función para agregar columna género a productos existentes
+const addGeneroColumn = async () => {
+  try {
+    await client.query(`
+      ALTER TABLE productos 
+      ADD COLUMN IF NOT EXISTS genero VARCHAR(20) DEFAULT 'unisex'
+    `);
+    console.log('✅ Columna género agregada/verificada');
+  } catch (error) {
+    // Si la columna ya existe, no es un error
+    if (error.code !== '42701') {
+      console.error('❌ Error agregando columna género:', error.message);
     }
   }
 };
