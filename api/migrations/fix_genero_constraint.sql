@@ -1,4 +1,3 @@
--- Corrige el constraint de género para productos
 ALTER TABLE productos
 DROP CONSTRAINT IF EXISTS productos_genero_check;
 
