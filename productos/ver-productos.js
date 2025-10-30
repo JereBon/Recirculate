@@ -142,6 +142,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td data-label="Acciones">
             <button data-edit="${prod.id}" class="primary">Editar</button>
             <button data-delete="${prod.id}" style="background:#e74c3c; color:#fff; margin-left:8px;">Eliminar</button>
+             <button data-ver="${prod.id}" style="background:#3498db; color:#fff; margin-left:8px;">Ver</button>
           </td>
         `;
         tabla.appendChild(tr);
@@ -178,6 +179,10 @@ document.addEventListener('DOMContentLoaded', async () => {
           alert('Error al eliminar producto');
         }
       }
+      } else if (e.target.dataset.ver !== undefined) {
+        // Redirige a la vista de detalle del producto
+        const id = e.target.dataset.ver;
+        window.location.href = `producto-detalle.html?id=${id}`;
     }
   });
 
