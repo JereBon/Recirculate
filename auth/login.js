@@ -71,6 +71,53 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     }
 });
 
+/**
+* 4. FUNCIÓN CALLBACK DE GOOGLE
+* Esta función es llamada por el script de Google cuando el usuario inicia sesión.
+*/
+async function handleGoogleLogin(response) {
+    const googleToken = response.credential; // Este es el ID Token de Google
+    
+    // Muestra "Iniciando sesión..."
+    const loading = document.getElementById('loading');
+    const messageDiv = document.getElementById('message');
+    if (loading) loading.style.display = 'block';
+    
+    try {
+        // Envía el token de Google a tu backend para verificación
+        const res = await fetch(`${API_BASE_URL}/auth/google-signin`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ token: googleToken })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            // ¡Éxito! El backend verificó a Google y te dio su PROPIO token
+            localStorage.setItem('authToken', data.data.token);
+            localStorage.setItem('userData', JSON.stringify(data.data.user));
+            
+            showMessage('¡Login exitoso! Redirigiendo...', 'success');
+            
+            setTimeout(() => {
+                window.location.href = '../index.html'; // Redirige al panel de admin
+            }, 1000);
+            
+        } else {
+            showMessage(data.message || 'Error en el login con Google', 'error');
+        }
+
+    } catch (error) {
+        console.error('Error en Google Sign-In:', error);
+        showMessage('Error de conexión. Intenta nuevamente.', 'error');
+    } finally {
+        if (loading) loading.style.display = 'none';
+    }
+}
+
 // Función para mostrar mensajes
 function showMessage(message, type) {
     const messageDiv = document.getElementById('message');
