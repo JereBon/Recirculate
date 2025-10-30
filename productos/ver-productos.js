@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let allProductos = []; // Cache de todos los productos
   let searchTerm = ''; // Término de búsqueda actual
-  let filtros = { nombre: '', categoria: '', marca: '', precioDesde: '', precioHasta: '', stockDesde: '', stockHasta: '', fechaDesde: '', fechaHasta: '' };
+  let filtros = { nombre: '', categoria: '', marca: '', genero: '', precioDesde: '', precioHasta: '', stockDesde: '', stockHasta: '', fechaDesde: '', fechaHasta: '' };
 
   // Función asíncrona para obtener productos desde la API
   async function fetchProductos() {
@@ -55,6 +55,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Filtrado por género para mostrar en ambas secciones
     if (filtros.genero) {
       filtered = filtered.filter(p => p.genero && p.genero.toLowerCase() === filtros.genero.toLowerCase());
+    }
+    // Mostrar en subcategoría: si hay filtro de género y categoría, ambos deben coincidir
+    if (filtros.genero && filtros.categoria) {
+      filtered = filtered.filter(p => p.genero && p.genero.toLowerCase() === filtros.genero.toLowerCase() && p.categoria && p.categoria.toLowerCase() === filtros.categoria.toLowerCase());
     }
     if (filtros.precioDesde) {
       filtered = filtered.filter(p => p.precio != null && p.precio >= parseFloat(filtros.precioDesde));
@@ -108,10 +112,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         let imagenHtml = '';
         if (prod.imagen_url) {
           // Si hay imagen_hover, agrega eventos para cambiar la imagen al hacer hover
-          if (prod.imagen_hover) {
-            imagenHtml = `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" onmouseover="this.src='${prod.imagen_hover}'" onmouseout="this.src='${prod.imagen_url}'" />`;
-          } else if (prod.imagen_espalda_url) {
-            imagenHtml = `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" onmouseover="this.src='${prod.imagen_espalda_url}'" onmouseout="this.src='${prod.imagen_url}'" />`;
+          const hoverImg = prod.imagen_hover || prod.imagen_espalda_url;
+          if (hoverImg) {
+            imagenHtml = `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" onmouseover="this.src='${hoverImg}'" onmouseout="this.src='${prod.imagen_url}'" />`;
           } else {
             imagenHtml = `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" />`;
           }
