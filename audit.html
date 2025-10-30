@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditoría de Productos - Recirculate</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .audit-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .audit-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .audit-header h1 {
+            color: #333;
+            margin: 0 0 1rem 0;
+        }
+
+        .audit-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: #ffd84d;
+            color: #222;
+        }
+
+        .btn-primary:hover {
+            background: #ffed4a;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .audit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .audit-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .audit-card h3 {
+            color: #333;
+            margin: 0 0 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffd84d;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .problems-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .problem-item {
+            padding: 0.75rem;
+            border-left: 4px solid #dc3545;
+            background: #f8f9fa;
+            margin-bottom: 0.5rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .problem-item strong {
+            color: #721c24;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .category-item {
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .login-required {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .login-required i {
+            font-size: 4rem;
+            color: #ffd84d;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .audit-container {
+                padding: 1rem;
+            }
+
+            .audit-controls {
+                flex-direction: column;
+            }
+
+            .audit-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="audit-container">
+        <div class="audit-header">
+            <h1><i class="fas fa-chart-bar"></i> Auditoría de Productos</h1>
+            <p>Sistema completo de análisis y validación de datos</p>
+            
+            <div class="audit-controls">
+                <button class="btn btn-primary" id="btn-run-audit">
+                    <i class="fas fa-play"></i> Ejecutar Auditoría
+                </button>
+                <button class="btn btn-secondary" id="btn-export-json">
+                    <i class="fas fa-download"></i> Exportar JSON
+                </button>
+                <button class="btn btn-secondary" id="btn-export-csv">
+                    <i class="fas fa-file-csv"></i> Exportar CSV
+                </button>
+                <a href="/" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver al Sistema
+                </a>
+            </div>
+        </div>
+
+        <div id="audit-content">
+            <div class="login-required">
+                <i class="fas fa-user-lock"></i>
+                <h2>Autenticación Requerida</h2>
+                <p>Para acceder a la auditoría de productos necesitas iniciar sesión con una cuenta de administrador.</p>
+                <a href="/auth/login.html" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class AuditManager {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.checkAuth();
+                this.setupEventListeners();
+            }
+
+            checkAuth() {
+                const token = localStorage.getItem('recirculate_token');
+                if (token) {
+                    this.showAuditInterface();
+                }
+            }
+
+            setupEventListeners() {
+                document.getElementById('btn-run-audit')?.addEventListener('click', () => this.runAudit());
+                document.getElementById('btn-export-json')?.addEventListener('click', () => this.exportData('json'));
+                document.getElementById('btn-export-csv')?.addEventListener('click', () => this.exportData('csv'));
+            }
+
+            showAuditInterface() {
+                const content = document.getElementById('audit-content');
+                content.innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Inicializando sistema de auditoría...</p>
+                    </div>
+                `;
+            }
+
+            async runAudit() {
+                const content = document.getElementById('audit-content');
+                const btn = document.getElementById('btn-run-audit');
+                
+                try {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ejecutando...';
+
+                    content.innerHTML = `
+                        <div class="loading">
+                            <i class="fas fa-cogs fa-spin"></i>
+                            <p>Analizando productos en la base de datos...</p>
+                        </div>
+                    `;
+
+                    const token = localStorage.getItem('recirculate_token');
+                    const response = await fetch('/api/audit/productos', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Error en la auditoría');
+                    }
+
+                    this.displayAuditResults(data.audit_report);
+
+                } catch (error) {
+                    console.error('Error ejecutando auditoría:', error);
+                    content.innerHTML = `
+                        <div class="error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Error:</strong> ${error.message}
+                        </div>
+                    `;
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-play"></i> Ejecutar Auditoría';
+                }
+            }
+
+            displayAuditResults(report) {
+                const content = document.getElementById('audit-content');
+                
+                content.innerHTML = `
+                    <div class="success">
+                        <i class="fas fa-check-circle"></i>
+                        <strong>Auditoría Completada:</strong> ${report.resumen.total_productos} productos analizados
+                        <small style="display: block; margin-top: 0.5rem;">
+                            Generado el ${new Date(report.timestamp).toLocaleString('es-AR')}
+                        </small>
+                    </div>
+
+                    <div class="audit-grid">
+                        <div class="audit-card">
+                            <h3><i class="fas fa-chart-pie"></i> Resumen General</h3>
+                            <div class="stat-grid">
+                                <div class="stat-item">
+                                    <span class="stat-number">${report.resumen.total_productos}</span>
+                                    <span class="stat-label">Total Productos</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">${report.resumen.productos_activos}</span>
+                                    <span class="stat-label">Disponibles</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">${report.resumen.productos_sin_stock}</span>
+                                    <span class="stat-label">Sin Stock</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">${report.resumen.problemas_detectados}</span>
+                                    <span class="stat-label">Problemas</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="audit-card">
+                            <h3><i class="fas fa-images"></i> Cobertura de Imágenes</h3>
+                            <div class="stat-grid">
+                                <div class="stat-item">
+                                    <span class="stat-number">${report.resumen.cobertura_imagenes.con_imagen_principal}</span>
+                                    <span class="stat-label">Con Imagen Principal</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">${report.resumen.cobertura_imagenes.con_imagen_secundaria}</span>
+                                    <span class="stat-label">Con Imagen Secundaria</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="audit-card">
+                            <h3><i class="fas fa-dollar-sign"></i> Análisis de Precios</h3>
+                            <div class="stat-grid">
+                                <div class="stat-item">
+                                    <span class="stat-number">$${this.formatPrice(report.estadisticas_generales.precio_promedio)}</span>
+                                    <span class="stat-label">Precio Promedio</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">$${this.formatPrice(report.estadisticas_generales.precio_minimo)}</span>
+                                    <span class="stat-label">Precio Mínimo</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">$${this.formatPrice(report.estadisticas_generales.precio_maximo)}</span>
+                                    <span class="stat-label">Precio Máximo</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">${report.estadisticas_generales.stock_total}</span>
+                                    <span class="stat-label">Stock Total</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        ${report.productos_por_categoria.length > 0 ? `
+                        <div class="audit-card">
+                            <h3><i class="fas fa-tags"></i> Productos por Categoría</h3>
+                            <div class="categories-grid">
+                                ${report.productos_por_categoria.map(cat => `
+                                    <div class="category-item">
+                                        <strong>${cat.categoria}</strong><br>
+                                        ${cat.cantidad} productos<br>
+                                        <small>$${this.formatPrice(cat.precio_promedio)} promedio</small>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        ${report.problemas_detectados.length > 0 ? `
+                        <div class="audit-card">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Problemas Detectados</h3>
+                            <div class="problems-list">
+                                ${report.problemas_detectados.map(problem => `
+                                    <div class="problem-item">
+                                        <strong>${problem.nombre}</strong> (ID: ${problem.id})<br>
+                                        <small>${problem.problema}</small>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        ` : `
+                        <div class="audit-card">
+                            <h3><i class="fas fa-check-circle"></i> Sin Problemas Detectados</h3>
+                            <p>¡Excelente! No se encontraron problemas en la base de datos de productos.</p>
+                        </div>
+                        `}
+                    </div>
+                `;
+            }
+
+            async exportData(format) {
+                try {
+                    const token = localStorage.getItem('recirculate_token');
+                    const response = await fetch(`/api/audit/productos/export?format=${format}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (format === 'csv') {
+                        const csvData = await response.text();
+                        this.downloadFile(csvData, 'productos_export.csv', 'text/csv');
+                    } else {
+                        const jsonData = await response.json();
+                        this.downloadFile(
+                            JSON.stringify(jsonData, null, 2), 
+                            'productos_export.json', 
+                            'application/json'
+                        );
+                    }
+                } catch (error) {
+                    console.error('Error exportando datos:', error);
+                    alert('Error al exportar los datos');
+                }
+            }
+
+            downloadFile(content, filename, contentType) {
+                const blob = new Blob([content], { type: contentType });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            }
+
+            formatPrice(price) {
+                return new Intl.NumberFormat('es-AR').format(price || 0);
+            }
+        }
+
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            new AuditManager();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remera Legends Violeta - Recirculate</title>
+    <link rel="stylesheet" href="../../../assets/public-styles.css">
+    <link rel="stylesheet" href="../../../assets/producto-detalle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="public-header fixed-header">
+    <nav class="header-nav">
+        <div class="header-left">
+            <button id="menu-btn" class="header-icon menu-icon"><i class="fas fa-bars"></i></button>
+            <div id="search-container" class="search-container">
+                <button id="search-btn" class="header-icon search-icon"><i class="fas fa-search"></i></button>
+                <input type="text" id="search-input" class="search-input" placeholder="Buscar...">
+            </div>
+        </div>
+        <a href="../../../home/home.html" class="header-logo">
+            <img src="../../../assets/images/Recirculate-logo.png" alt="Recirculate Logo" class="logo-image">
+        </a>
+        <div class="header-right">
+            <a href="../../../auth/login.html" class="header-icon user-icon" data-tooltip="INICIAR SESIÓN"><i class="fas fa-user"></i></a>
+            <a href="../../../carrito/carrito.html" class="header-icon cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-counter" class="cart-counter">0</span>
+            </a>
+        </div>
+    </nav>
+</header>
+
+<div id="sidebar-menu" class="sidebar">
+    <button id="close-btn" class="close-btn">&times;</button>
+    
+    <div class="sidebar-menu-list">
+        <div class="sidebar-category" data-category="hombre">
+            <div class="sidebar-category-header">
+                <span>HOMBRE</span>
+                <i class="fas fa-chevron-right toggle-icon"></i>
+            </div>
+            <div class="sidebar-submenu">
+                <a href="../../../pages/hombre/hombre.html"><strong>Ver Todo Hombre</strong></a>
+                <a href="../../../pages/remeras/remeras.html">Remeras</a>
+                <a href="../../../pages/buzos/buzos.html">Buzos</a>
+                <a href="../../../pages/camperas/camperas.html">Camperas</a>
+                <a href="../../../pages/pantalones/pantalones.html">Pantalones</a>
+                <a href="../../../pages/camisas/camisas.html">Camisas</a>
+            </div>
+        </div>
+
+        <div class="sidebar-category" data-category="mujer">
+            <div class="sidebar-category-header">
+                <span>MUJER</span>
+                <i class="fas fa-chevron-right toggle-icon"></i>
+            </div>
+            <div class="sidebar-submenu">
+                <a href="../../../pages/mujer/mujer.html"><strong>Ver Todo Mujer</strong></a>
+                <a href="../../../pages/Mremeras/Mremeras.html">Remeras/Tops</a>
+                <a href="../../../pages/Mvestidos/Mvestidos.html">Vestidos/Monos</a>
+                <a href="../../../pages/Mpolleras/Mpolleras.html">Polleras/Shorts/Skorts</a>
+            </div>
+        </div>
+
+        <a href="../../../pages/unisex/unisex.html" class="sidebar-main-link">UNISEX</a>
+        <a href="../../../pages/ingresos/ingresos.html" class="sidebar-main-link">INGRESOS</a>
+        <a href="../../../pages/descuentos/descuentos.html" class="sidebar-main-link">DESCUENTOS</a>
+
+        <hr class="sidebar-divider">
+
+        <div class="sidebar-auth-group">
+            <a href="../../../auth/login.html" class="sidebar-main-link">INICIAR SESIÓN</a>
+            <a href="../../../auth/registro.html" class="sidebar-main-link">REGISTRARSE</a>
+        </div>
+    </div>
+</div>
+
+<div class="overlay"></div>
+
+<main class="public-main">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumbs">
+            <li class="breadcrumb-item"><a href="../../../home/home.html">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="../../../pages/hombre/hombre.html">Hombre</a></li>
+            <li class="breadcrumb-item"><a href="../../../pages/remeras/remeras.html">Remeras</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Remera Legends Violeta</li>
+        </ol>
+    </nav>
+
+    <div class="producto-detalle-container">
+        <div class="producto-galeria">
+            <div class="imagen-principal">
+                <img src="../../../assets/images/pages/remeras/Remera Legends Violeta 1.png" alt="Remera Legends Violeta">
+            </div>
+            <div class="miniaturas">
+                <div class="miniatura activa">
+                    <img src="../../../assets/images/pages/remeras/Remera Legends Violeta 1.png" alt="Remera Vista 1">
+                </div>
+                <div class="miniatura">
+                    <img src="../../../assets/images/pages/remeras/Remera Legends Violeta 2.png" alt="Remera Vista 2">
+                </div>
+            </div>
+        </div>
+
+        <div class="producto-info">
+            <h1>Remera Legends Violeta</h1>
+            
+            <p class="producto-precio">$28.900 ARS</p>
+
+            <div class="producto-talle">
+                <h3>Talle: <span id="talle-actual">Selecciona un talle</span></h3>
+                <div class="talle-opciones">
+                    <button class="talle-btn" data-talle="S">S</button>
+                    <button class="talle-btn" data-talle="M">M</button>
+                    <button class="talle-btn" data-talle="L">L</button>
+                    <button class="talle-btn" data-talle="XL">XL</button>
+                </div>
+            </div>
+
+            <div class="producto-cantidad">
+                <h3>Cantidad:</h3>
+                <div class="cantidad-selector">
+                    <button id="btn-menos" class="cantidad-btn">-</button>
+                    <input type="number" id="cantidad-input" class="cantidad-input" value="1" min="1">
+                    <button id="btn-mas" class="cantidad-btn">+</button>
+                </div>
+            </div>
+
+            <div class="producto-acciones">
+                <button class="btn-agregar-carrito">
+                    <i class="fas fa-shopping-cart"></i> Agregar al Carrito
+                </button>
+                <button class="btn-comprar-ahora">
+                    <i class="fas fa-bolt"></i> Comprar Ahora
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Descripción completa debajo del producto -->
+    <div class="producto-descripcion-completa">
+        <div class="producto-descripcion">
+            <h2>Descripción</h2>
+            <p>
+                <strong>Remera Legends Violeta</strong> - Atrévete con el color. Esta remera en vibrante tono violeta 
+                presenta un diseño inspirado en leyendas urbanas y cultura pop. El color audaz y el estampado exclusivo 
+                te hacen destacar en cualquier ocasión. Confeccionada en algodón suave que garantiza comodidad sin comprometer 
+                el estilo. Una pieza única para quienes no temen expresar su personalidad.
+            </p>
+        </div>
+
+        <div class="producto-especificaciones">
+            <h2>Especificaciones</h2>
+            <ul>
+                <li><strong>Material:</strong> 100% Algodón - Fresco y cómodo</li>
+                <li><strong>Fit:</strong> Regular Fit - Corte versátil</li>
+                <li><strong>Detalles:</strong> Color violeta intenso, estampado "Legends", cuello redondo, manga corta</li>
+                <li><strong>Cuidado:</strong> Lavar del revés en agua fría con colores similares. No planchar estampado.</li>
+            </ul>
+        </div>
+    </div>
+</main>
+
+<footer class="public-footer">
+    <div class="footer-container">
+        <div class="footer-column">
+            <h4>Recirculate</h4>
+            <p>Moda circular para un futuro sostenible.</p>
+        </div>
+        <div class="footer-column">
+            <h4>Navegación</h4>
+            <ul>
+                <li><a href="../../../home/home.html">Inicio</a></li>
+                <li><a href="../../../pages/remeras/remeras.html">Remeras</a></li>
+                <li><a href="../../../pages/pantalones/pantalones.html">Pantalones</a></li>
+                <li><a href="../../../pages/buzos/buzos.html">Buzos</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h4>Contacto</h4>
+            <ul>
+                <li><a href="mailto:info@recirculate.com">info@recirculate.com</a></li>
+                <li><a href="tel:+5492615095558">+54 261 5095558</a></li>
+                <li>Alpatacal 1434 - Quinta Sección</li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h4>Síguenos</h4>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/people/Recirculate-Mendoza/100083294088879/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/recirculate_mdz" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-divider"></div>
+    
+    <div class="footer-bottom">
+        <p>&copy; 2025 Recirculate. Todos los derechos reservados.</p>
+    </div>
+</footer>
+
+<script src="../../../assets/pages.js"></script>
+<script src="../../../assets/producto-detalle.js"></script>
+</body>
+</html>
