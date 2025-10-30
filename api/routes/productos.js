@@ -88,6 +88,9 @@ router.post('/', verifyToken, async (req, res) => {
       ...req.body,
       usuario_id: req.user.id
     };
+    
+      // Log para debug: mostrar el valor recibido en genero
+      console.log('DEBUG genero recibido:', productData.genero);
 
     // Validaciones obligatorias
     if (!productData.nombre) {
