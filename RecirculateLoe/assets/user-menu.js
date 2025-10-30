@@ -7,6 +7,7 @@ class UserMenuManager {
         this.currentUser = null;
         this.visitHistory = [];
         this.maxHistoryItems = 5;
+        this.storageListenerSetup = false;
         
         this.init();
     }
@@ -22,12 +23,56 @@ class UserMenuManager {
             this.loadVisitHistory();
             // Configurar event listeners
             this.setupEventListeners();
+        } else {
+            // Si no está logueado, limpiar cualquier menú existente
+            this.removeExistingMenu();
+        }
+        
+        // Solo configurar el listener una vez
+        if (!this.storageListenerSetup) {
+            this.setupStorageListener();
+            this.storageListenerSetup = true;
         }
     }
 
+    setupStorageListener() {
+        // Escuchar cambios en localStorage (como cuando se hace login/logout)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'authToken' || e.key === 'userData') {
+                // Reinicializar el menú cuando cambie el estado de autenticación
+                setTimeout(() => {
+                    this.init();
+                }, 100);
+            }
+        });
+        
+        // También escuchar cambios en la misma pestaña
+        const originalSetItem = localStorage.setItem;
+        const originalRemoveItem = localStorage.removeItem;
+        const self = this;
+        
+        localStorage.setItem = function(key, value) {
+            originalSetItem.apply(this, arguments);
+            if (key === 'authToken' || key === 'userData') {
+                setTimeout(() => {
+                    self.init();
+                }, 100);
+            }
+        };
+        
+        localStorage.removeItem = function(key) {
+            originalRemoveItem.apply(this, arguments);
+            if (key === 'authToken' || key === 'userData') {
+                setTimeout(() => {
+                    self.init();
+                }, 100);
+            }
+        };
+    }
+
     checkLoginStatus() {
-        // Verificar token JWT en localStorage
-        const token = localStorage.getItem('token');
+        // Verificar token JWT en localStorage (usando authToken como el sistema real)
+        const token = localStorage.getItem('authToken');
         const userData = localStorage.getItem('userData');
         
         if (token && userData) {
@@ -52,6 +97,9 @@ class UserMenuManager {
     }
 
     createUserMenu() {
+        // Limpiar menú anterior si existe
+        this.removeExistingMenu();
+        
         // Encontrar el ícono de usuario
         const userIcon = document.querySelector('.user-icon');
         if (!userIcon) return;
@@ -95,6 +143,22 @@ class UserMenuManager {
         
         // Actualizar el historial visual
         this.renderVisitHistory();
+    }
+
+    removeExistingMenu() {
+        const existingMenu = document.getElementById('userMenuDropdown');
+        if (existingMenu) {
+            existingMenu.remove();
+        }
+        
+        // Restaurar el ícono de usuario al estado original si no está logueado
+        if (!this.isLoggedIn) {
+            const userIcon = document.querySelector('.user-icon');
+            if (userIcon) {
+                userIcon.href = '../../auth/login.html';
+                userIcon.setAttribute('data-tooltip', 'INICIAR SESIÓN');
+            }
+        }
     }
 
     setupEventListeners() {
@@ -155,18 +219,21 @@ class UserMenuManager {
     }
 
     logout() {
-        // Limpiar datos del usuario
-        this.clearUserData();
-        
-        // Mostrar mensaje de confirmación
-        alert('Has cerrado sesión exitosamente');
-        
-        // Redirigir al login
-        window.location.href = '../../auth/login.html';
+        // Confirmar logout
+        if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+            // Limpiar datos del usuario
+            this.clearUserData();
+            
+            // Mostrar mensaje de confirmación
+            alert('Has cerrado sesión exitosamente');
+            
+            // Redirigir al login
+            window.location.href = '../../auth/login.html';
+        }
     }
 
     clearUserData() {
-        localStorage.removeItem('token');
+        localStorage.removeItem('authToken');
         localStorage.removeItem('userData');
         localStorage.removeItem('visitHistory');
         this.isLoggedIn = false;
@@ -255,8 +322,18 @@ class UserMenuManager {
         // Cerrar el menú
         this.closeUserMenu();
         
-        // Navegar al producto (esto dependerá de cómo estén estructurados los URLs de productos)
-        const productUrl = `../productos/${categoria}/${productId}.html`;
+        // Generar URL basada en la categoría y el path actual
+        let productUrl;
+        const currentPath = window.location.pathname;
+        
+        if (currentPath.includes('/home/')) {
+            productUrl = `../pages/${categoria}/${categoria}.html`;
+        } else if (currentPath.includes('/pages/')) {
+            productUrl = `./${categoria}.html`;
+        } else {
+            productUrl = `../pages/${categoria}/${categoria}.html`;
+        }
+        
         window.location.href = productUrl;
     }
 
@@ -276,29 +353,9 @@ document.addEventListener('DOMContentLoaded', function() {
 // Hacer disponible globalmente para uso en otras páginas
 window.userMenuManager = userMenuManager;
 
-// Función de prueba para simular login (solo para testing)
-window.testLogin = function() {
-    // Simular datos de usuario y token
-    const testUser = {
-        id: 1,
-        nombre: 'Usuario Prueba',
-        email: 'test@recirculate.com'
-    };
-    
-    // Crear un token fake (solo para testing)
-    const testToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyZWNpcmN1bGF0ZSIsImlhdCI6MTYzNTQ2NzYwMCwiZXhwIjoyMDAwMDAwMDAwLCJhdWQiOiJyZWNpcmN1bGF0ZS5jb20iLCJzdWIiOiJ0ZXN0QHJlY2lyY3VsYXRlLmNvbSJ9';
-    
-    // Guardar en localStorage
-    localStorage.setItem('token', testToken);
-    localStorage.setItem('userData', JSON.stringify(testUser));
-    
-    // Reinicializar el menú
-    location.reload();
-};
-
-window.testLogout = function() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userData');
-    localStorage.removeItem('visitHistory');
-    location.reload();
+// Función para inicializar el menú después del login (llamada desde auth.js)
+window.initializeUserMenu = function() {
+    if (userMenuManager) {
+        userMenuManager.init();
+    }
 };
