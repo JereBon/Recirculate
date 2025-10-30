@@ -45,7 +45,7 @@ async function cargarProductosPorGenero(genero) {
             productCard.dataset.descuento = 0; // Por defecto
             productCard.dataset.isNew = 'false'; // Por defecto
             
-            // Calcular descuento si existe
+            // Calcular descuento si existe (usa descuento de la DB)
             let discountHtml = '';
             if (producto.descuento && producto.descuento > 0) {
                 discountHtml = `<div class="discount-tag">${producto.descuento}% OFF</div>`;

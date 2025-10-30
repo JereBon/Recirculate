@@ -186,6 +186,9 @@ const createProductsTable = async () => {
     
     // Migración: Agregar columna es_destacado si no existe
     await addDestacadoColumn();
+    
+    // Migración: Agregar columna descuento si no existe
+    await addDescuentoColumn();
   } catch (error) {
     console.error('❌ Error creando tabla productos:', error);
   }
@@ -235,6 +238,21 @@ const addDestacadoColumn = async () => {
     // Si la columna ya existe, no es un error
     if (error.code !== '42701') {
       console.error('❌ Error agregando columna es_destacado:', error.message);
+    }
+  }
+};
+
+// Función para agregar columna descuento a productos
+const addDescuentoColumn = async () => {
+  try {
+    await client.query(`
+      ALTER TABLE productos 
+      ADD COLUMN IF NOT EXISTS descuento INTEGER DEFAULT 0 CHECK (descuento >= 0 AND descuento <= 100)
+    `);
+    console.log('✅ Columna descuento agregada/verificada');
+  } catch (error) {
+    if (error.code !== '42701') {
+      console.error('❌ Error agregando columna descuento:', error.message);
     }
   }
 };

@@ -13,6 +13,7 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
   const marca = document.getElementById("marca").value.trim();
   const precio = Number(document.getElementById("precio").value);
   const stock = Number(document.getElementById("stock").value);
+  const descuento = Number(document.getElementById("descuento").value) || 0;
   const proveedor = document.getElementById("proveedor").value.trim();
   const descripcion = document.getElementById("descripcion").value.trim();
   const imagen_url = document.getElementById("imagen_url").value.trim();
@@ -43,6 +44,11 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
     return;
   }
 
+  if (descuento < 0 || descuento > 100) {
+    mostrarError("El descuento debe estar entre 0 y 100%.");
+    return;
+  }
+
   // Validación de URL de imagen (si se proporciona)
   if (imagen_url && !isValidURL(imagen_url)) {
     mostrarError("La URL de imagen no es válida.");
@@ -60,6 +66,7 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
     marca: marca || null,
     precio,
     stock,
+    descuento, // Nuevo campo de descuento
     proveedor: proveedor || null,
     imagen_url: imagen_url || null,
     estado: stock > 0 ? 'Disponible' : 'Sin stock'

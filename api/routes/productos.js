@@ -108,6 +108,10 @@ router.post('/', verifyToken, async (req, res) => {
       return res.status(400).json({ message: 'El precio debe ser mayor a 0' });
     }
 
+    if (productData.descuento && (productData.descuento < 0 || productData.descuento > 100)) {
+      return res.status(400).json({ message: 'El descuento debe estar entre 0 y 100%' });
+    }
+
     // Verificar si ya existe un producto con ese nombre
     const existingProduct = await Product.findByName(productData.nombre);
     if (existingProduct) {
@@ -140,6 +144,10 @@ router.put('/:id', verifyToken, async (req, res) => {
 
     if (productData.precio && productData.precio <= 0) {
       return res.status(400).json({ message: 'El precio debe ser mayor a 0' });
+    }
+
+    if (productData.descuento && (productData.descuento < 0 || productData.descuento > 100)) {
+      return res.status(400).json({ message: 'El descuento debe estar entre 0 y 100%' });
     }
 
     const productoActualizado = await Product.update(id, productData);

@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     tabla.innerHTML = '';
     if (!productosFiltrados.length) {
       // Mensaje si no hay productos o ninguno coincide con búsqueda
-      const colspan = 17; // ahora hay 17 columnas (se agregó 'Género')
+      const colspan = 18; // ahora hay 18 columnas (se agregó 'Género' y 'Descuento')
       tabla.innerHTML = `<tr><td colspan="${colspan}" style="text-align:center; color:#888;">${searchTerm.trim() ? 'No se encontraron productos que coincidan con la búsqueda' : 'No hay productos cargados'}</td></tr>`;
       return;
     }
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Agrega fila extra para mobile con número de producto
         const trProd = document.createElement('tr');
         trProd.className = 'producto-num-mobile';
-        trProd.innerHTML = `<td colspan="17" class="producto-num-mobile-td">Producto #${idVisual}</td>`;
+        trProd.innerHTML = `<td colspan="18" class="producto-num-mobile-td">Producto #${idVisual}</td>`;
         tabla.appendChild(trProd);
       }
       const tr = document.createElement('tr');
@@ -117,6 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   <td data-label="Marca">${prod.marca || ''}</td>
         <td data-label="Estado">${prod.estado || ''}</td>
         <td data-label="Precio">${prod.precio != null ? '$' + prod.precio : ''}</td>
+        <td data-label="Descuento">${prod.descuento ? prod.descuento + '%' : '0%'}</td>
         <td data-label="Moneda">ARS</td>
         <td data-label="Proveedor">${prod.proveedor || '-'}</td>
         <td data-label="Stock">${prod.stock != null ? prod.stock : ''}</td>
