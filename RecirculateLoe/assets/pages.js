@@ -4,6 +4,157 @@
 // FUNCIONES GLOBALES (Definidas fuera de DOMContentLoaded)
 // ============================================
 
+// --- Función para cargar productos dinámicamente desde API ---
+async function cargarProductosPorGenero(genero) {
+    const API_URL = "https://recirculate-api.onrender.com/api/productos";
+    const productGrid = document.querySelector('.product-grid');
+    
+    if (!productGrid) return; // Si no hay grid, salir
+    
+    try {
+        // Mostrar mensaje de carga
+        productGrid.innerHTML = '<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 3rem; font-size: 1.2rem; color: #666;">Cargando productos...</div>';
+        
+        // Hacer petición a la API
+        let url = API_URL;
+        if (genero && genero !== 'todos') {
+            url = `${API_URL}/genero/${genero}`;
+        }
+        
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Error al cargar productos');
+        
+        const productos = await response.json();
+        
+        // Limpiar grid
+        productGrid.innerHTML = '';
+        
+        if (productos.length === 0) {
+            productGrid.innerHTML = '<div class="no-products-message" style="grid-column: 1 / -1; text-align: center; padding: 3rem; font-size: 1.2rem; color: #666;">No hay productos disponibles en esta sección.</div>';
+            return;
+        }
+        
+        // Crear cards de productos dinámicamente
+        productos.forEach((producto, index) => {
+            const productCard = document.createElement('div');
+            productCard.className = 'product-card';
+            productCard.dataset.precio = producto.precio || 0;
+            productCard.dataset.color = (producto.color || '').toLowerCase();
+            productCard.dataset.talle = (producto.talle || '').toUpperCase();
+            productCard.dataset.originalOrder = index;
+            productCard.dataset.descuento = 0; // Por defecto
+            productCard.dataset.isNew = 'false'; // Por defecto
+            
+            // Calcular descuento si existe
+            let discountHtml = '';
+            if (producto.descuento && producto.descuento > 0) {
+                discountHtml = `<div class="discount-tag">${producto.descuento}% OFF</div>`;
+                productCard.dataset.descuento = producto.descuento;
+            }
+            
+            // Verificar si es nuevo
+            let newHtml = '';
+            if (producto.es_nuevo || producto.es_destacado) {
+                newHtml = `<div class="new-tag">NEW</div>`;
+                productCard.dataset.isNew = 'true';
+            }
+            
+            // Construir HTML de la card
+            productCard.innerHTML = `
+                ${discountHtml}
+                ${newHtml}
+                <div class="product-images">
+                    <img src="${producto.imagen_url || '../../assets/images/placeholder.png'}" alt="${producto.nombre}" class="main-image">
+                    <img src="${producto.imagen_hover || producto.imagen_url || '../../assets/images/placeholder.png'}" alt="${producto.nombre} Hover" class="hover-image">
+                </div>
+                <h3>${producto.nombre}</h3>
+                <p class="precio">$${(producto.precio || 0).toLocaleString('es-AR')} ARS</p>
+                <button class="add-to-cart-btn">Añadir al carrito</button>
+            `;
+            
+            productGrid.appendChild(productCard);
+        });
+        
+        // Re-aplicar event listeners para los nuevos productos
+        aplicarEventListenersProductos();
+        
+        // Re-ejecutar animaciones de scroll
+        setupScrollAnimation();
+        
+    } catch (error) {
+        console.error('Error al cargar productos:', error);
+        productGrid.innerHTML = '<div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 3rem; font-size: 1.2rem; color: #e74c3c;">Error al cargar productos. Intenta recargar la página.</div>';
+    }
+}
+
+// --- Función para aplicar event listeners a productos dinámicos ---
+function aplicarEventListenersProductos() {
+    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+    addToCartButtons.forEach((button, index) => {
+        // Remover listeners anteriores
+        button.replaceWith(button.cloneNode(true));
+        const newButton = document.querySelectorAll('.add-to-cart-btn')[index];
+        
+        newButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation(); // Prevenir navegación al detalle
+            const productCard = newButton.closest('.product-card');
+            const nombre = productCard.querySelector('h3').textContent;
+            const precioTexto = productCard.querySelector('.precio').textContent;
+            const precio = parseFloat(precioTexto.replace(/[^\d]/g, '')); 
+            const imagen = productCard.querySelector('.main-image').src;
+            
+            const producto = {
+                id: `prod_${Date.now()}_${index}`, 
+                nombre,
+                precio,
+                imagen,
+                categoria: 'Producto'
+            };
+            agregarAlCarrito(producto);
+        });
+    });
+    
+    // Hacer las tarjetas clickeables para navegación
+    const productCards = document.querySelectorAll('.product-card');
+    productCards.forEach(card => {
+        card.addEventListener('click', (e) => {
+            // Si el click fue en el botón de agregar al carrito, no hacer nada
+            if (e.target.closest('.add-to-cart-btn')) {
+                return;
+            }
+            
+            // Obtener el nombre del producto y generar el slug para la URL
+            const productName = card.querySelector('h3').textContent.trim();
+            const normalizedName = productName.replace(/B&N/gi, 'BN');
+            const productSlug = normalizedName
+                .toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "") 
+                .replace(/[^a-z0-9]+/g, '-') 
+                .replace(/^-+|-+$/g, ''); 
+            
+            // Detectar la categoría y género basándose en la URL actual
+            const currentPath = window.location.pathname;
+            let productPath = '';
+            
+            if (currentPath.includes('/hombre/')) {
+                productPath = `../../productos/hombre/general/${productSlug}.html`;
+            } else if (currentPath.includes('/mujer/')) {
+                productPath = `../../productos/mujer/general/${productSlug}.html`;
+            } else if (currentPath.includes('/unisex/')) {
+                productPath = `../../productos/unisex/${productSlug}.html`;
+            } else {
+                productPath = `../../productos/${productSlug}.html`;
+            }
+            
+            // Redirigir a la página del producto
+            window.location.href = productPath;
+        });
+        
+        card.style.cursor = 'pointer';
+    });
+}
+
 // --- Funciones del Carrito (Asumiendo que no están en utils.js o no se importan) ---
 function agregarAlCarrito(producto) {
     let carrito = JSON.parse(localStorage.getItem('recirculate_carrito') || '[]');
@@ -149,6 +300,26 @@ function filterProducts(minPrice, maxPrice, selectedColors, selectedSizes) {
 document.addEventListener("DOMContentLoaded", function() {
     
     actualizarContadorCarrito(); // Carga inicial del contador
+    
+    // --- Detectar género automáticamente y cargar productos desde API ---
+    const currentPath = window.location.pathname;
+    let generoActual = null;
+    
+    if (currentPath.includes('/hombre/')) {
+        generoActual = 'hombre';
+    } else if (currentPath.includes('/mujer/')) {
+        generoActual = 'mujer';
+    } else if (currentPath.includes('/unisex/')) {
+        generoActual = 'unisex';
+    }
+    
+    // Cargar productos dinámicamente si estamos en una página de género
+    if (generoActual && document.querySelector('.product-grid')) {
+        cargarProductosPorGenero(generoActual);
+    } else {
+        // Si no es página de género, aplicar listeners a productos estáticos existentes
+        aplicarEventListenersProductos();
+    }
 
     // --- Referencias globales del DOM ---
     const chatbotContainer = document.querySelector('.chatbot-container');
