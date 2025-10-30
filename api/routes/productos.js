@@ -6,12 +6,16 @@ const jwt = require('jsonwebtoken');
 
 // Middleware para verificar autenticación (opcional para algunas rutas)
 const verifyToken = (req, res, next) => {
+  // Si el usuario ya está autenticado y es admin, permitir sin token
+  if (req.session && req.session.user && req.session.user.rol === 'admin') {
+    req.user = req.session.user;
+    return next();
+  }
+  // Si no hay sesión, usar token como antes
   const token = req.headers.authorization?.split(' ')[1];
-  
   if (!token) {
     return res.status(401).json({ message: 'Token de acceso requerido' });
   }
-
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'recirculate_secret_key_2024');
     req.user = decoded;

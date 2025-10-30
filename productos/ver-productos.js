@@ -53,28 +53,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       filtered = filtered.filter(p => p.marca && p.marca.toLowerCase().includes(filtros.marca.toLowerCase()));
     }
 
-    // AGGRESSIVE GRID ASSIGNMENT BY GENDER AND CATEGORY
+    // Simple filtering by genero only
     if (filtros.genero) {
       const generoFiltro = filtros.genero.toLowerCase();
-      filtered = filtered.filter(p => {
-        if (!p.genero) return false;
-        const generoProd = p.genero.toLowerCase();
-        // Unisex products appear in all gender sections
-        if (generoProd === 'unisex') return true;
-        return generoProd === generoFiltro;
-      });
+      filtered = filtered.filter(p => p.genero && p.genero.toLowerCase() === generoFiltro);
     }
     if (filtros.genero && filtros.categoria) {
       const generoFiltro = filtros.genero.toLowerCase();
       const categoriaFiltro = filtros.categoria.toLowerCase();
-      filtered = filtered.filter(p => {
-        if (!p.genero || !p.categoria) return false;
-        const generoProd = p.genero.toLowerCase();
-        const categoriaProd = p.categoria.toLowerCase();
-        // Unisex products appear in all gender sections, but must match category
-        if (generoProd === 'unisex') return categoriaProd === categoriaFiltro;
-        return generoProd === generoFiltro && categoriaProd === categoriaFiltro;
-      });
+      filtered = filtered.filter(p => p.genero && p.categoria && p.genero.toLowerCase() === generoFiltro && p.categoria.toLowerCase() === categoriaFiltro);
     }
 
     if (filtros.precioDesde) {
