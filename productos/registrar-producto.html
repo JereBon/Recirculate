@@ -29,15 +29,6 @@
         <label for="categoria">Categoría</label>
         <select id="categoria" required aria-required="true">
           <option value="">--Seleccionar--</option>
-          <option value="remeras">Remeras</option>
-          <option value="buzos">Buzos</option>
-          <option value="camisas">Camisas</option>
-          <option value="camperas">Camperas</option>
-          <option value="pantalones">Pantalones</option>
-          <option value="vestidos">Vestidos</option>
-          <option value="polleras">Polleras</option>
-          <option value="shorts">Shorts</option>
-          <option value="accesorios">Accesorios</option>
         </select>
         <small class="error-msg" id="e-categoria"></small>
       </div>
@@ -169,5 +160,58 @@
     </form>
   </main>
   <script type="module" src="registrar-producto.js"></script>
+<script>
+// Opciones de categoría por género
+const categoriasPorGenero = {
+  hombre: [
+    { value: "remeras", label: "Remeras" },
+    { value: "buzos", label: "Buzos" },
+    { value: "camisas", label: "Camisas" },
+    { value: "camperas", label: "Camperas" },
+    { value: "pantalones", label: "Pantalones" },
+    { value: "shorts", label: "Shorts" },
+    { value: "accesorios", label: "Accesorios" }
+  ],
+  mujer: [
+    { value: "remeras", label: "Remeras" },
+    { value: "buzos", label: "Buzos" },
+    { value: "camisas", label: "Camisas" },
+    { value: "camperas", label: "Camperas" },
+    { value: "pantalones", label: "Pantalones" },
+    { value: "vestidos", label: "Vestidos" },
+    { value: "polleras", label: "Polleras" },
+    { value: "shorts", label: "Shorts" },
+    { value: "accesorios", label: "Accesorios" }
+  ],
+  unisex: [
+    { value: "remeras", label: "Remeras" },
+    { value: "buzos", label: "Buzos" },
+    { value: "camisas", label: "Camisas" },
+    { value: "camperas", label: "Camperas" },
+    { value: "pantalones", label: "Pantalones" },
+    { value: "shorts", label: "Shorts" },
+    { value: "accesorios", label: "Accesorios" }
+  ]
+};
+
+function actualizarCategorias() {
+  const genero = document.getElementById("genero").value;
+  const categoriaSelect = document.getElementById("categoria");
+  categoriaSelect.innerHTML = '<option value="">--Seleccionar--</option>';
+  if (categoriasPorGenero[genero]) {
+    categoriasPorGenero[genero].forEach(opt => {
+      const option = document.createElement("option");
+      option.value = opt.value;
+      option.textContent = opt.label;
+      categoriaSelect.appendChild(option);
+    });
+  }
+}
+document.getElementById("genero").addEventListener("change", actualizarCategorias);
+// Inicializar si ya hay género seleccionado (edición)
+window.addEventListener("DOMContentLoaded", () => {
+  actualizarCategorias();
+});
+</script>
 </body>
 </html>

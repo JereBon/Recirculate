@@ -16,23 +16,7 @@
       "imagen_hover": "../../assets/images/pages/remeras/Remera_gris_2.png",
       "estado": "Disponible"
     },
-    {
-      "nombre": "Remera Gráfica Roja",
-      "descripcion": "Remera con diseño gráfico llamativo en color rojo vibrante",
-      "categoria": "remeras",
-      "genero": "hombre",
-      "talle": "L",
-      "color": "Rojo",
-      "marca": "Recirculate",
-      "precio": 34500,
-      "stock": 12,
-      "proveedor": "Textil Mendoza",
-      "imagen_url": "../../assets/images/pages/remeras/Remera_roja.png",
-      "imagen_hover": "../../assets/images/pages/remeras/Remera_roja_2.png",
-      "descuento": 0,
-      "estado": "Disponible"
-    },
-    {
+  {
       "nombre": "Remera Overzise Negra",
       "descripcion": "Remera estilo oversize en color negro, perfecta para un look relajado",
       "categoria": "remeras",
