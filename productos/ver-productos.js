@@ -52,14 +52,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (filtros.marca) {
       filtered = filtered.filter(p => p.marca && p.marca.toLowerCase().includes(filtros.marca.toLowerCase()));
     }
-    // Filtrado por género para mostrar en ambas secciones
+
+    // AGGRESSIVE GRID ASSIGNMENT BY GENDER AND CATEGORY
     if (filtros.genero) {
-      filtered = filtered.filter(p => p.genero && p.genero.toLowerCase() === filtros.genero.toLowerCase());
+      const generoFiltro = filtros.genero.toLowerCase();
+      filtered = filtered.filter(p => {
+        if (!p.genero) return false;
+        const generoProd = p.genero.toLowerCase();
+        // Unisex products appear in all gender sections
+        if (generoProd === 'unisex') return true;
+        return generoProd === generoFiltro;
+      });
     }
-    // Mostrar en subcategoría: si hay filtro de género y categoría, ambos deben coincidir
     if (filtros.genero && filtros.categoria) {
-      filtered = filtered.filter(p => p.genero && p.genero.toLowerCase() === filtros.genero.toLowerCase() && p.categoria && p.categoria.toLowerCase() === filtros.categoria.toLowerCase());
+      const generoFiltro = filtros.genero.toLowerCase();
+      const categoriaFiltro = filtros.categoria.toLowerCase();
+      filtered = filtered.filter(p => {
+        if (!p.genero || !p.categoria) return false;
+        const generoProd = p.genero.toLowerCase();
+        const categoriaProd = p.categoria.toLowerCase();
+        // Unisex products appear in all gender sections, but must match category
+        if (generoProd === 'unisex') return categoriaProd === categoriaFiltro;
+        return generoProd === generoFiltro && categoriaProd === categoriaFiltro;
+      });
     }
+
     if (filtros.precioDesde) {
       filtered = filtered.filter(p => p.precio != null && p.precio >= parseFloat(filtros.precioDesde));
     }
@@ -142,7 +159,6 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td data-label="Acciones">
             <button data-edit="${prod.id}" class="primary">Editar</button>
             <button data-delete="${prod.id}" style="background:#e74c3c; color:#fff; margin-left:8px;">Eliminar</button>
-             <button data-ver="${prod.id}" style="background:#3498db; color:#fff; margin-left:8px;">Ver</button>
           </td>
         `;
         tabla.appendChild(tr);
@@ -179,10 +195,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           alert('Error al eliminar producto');
         }
       }
-      } else if (e.target.dataset.ver !== undefined) {
-        // Redirige a la vista de detalle del producto
-        const id = e.target.dataset.ver;
-        window.location.href = `producto-detalle.html?id=${id}`;
+      // Eliminada lógica del botón Ver
     }
   });
 
