@@ -286,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
       proveedor: proveedor || null,
       imagen_url: imageUrls.frente,
       imagen_hover: imageUrls.espalda,
+      imagen_espalda_url: imageUrls.espalda,
       estado: stock > 0 ? 'Disponible' : 'Sin stock'
     };
 

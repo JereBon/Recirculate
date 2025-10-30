@@ -61,6 +61,7 @@ class Product {
         stock = 0,
         estado = 'Disponible',
         imagen_url,
+        imagen_hover,
         imagen_espalda_url,
         usuario_id,
         proveedor,
@@ -72,30 +73,22 @@ class Product {
       const query = `
         INSERT INTO productos (
           nombre, descripcion, categoria, talle, color, marca, 
-          precio, stock, estado, imagen_url, imagen_espalda_url, usuario_id, proveedor, genero, descuento
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+          precio, stock, estado, imagen_url, imagen_hover, imagen_espalda_url, usuario_id, proveedor, genero, descuento
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
         RETURNING *
       `;
-            // Log para debug: mostrar toda la fila enviada
-            console.log('DEBUG fila enviada:', {
-              nombre, descripcion, categoria, talle, color, marca,
-              precio, stock, estado, imagen_url, imagen_espalda_url, usuario_id, proveedor, genero, descuento
-            });
+      // Log para debug: mostrar toda la fila enviada
+      console.log('DEBUG fila enviada:', {
+        nombre, descripcion, categoria, talle, color, marca,
+        precio, stock, estado, imagen_url, imagen_hover, imagen_espalda_url, usuario_id, proveedor, genero, descuento
+      });
 
-            // Primero crear el producto
-            const insertQuery = `
-              INSERT INTO productos (
-                nombre, descripcion, categoria, talle, color, marca, 
-                precio, stock, estado, imagen_url, imagen_espalda_url, usuario_id, proveedor, genero, descuento
-              ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
-              RETURNING *
-            `;
-
-            const values = [
-              nombre, descripcion, categoria, talle, color, marca,
-              precio, stock, estado, imagen_url, imagen_espalda_url, usuario_id, proveedor, genero, descuento
-            ];
-            const result = await client.query(insertQuery, values);
+      const values = [
+        nombre, descripcion, categoria, talle, color, marca,
+        precio, stock, estado, imagen_url, imagen_hover, imagen_espalda_url, usuario_id, proveedor, genero, descuento
+      ];
+      const result = await client.query(query, values);
+      return result.rows[0];
     } catch (error) {
       console.error('Error creando producto:', error);
       throw error;
@@ -116,6 +109,7 @@ class Product {
         stock,
         estado,
         imagen_url,
+        imagen_hover,
         imagen_espalda_url,
         proveedor,
         genero,
@@ -126,14 +120,14 @@ class Product {
         UPDATE productos 
         SET nombre = $2, descripcion = $3, categoria = $4, talle = $5, 
             color = $6, marca = $7, precio = $8, stock = $9, estado = $10, 
-            imagen_url = $11, imagen_espalda_url = $12, proveedor = $13, genero = $14, descuento = $15, fecha_actualizacion = CURRENT_TIMESTAMP
+            imagen_url = $11, imagen_hover = $12, imagen_espalda_url = $13, proveedor = $14, genero = $15, descuento = $16, fecha_actualizacion = CURRENT_TIMESTAMP
         WHERE id = $1
         RETURNING *
       `;
 
       const values = [
         id, nombre, descripcion, categoria, talle, color, marca,
-        precio, stock, estado, imagen_url, imagen_espalda_url, proveedor, genero, descuento
+        precio, stock, estado, imagen_url, imagen_hover, imagen_espalda_url, proveedor, genero, descuento
       ];
 
       const result = await client.query(query, values);
