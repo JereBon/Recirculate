@@ -76,19 +76,25 @@ class Product {
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
         RETURNING *
       `;
+            // Log para debug: mostrar toda la fila enviada
+            console.log('DEBUG fila enviada:', {
+              nombre, descripcion, categoria, talle, color, marca,
+              precio, stock, estado, imagen_url, imagen_espalda_url, usuario_id, proveedor, genero, descuento
+            });
 
-      const values = [
-        nombre, descripcion, categoria, talle, color, marca,
-        precio, stock, estado, imagen_url, imagen_espalda_url, usuario_id, proveedor, genero, descuento
-      ];
+            // Primero crear el producto
+            const query = `
+              INSERT INTO productos (
+                nombre, descripcion, categoria, talle, color, marca, 
+                precio, stock, estado, imagen_url, imagen_espalda_url, usuario_id, proveedor, genero, descuento
+              ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+              RETURNING *
+            `;
 
-      const result = await client.query(query, values);
-      const newProduct = result.rows[0];
-
-      // Actualizar sistema de destacados
-      await this.updateDestacados();
-
-      return newProduct;
+            const values = [
+              nombre, descripcion, categoria, talle, color, marca,
+              precio, stock, estado, imagen_url, imagen_espalda_url, usuario_id, proveedor, genero, descuento
+            ];
     } catch (error) {
       console.error('Error creando producto:', error);
       throw error;
