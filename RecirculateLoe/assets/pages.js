@@ -4,6 +4,25 @@
 // FUNCIONES GLOBALES (Definidas fuera de DOMContentLoaded)
 // ============================================
 
+// --- Función para obtener la categoría actual basada en la URL ---
+function getCurrentCategory() {
+    const currentPath = window.location.pathname;
+    
+    if (currentPath.includes('/remeras/')) return 'remeras';
+    if (currentPath.includes('/buzos/')) return 'buzos';
+    if (currentPath.includes('/pantalones/')) return 'pantalones';
+    if (currentPath.includes('/camperas/')) return 'camperas';
+    if (currentPath.includes('/camisas/')) return 'camisas';
+    if (currentPath.includes('/vestidos/') || currentPath.includes('/Mvestidos/')) return 'vestidos';
+    if (currentPath.includes('/polleras/') || currentPath.includes('/Mpolleras/')) return 'polleras';
+    if (currentPath.includes('/Mremeras/')) return 'remeras';
+    if (currentPath.includes('/hombre/')) return 'hombre';
+    if (currentPath.includes('/mujer/')) return 'mujer';
+    if (currentPath.includes('/unisex/')) return 'unisex';
+    
+    return 'general';
+}
+
 // --- Función para cargar productos dinámicamente desde API ---
 async function cargarProductosPorGenero(genero) {
     const API_URL = "https://recirculate-api.onrender.com/api/productos";
@@ -122,6 +141,20 @@ function aplicarEventListenersProductos() {
             // Si el click fue en el botón de agregar al carrito, no hacer nada
             if (e.target.closest('.add-to-cart-btn')) {
                 return;
+            }
+            
+            // Registrar visita en el historial si el usuario está logueado
+            if (window.userMenuManager && window.userMenuManager.isLoggedIn) {
+                // Obtener datos del producto desde los elementos de la tarjeta
+                const productData = {
+                    id: card.dataset.productId || Date.now(), // Usar ID real si está disponible
+                    nombre: card.querySelector('h3').textContent.trim(),
+                    imagen_url: card.querySelector('.main-image').src,
+                    precio: parseInt(card.querySelector('.precio').textContent.replace(/[^\d]/g, '')),
+                    categoria: getCurrentCategory()
+                };
+                
+                window.userMenuManager.trackProductVisit(productData);
             }
             
             // Obtener el nombre del producto y generar el slug para la URL

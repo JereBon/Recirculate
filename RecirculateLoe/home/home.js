@@ -354,6 +354,18 @@ async function cargarProductosDestacados() {
         <button class="add-to-cart-btn">Añadir al carrito</button>
       `;
       
+      // Hacer el elemento clickeable (excepto el botón)
+      carruselItem.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('add-to-cart-btn')) {
+          // Registrar visita en el historial si el usuario está logueado
+          if (window.userMenuManager && window.userMenuManager.isLoggedIn) {
+            window.userMenuManager.trackProductVisit(producto);
+          }
+          // Aquí puedes agregar navegación al producto específico si tienes esas páginas
+          console.log('Producto clickeado:', producto.nombre);
+        }
+      });
+      
       carruselContainer.appendChild(carruselItem);
     });
     
