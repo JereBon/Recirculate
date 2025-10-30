@@ -39,20 +39,32 @@ async function cargarProductosPorGenero(genero) {
         if (genero && genero !== 'todos') {
             url = `${API_URL}/genero/${genero}`;
         }
-        
+
         const response = await fetch(url);
         if (!response.ok) throw new Error('Error al cargar productos');
-        
-        const productos = await response.json();
-        
+
+        let productos = await response.json();
+
+        // Obtener categoría actual de la URL
+        const categoriaActual = getCurrentCategory();
+
+        // Filtrar productos por género y categoría (case-insensitive)
+        if (categoriaActual && categoriaActual !== 'general' && categoriaActual !== 'hombre' && categoriaActual !== 'mujer' && categoriaActual !== 'unisex') {
+            productos = productos.filter(producto => {
+                const cat = (producto.categoria || '').toLowerCase();
+                const gen = (producto.genero || '').toLowerCase();
+                return gen === genero.toLowerCase() && cat === categoriaActual.toLowerCase();
+            });
+        }
+
         // Limpiar grid
         productGrid.innerHTML = '';
-        
+
         if (productos.length === 0) {
             productGrid.innerHTML = '<div class="no-products-message" style="grid-column: 1 / -1; text-align: center; padding: 3rem; font-size: 1.2rem; color: #666;">No hay productos disponibles en esta sección.</div>';
             return;
         }
-        
+
         // Crear cards de productos dinámicamente
         productos.forEach((producto, index) => {
             const productCard = document.createElement('div');
@@ -63,21 +75,21 @@ async function cargarProductosPorGenero(genero) {
             productCard.dataset.originalOrder = index;
             productCard.dataset.descuento = 0; // Por defecto
             productCard.dataset.isNew = 'false'; // Por defecto
-            
+
             // Calcular descuento si existe (usa descuento de la DB)
             let discountHtml = '';
             if (producto.descuento && producto.descuento > 0) {
                 discountHtml = `<div class="discount-tag">${producto.descuento}% OFF</div>`;
                 productCard.dataset.descuento = producto.descuento;
             }
-            
+
             // Verificar si es nuevo
             let newHtml = '';
             if (producto.es_nuevo || producto.es_destacado) {
                 newHtml = `<div class="new-tag">NEW</div>`;
                 productCard.dataset.isNew = 'true';
             }
-            
+
             // Construir HTML de la card
             productCard.innerHTML = `
                 ${discountHtml}
@@ -90,13 +102,13 @@ async function cargarProductosPorGenero(genero) {
                 <p class="precio">$${(producto.precio || 0).toLocaleString('es-AR')} ARS</p>
                 <button class="add-to-cart-btn">Añadir al carrito</button>
             `;
-            
+
             productGrid.appendChild(productCard);
         });
-        
+
         // Re-aplicar event listeners para los nuevos productos
         aplicarEventListenersProductos();
-        
+
         // Re-ejecutar animaciones de scroll
         setupScrollAnimation();
         

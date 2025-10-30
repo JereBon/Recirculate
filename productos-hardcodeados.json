@@ -1,38 +1,7 @@
 {
   "productos_para_agregar_manualmente": [
-    {
-      "nombre": "Remera Básica Negra",
-      "descripcion": "Remera básica de algodón en color gris/negra, ideal para uso diario",
-      "categoria": "remeras",
-      "genero": "hombre",
-      "talle": "M",
-      "color": "Gris",
-      "marca": "Recirculate",
-      "precio": 29990,
-      "stock": 15,
-      "descuento": 23,
-      "proveedor": "Textil Mendoza",
-      "imagen_url": "../../assets/images/pages/remeras/Remera_gris_1.png",
-      "imagen_hover": "../../assets/images/pages/remeras/Remera_gris_2.png",
-      "estado": "Disponible"
-    },
-  {
-      "nombre": "Remera Overzise Negra",
-      "descripcion": "Remera estilo oversize en color negro, perfecta para un look relajado",
-      "categoria": "remeras",
-      "genero": "unisex",
-      "talle": "XL",
-      "color": "Negro",
-      "marca": "Recirculate",
-      "precio": 41000,
-      "stock": 8,
-      "proveedor": "Textil Mendoza",
-      "imagen_url": "../../assets/images/pages/remeras/Remera_negra_1.png",
-      "imagen_hover": "../../assets/images/pages/remeras/Remera_negra_2.png",
-      "descuento": 0,
-      "estado": "Disponible",
-      "es_nuevo": true
-    },
+    
+
     {
       "nombre": "Remera Básica B&N",
       "descripcion": "Remera básica blanca y negra con diseño minimalista",
