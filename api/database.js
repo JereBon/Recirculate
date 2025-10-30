@@ -23,6 +23,10 @@ const connectDB = async () => {
     await createProductsTable();
     await createSalesTable();
     await createExpensesTable();
+    await createPasswordResetTable();
+    
+    // Crear usuarios administradores autorizados
+    await setupAdminUsers();
     
   } catch (error) {
     if (error.code === '3D000') {
@@ -295,6 +299,48 @@ const createMPPaymentsTable = async () => {
     console.log('✅ Tabla mp_pagos verificada/creada');
   } catch (error) {
     console.error('❌ Error creando tabla mp_pagos:', error);
+  }
+};
+
+// Crear tabla para códigos de recuperación de contraseña
+const createPasswordResetTable = async () => {
+  const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS password_reset_codes (
+      id SERIAL PRIMARY KEY,
+      email VARCHAR(255) NOT NULL,
+      codigo VARCHAR(6) NOT NULL,
+      expira_en TIMESTAMP NOT NULL,
+      usado BOOLEAN DEFAULT FALSE,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `;
+
+  // Crear índices por separado para PostgreSQL
+  const createIndexes = [
+    'CREATE INDEX IF NOT EXISTS idx_password_reset_email ON password_reset_codes(email)',
+    'CREATE INDEX IF NOT EXISTS idx_password_reset_codigo ON password_reset_codes(codigo)'
+  ];
+
+  try {
+    await client.query(createTableQuery);
+    
+    for (const indexQuery of createIndexes) {
+      await client.query(indexQuery);
+    }
+    
+    console.log('✅ Tabla password_reset_codes verificada/creada');
+  } catch (error) {
+    console.error('❌ Error creando tabla password_reset_codes:', error);
+  }
+};
+
+// Configurar usuarios administradores autorizados
+const setupAdminUsers = async () => {
+  try {
+    const { createAdminUsers } = require('./setup-admins');
+    await createAdminUsers(client);
+  } catch (error) {
+    console.error('❌ Error configurando usuarios admin:', error);
   }
 };
 

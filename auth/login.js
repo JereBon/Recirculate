@@ -1,14 +1,19 @@
 // login.js - Funcionalidad del formulario de login
 const API_BASE_URL = 'https://recirculate-api.onrender.com/api';
 
-// Verificar si ya está logueado
+// Verificar si ya está logueado (pero NO redirigir automáticamente)
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     if (token) {
-        // Verificar token válido
+        // Verificar token válido pero no redirigir automáticamente
         verifyToken().then(isValid => {
             if (isValid) {
-                window.location.href = '../index.html';
+                // Mostrar mensaje opcional de que ya está logueado
+                showMessage('Ya tienes una sesión activa', 'info');
+            } else {
+                // Limpiar token inválido
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userData');
             }
         });
     }
@@ -51,12 +56,30 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             localStorage.setItem('authToken', data.data.token);
             localStorage.setItem('userData', JSON.stringify(data.data.user));
             
-            showMessage('¡Login exitoso! Redirigiendo...', 'success');
+            // Lista de correos autorizados para el panel de administración
+            const adminEmails = [
+                'axel@recirculate.com',
+                'nicolas@recirculate.com', 
+                'loe@recirculate.com',
+                'lucho@recirculate.com',
+                'gere@recirculate.com',
+                'pipo@recirculate.com'
+            ];
             
-            // Redirigir después de 1 segundo
-            setTimeout(() => {
-                window.location.href = '../index.html';
-            }, 1000);
+            const userEmail = data.data.user.email.toLowerCase();
+            const isAuthorizedAdmin = adminEmails.includes(userEmail);
+            
+            if (isAuthorizedAdmin) {
+                showMessage('¡Login exitoso! Accediendo al panel de administración...', 'success');
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 1000);
+            } else {
+                showMessage('¡Login exitoso! Redirigiendo a la tienda...', 'success');
+                setTimeout(() => {
+                    window.location.href = '../RecirculateLoe/home/home.html';
+                }, 1000);
+            }
             
         } else {
             showMessage(data.message || 'Error en el login', 'error');
