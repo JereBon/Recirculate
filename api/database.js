@@ -7,6 +7,8 @@ const config = {
   connectionString: process.env.DATABASE_URL || 'postgresql://localhost:5432/recirculate',
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 };
+const fs = require('fs');
+const path = require('path');
 
 // Cliente de PostgreSQL
 const client = new Client(config);
@@ -81,6 +83,18 @@ const createUsersTable = async () => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS usuarios (
       id SERIAL PRIMARY KEY,
+
+    // Ejecutar fix_genero_constraint.sql automáticamente
+    try {
+      const sqlPath = path.join(__dirname, 'migrations', 'fix_genero_constraint.sql');
+      if (fs.existsSync(sqlPath)) {
+        const sql = fs.readFileSync(sqlPath, 'utf8');
+        await client.query(sql);
+        console.log('✅ Constraint de género corregido automáticamente');
+      }
+    } catch (err) {
+      console.error('❌ Error ejecutando fix_genero_constraint.sql:', err.message);
+    }
       nombre VARCHAR(255) NOT NULL,
       email VARCHAR(255) UNIQUE NOT NULL,
       password VARCHAR(255) NOT NULL,
