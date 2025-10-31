@@ -129,6 +129,10 @@ crearItemHTML(item, index) {
       });
     }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> rama-axel
     // Funcionalidad del menú desplegable (categorías)
     const categoryHeaders = document.querySelectorAll('.sidebar-category-header');
     categoryHeaders.forEach(header => {
@@ -147,6 +151,11 @@ crearItemHTML(item, index) {
       });
     });
 
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
     // Funcionalidad del buscador
     const searchBtn = document.getElementById('search-btn');
     const searchContainer = document.getElementById('search-container');
@@ -242,7 +251,11 @@ crearItemHTML(item, index) {
     return precio.toLocaleString('es-AR', { minimumFractionDigits: 0 });
   }
 
+<<<<<<< HEAD
   // Finalizar compra con validación mejorada
+=======
+  // Finalizar compra con MercadoPago
+>>>>>>> rama-axel
   async finalizarCompra() {
     if (this.carrito.length === 0) {
       alert('Tu carrito está vacío');
@@ -250,6 +263,7 @@ crearItemHTML(item, index) {
     }
 
     const btnFinalizar = document.getElementById('btn-finalizar');
+<<<<<<< HEAD
     const textoOriginal = btnFinalizar.innerHTML;
     
     try {
@@ -292,20 +306,41 @@ crearItemHTML(item, index) {
       // Paso 2: Crear preferencia de MercadoPago
       btnFinalizar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparando pago...';
 
+=======
+    btnFinalizar.disabled = true;
+    btnFinalizar.textContent = 'Procesando...';
+
+    try {
+      const token = localStorage.getItem('recirculate_token');
+      if (!token) {
+        alert('Debes iniciar sesión para continuar con la compra.');
+        window.location.href = '/auth/login.html';
+        return;
+      }
+
+>>>>>>> rama-axel
       const items = this.carrito.map(item => ({
         title: item.nombre,
         quantity: item.cantidad,
         unit_price: item.precio,
+<<<<<<< HEAD
         currency_id: 'ARS',
         picture_url: item.imagen
       }));
 
       const paymentResponse = await fetch('/api/pagos/preferencia', {
+=======
+        currency_id: 'ARS'
+      }));
+
+      const response = await fetch('/api/pagos/preferencia', {
+>>>>>>> rama-axel
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
+<<<<<<< HEAD
         body: JSON.stringify({ 
           items,
           external_reference: `cart_${Date.now()}_${this.carrito.length}items`
@@ -436,6 +471,29 @@ crearItemHTML(item, index) {
     document.body.appendChild(modal);
     setTimeout(() => modal.classList.add('show'), 10);
   }
+=======
+        body: JSON.stringify({ items })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Redirigir al checkout de MercadoPago
+        window.location.href = data.sandbox_init_point;
+      } else {
+        // Mostrar error de stock u otro error del backend
+        alert(`Error: ${data.error || 'No se pudo procesar el pago.'}`);
+        btnFinalizar.disabled = false;
+        btnFinalizar.textContent = 'Finalizar Compra';
+      }
+    } catch (error) {
+      console.error('Error al finalizar la compra:', error);
+      alert('Hubo un problema al conectar con el servidor. Inténtalo de nuevo.');
+      btnFinalizar.disabled = false;
+      btnFinalizar.textContent = 'Finalizar Compra';
+    }
+  }
+>>>>>>> rama-axel
 }
 
 // Inicializar cuando el DOM esté listo

@@ -1,6 +1,9 @@
 // upload.js - Endpoint para subir imágenes a Cloudinary
 // Maneja subida de archivos de imagen usando Multer y Cloudinary.
+<<<<<<< HEAD
 // Soporta subida única y múltiple (hasta 2 imágenes por producto)
+=======
+>>>>>>> rama-axel
 
 // Importa dependencias: Express para router, Cloudinary configurado, Multer para manejo de archivos
 const express = require('express');
@@ -9,6 +12,7 @@ const cloudinary = require('./cloudinary');
 const multer = require('multer');
 
 // Configura Multer para almacenar archivos en memoria (no en disco)
+<<<<<<< HEAD
 // Límite de 5MB por archivo, máximo 2 archivos
 const upload = multer({ 
   storage: multer.memoryStorage(),
@@ -111,6 +115,27 @@ router.post('/', upload.single('imagen'), async (req, res) => {
     console.error('Error subiendo imagen:', error);
     res.status(500).json({ error: error.message });
   }
+=======
+const upload = multer({ storage: multer.memoryStorage() });
+
+// Ruta POST /api/upload: sube imagen a Cloudinary, espera campo 'imagen'
+router.post('/', upload.single('imagen'), (req, res) => {
+  // Valida que se haya enviado un archivo
+  if (!req.file) return res.status(400).json({ error: 'No se envió archivo' });
+
+  // Crea stream de subida a Cloudinary para imágenes
+  const uploadStream = cloudinary.uploader.upload_stream(
+    { resource_type: 'image' },
+    (error, result) => {
+      if (error) return res.status(500).json({ error: error.message });
+      // Retorna URL segura de la imagen subida
+      res.json({ url: result.secure_url });
+    }
+  );
+
+  // Envía buffer del archivo al stream
+  uploadStream.end(req.file.buffer);
+>>>>>>> rama-axel
 });
 
 // Exporta router para usar en server.js

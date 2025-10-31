@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> rama-axel
 # Ignorar carpetas de recuperación fuera del repo
 ../RecirculateLoeV3/
 ../RecirculateLoeV4/
@@ -40,3 +44,45 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+<<<<<<< HEAD
+=======
+=======
+# Dependencias de Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Variables de entorno
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+
+# Archivos temporales
+.DS_Store
+Thumbs.db
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos de build
+dist/
+build/
+
+# Coverage reports
+coverage/
+
+# Archivos de backup
+*.backup
+*.bak
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel

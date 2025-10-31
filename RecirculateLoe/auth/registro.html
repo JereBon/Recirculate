@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrarse - Recirculate</title>
+    <link rel="stylesheet" href="../../assets/public-styles.css">
+    <link rel="stylesheet" href="../../assets/auth-styles.css">
+</head>
+<body>
+    <main class="registro-main">
+        <section class="registro-container">
+            <h1>Registrarse</h1>
+            <form id="registro-form">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit">Crear Cuenta</button>
+            </form>
+            <p>¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a></p>
+        </section>
+    </main>
+    <script src="../../auth/registro.js"></script>
+</body>
+</html>

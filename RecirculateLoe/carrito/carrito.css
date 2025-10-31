@@ -406,6 +406,7 @@
 .cart-item {
   animation: slideIn 0.3s ease-out;
 }
+<<<<<<< HEAD
 
 /* Estilos para modales de checkout */
 .checkout-modal {
@@ -571,3 +572,5 @@
     justify-content: center;
   }
 }
+=======
+>>>>>>> rama-axel

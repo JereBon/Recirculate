@@ -1,14 +1,283 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<!--
+  registrar-producto.html - Formulario para registrar un nuevo producto
+  Incluye validaciones, sistema de descuentos y género obligatorio.
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registrar Producto</title>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Registrar Producto</h1>
+    <div style="margin-bottom: 18px;">
+      <a href="ver-productos.html"><button>← Volver a Productos</button></a>
+    </div>
+  </header>
+  <main class="main">
+    <form id="formProducto" novalidate>
+      <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" type="text" required aria-required="true" placeholder="Ej: Remera básica negra" />
+        <small class="error-msg" id="e-nombre"></small>
+      </div>
+      
+      <div class="form-group">
+        <label for="genero">Género</label>
+        <select id="genero" required aria-required="true">
+          <option value="">--Seleccionar--</option>
+          <option value="hombre">Hombre</option>
+          <option value="mujer">Mujer</option>
+          <option value="unisex">Unisex</option>
+        </select>
+        <small class="error-msg" id="e-genero"></small>
+      </div>
+
+      <div class="form-group">
+        <label for="categoria">Categoría</label>
+        <select id="categoria" required aria-required="true">
+          <option value="">--Seleccionar--</option>
+        </select>
+        <small class="error-msg" id="e-categoria"></small>
+      </div>
+
+      
+      <div class="form-group">
+        <label for="talle">Talle</label>
+        <input id="talle" type="text" placeholder="Ej: M, L, XL, 42" />
+        <small class="error-msg" id="e-talle"></small>
+      </div>
+      
+      <div class="form-group">
+        <label for="color">Color</label>
+        <input id="color" type="text" placeholder="Ej: Negro, Azul, Rojo" />
+        <small class="error-msg" id="e-color"></small>
+      </div>
+      
+      <div class="form-group">
+        <label for="marca">Marca</label>
+        <input id="marca" type="text" placeholder="Ej: Nike, Adidas" />
+        <small class="error-msg" id="e-marca"></small>
+      </div>
+      
+      <div class="form-group">
+        <label for="precio">Precio</label>
+        <input id="precio" type="number" min="0" step="0.01" required aria-required="true" placeholder="0.00" />
+        <small class="error-msg" id="e-precio"></small>
+      </div>
+      
+      <div class="form-group">
+        <label for="stock">Stock</label>
+        <input id="stock" type="number" min="0" required aria-required="true" placeholder="0" />
+        <small class="error-msg" id="e-stock"></small>
+      </div>
+      
+      <div class="form-group">
+        <label for="descuento">Descuento (%)</label>
+        <input id="descuento" type="number" min="0" max="100" step="1" placeholder="Ej: 25 (para 25% OFF)" />
+        <small style="color: #666; display: block; margin-top: 4px;">Opcional - Deja vacío si no hay descuento (0-100%)</small>
+        <small class="error-msg" id="e-descuento"></small>
+      </div>
+      
+      <div class="form-group">
+        <label for="proveedor">Proveedor</label>
+        <input id="proveedor" type="text" placeholder="Ej: Distribuidora ABC" />
+        <small class="error-msg" id="e-proveedor"></small>
+      </div>
+      
+      <div class="form-group">
+        <label for="descripcion">Descripción</label>
+        <textarea id="descripcion" rows="3" placeholder="Descripción detallada del producto..."></textarea>
+        <small class="error-msg" id="e-descripcion"></small>
+      </div>
+      
+      <!-- Sección de subida de imágenes con Cloudinary -->
+      <div class="form-group">
+        <label>Imágenes del Producto (Obligatorio)</label>
+        <small style="color: #666; display: block; margin-bottom: 10px;">
+          Sube 2 imágenes: frente y espalda del producto. Arrastra las imágenes aquí o haz clic para seleccionarlas.
+        </small>
+        
+        <div class="images-upload-container">
+          <!-- Imagen Frente -->
+          <div class="image-upload-zone" id="upload-frente">
+            <div class="upload-content">
+              <div class="upload-icon">📷</div>
+              <div class="upload-text">
+                <strong>Imagen Frente</strong>
+                <p>Arrastra aquí o haz clic</p>
+              </div>
+              <input type="file" id="file-frente" accept="image/*" style="display: none;">
+            </div>
+            <div class="image-preview" id="preview-frente" style="display: none;">
+              <img id="img-frente" src="" alt="Vista previa frente">
+              <div class="image-actions">
+                <button type="button" class="btn-remove" onclick="removeImage('frente')">✖</button>
+                <span class="image-label">FRENTE</span>
+              </div>
+            </div>
+            <div class="upload-progress" id="progress-frente" style="display: none;">
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+              </div>
+              <span class="progress-text">Subiendo...</span>
+            </div>
+          </div>
+
+          <!-- Imagen Espalda -->
+          <div class="image-upload-zone" id="upload-espalda">
+            <div class="upload-content">
+              <div class="upload-icon">📷</div>
+              <div class="upload-text">
+                <strong>Imagen Espalda</strong>
+                <p>Arrastra aquí o haz clic</p>
+              </div>
+              <input type="file" id="file-espalda" accept="image/*" style="display: none;">
+            </div>
+            <div class="image-preview" id="preview-espalda" style="display: none;">
+              <img id="img-espalda" src="" alt="Vista previa espalda">
+              <div class="image-actions">
+                <button type="button" class="btn-remove" onclick="removeImage('espalda')">✖</button>
+                <span class="image-label">ESPALDA</span>
+              </div>
+            </div>
+            <div class="upload-progress" id="progress-espalda" style="display: none;">
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+              </div>
+              <span class="progress-text">Subiendo...</span>
+            </div>
+          </div>
+        </div>
+        
+        <small class="error-msg" id="e-imagenes"></small>
+      </div>
+      
+      <button type="submit" class="primary">Guardar Producto</button>
+      <div class="success-msg" id="success-msg"></div>
+    </form>
+  </main>
+  <script type="module" src="registrar-producto.js"></script>
+<script>
+// Opciones de categoría por género (sin accesorios, sin categorías cruzadas)
+const categoriasPorGenero = {
+  hombre: [
+    { value: "remeras", label: "Remeras" },
+    { value: "buzos", label: "Buzos" },
+    { value: "camisas", label: "Camisas" },
+    { value: "camperas", label: "Camperas" },
+    { value: "pantalones", label: "Pantalones" }
+  ],
+  mujer: [
+    { value: "remeras", label: "Remeras" },
+    { value: "buzos", label: "Buzos" },
+    { value: "camisas", label: "Camisas" },
+    { value: "camperas", label: "Camperas" },
+    { value: "pantalones", label: "Pantalones" },
+    { value: "vestidos", label: "Vestidos" },
+    { value: "polleras", label: "Polleras" }
+  ],
+  unisex: [
+    { value: "remeras", label: "Remeras" },
+    { value: "buzos", label: "Buzos" },
+    { value: "camisas", label: "Camisas" },
+    { value: "camperas", label: "Camperas" },
+    { value: "pantalones", label: "Pantalones" },
+    { value: "vestidos", label: "Vestidos" },
+    { value: "polleras", label: "Polleras" }
+  ]
+};
+
+function actualizarCategorias() {
+  const genero = document.getElementById("genero").value;
+  const categoriaSelect = document.getElementById("categoria");
+  categoriaSelect.innerHTML = '<option value="">--Seleccionar--</option>';
+  if (categoriasPorGenero[genero]) {
+    categoriasPorGenero[genero].forEach(opt => {
+      const option = document.createElement("option");
+      option.value = opt.value;
+      option.textContent = opt.label;
+      categoriaSelect.appendChild(option);
+    });
+  }
+}
+document.getElementById("genero").addEventListener("change", actualizarCategorias);
+window.actualizarCategorias = actualizarCategorias;
+window.addEventListener("DOMContentLoaded", () => {
+  actualizarCategorias();
+});
+</script>
+=======
+>>>>>>> rama-axel
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <title>Registrar Producto</title>
+<<<<<<< HEAD
   <link rel="stylesheet" href="../assets/style.css">
+=======
+  <link rel="stylesheet" href="../assets/style.css?v=2024-10-28">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <style>
+    /* Estilos específicos para dropdowns */
+    select {
+      width: 100%;
+      padding: 12px;
+      font-size: 14px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      background-color: white;
+      color: #333;
+      cursor: pointer;
+      appearance: menulist;
+      -webkit-appearance: menulist;
+      -moz-appearance: menulist;
+    }
+    
+    select:focus {
+      border-color: #ffd84d;
+      outline: none;
+      box-shadow: 0 0 5px rgba(255, 216, 77, 0.5);
+    }
+    
+    select option {
+      padding: 8px;
+      background-color: white;
+      color: #333;
+    }
+    
+    /* Asegurar que los labels sean visibles */
+    label {
+      display: block;
+      margin-bottom: 15px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    /* Destacar campos obligatorios */
+    label:has(select[required]):after,
+    label:has(input[required]):after {
+      content: " *";
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+>>>>>>> rama-axel
 </head>
 <body>
   <div class="container">
     <h2>Registrar Producto</h2>
     <form id="formProducto" class="form">
+<<<<<<< HEAD
       <label>Nombre:
         <input type="text" id="nombre" required>
       </label>
@@ -19,11 +288,90 @@
         <input type="number" id="precio" min="0" required>
       </label>
       <button type="submit" class="btn">Guardar Producto</button>
+=======
+      <label>Nombre: *
+        <input type="text" id="nombre" required>
+      </label>
+      
+      <label>Descripción:
+        <textarea id="descripcion" rows="3" placeholder="Descripción del producto"></textarea>
+      </label>
+      
+      <label>Categoría:
+        <input type="text" id="categoria" placeholder="Ej: Remeras, Pantalones, Zapatillas">
+      </label>
+      
+      <label>Talle:
+        <input type="text" id="talle" placeholder="Ej: S, M, L, XL, 40, 42">
+      </label>
+      
+      <label>Color:
+        <input type="text" id="color" placeholder="Ej: Azul, Rojo, Negro">
+      </label>
+      
+      <label>Marca:
+        <input type="text" id="marca" placeholder="Ej: Nike, Adidas, Zara">
+      </label>
+
+      <label for="genero">Género: *
+        <select id="genero" required>
+          <option value="">🎯 Seleccionar género</option>
+          <option value="Hombre">👨 Hombre</option>
+          <option value="Mujer">👩 Mujer</option>  
+          <option value="Unisex">👥 Unisex</option>
+        </select>
+      </label>
+      
+      <label for="estado">Estado del Producto: *
+        <select id="estado" name="estado" required>
+          <option value="">-- Seleccionar estado del producto --</option>
+          <option value="Nueva">🆕 Nueva (sin usar)</option>
+          <option value="Poco uso">✨ Poco uso (excelente estado)</option>
+          <option value="Buen estado">👍 Buen estado (algunas marcas mínimas)</option>
+          <option value="Usada">👕 Usada (signos de uso visibles)</option>
+          <option value="Muy usada">⚠️ Muy usada (desgaste considerable)</option>
+        </select>
+      </label>
+      
+
+      
+      <label>Precio: *
+        <input type="number" id="precio" min="0" step="0.01" required>
+      </label>
+      
+      <label>Stock: *
+        <input type="number" id="stock" min="0" required>
+      </label>
+      
+      <label>Imagen URL:
+        <input type="url" id="imagen_url" placeholder="https://ejemplo.com/imagen.jpg">
+      </label>
+      
+      <label>Proveedor:
+        <input type="text" id="proveedor" placeholder="Nombre del proveedor">
+      </label>
+      
+      <label>
+        <input type="checkbox" id="destacado" checked> 
+        Marcar como producto destacado
+      </label>
+      
+      <button type="submit" class="btn">Guardar Producto</button>
+
+>>>>>>> rama-axel
       <div id="errorProducto" class="error"></div>
       <div id="successProducto" class="success"></div>
     </form>
     <a href="ver-productos.html" class="btn-link">Ver productos</a>
   </div>
+<<<<<<< HEAD
   <script type="module" src="registrar-producto.js"></script>
+=======
+
+
+
+  <script type="module" src="registrar-producto.js"></script>
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
 </body>
 </html>

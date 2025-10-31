@@ -94,10 +94,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> rama-axel
   // Función para validar campos obligatorios del formulario: nombre, precio >=0, stock >=0
   function validarFormulario() {
     let valido = true;
     const nombre = form.nombre.value.trim();
+<<<<<<< HEAD
+=======
+=======
+  // Función para validar campos obligatorios del formulario: nombre, género, precio >=0, stock >=0
+  function validarFormulario() {
+    let valido = true;
+    const nombre = form.nombre.value.trim();
+    const genero = form.genero.value;
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
     const precio = form.precio.value;
     const stock = form.stock.value;
     if (!nombre) {
@@ -106,6 +120,16 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       document.getElementById('e-nombre').textContent = '';
     }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+    if (!genero) {
+      alert('⚠️ Debes seleccionar el género del producto');
+      valido = false;
+    }
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
     if (!precio || precio < 0) {
       document.getElementById('e-precio').textContent = 'Precio inválido';
       valido = false;
@@ -138,6 +162,13 @@ document.addEventListener('DOMContentLoaded', () => {
       nombre: form.nombre.value.trim(),
       descripcion: form.descripcion.value.trim(),
       categoria: form.categoria.value.trim(),
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+      genero: form.genero.value, // AGREGAR GÉNERO
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
       talle: form.talle.value.trim(),
       color: form.color.value.trim(),
       marca: form.marca.value.trim(),
@@ -205,6 +236,13 @@ document.addEventListener('DOMContentLoaded', () => {
         form.nombre.value = prod.nombre || '';
         form.descripcion.value = prod.descripcion || '';
         form.categoria.value = prod.categoria || '';
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+        form.genero.value = prod.genero || '';
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
         form.talle.value = prod.talle || '';
         form.color.value = prod.color || '';
         form.marca.value = prod.marca || '';
@@ -249,6 +287,13 @@ document.addEventListener('DOMContentLoaded', () => {
           form.nombre.value = prod.nombre || '';
           form.descripcion.value = prod.descripcion || '';
           form.categoria.value = prod.categoria || '';
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+          form.genero.value = prod.genero || '';
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
           form.talle.value = prod.talle || '';
           form.color.value = prod.color || '';
           form.marca.value = prod.marca || '';

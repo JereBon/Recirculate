@@ -1,6 +1,7 @@
 // login.js - Funcionalidad del formulario de login
 const API_BASE_URL = 'https://recirculate-api.onrender.com/api';
 
+<<<<<<< HEAD
 // Verificar si ya está logueado
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
@@ -9,6 +10,19 @@ document.addEventListener('DOMContentLoaded', () => {
         verifyToken().then(isValid => {
             if (isValid) {
                 window.location.href = '../index.html';
+=======
+// Verificar si ya está logueado (NO redirigir automáticamente, solo mostrar mensaje)
+document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        verifyToken().then(isValid => {
+            if (isValid) {
+                // Mostrar mensaje opcional de que ya está logueado
+                showMessage('Ya tienes una sesión activa', 'info');
+            } else {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userData');
+>>>>>>> rama-axel
             }
         });
     }
@@ -17,24 +31,36 @@ document.addEventListener('DOMContentLoaded', () => {
 // Manejar envío del formulario
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+<<<<<<< HEAD
     
+=======
+>>>>>>> rama-axel
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const loginBtn = document.getElementById('loginBtn');
     const loading = document.getElementById('loading');
     const messageDiv = document.getElementById('message');
+<<<<<<< HEAD
     
+=======
+>>>>>>> rama-axel
     // Validaciones básicas
     if (!email || !password) {
         showMessage('Por favor, completa todos los campos', 'error');
         return;
     }
+<<<<<<< HEAD
     
+=======
+>>>>>>> rama-axel
     // Mostrar loading
     loginBtn.disabled = true;
     loading.style.display = 'block';
     messageDiv.innerHTML = '';
+<<<<<<< HEAD
     
+=======
+>>>>>>> rama-axel
     try {
         const response = await fetch(`${API_BASE_URL}/auth/login`, {
             method: 'POST',
@@ -43,6 +69,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             },
             body: JSON.stringify({ email, password })
         });
+<<<<<<< HEAD
         
         const data = await response.json();
         
@@ -62,6 +89,37 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             showMessage(data.message || 'Error en el login', 'error');
         }
         
+=======
+        const data = await response.json();
+        if (data.success) {
+            localStorage.setItem('authToken', data.data.token);
+            localStorage.setItem('userData', JSON.stringify(data.data.user));
+            // Lista de correos autorizados para el panel de administración
+            const adminEmails = [
+                'axel@recirculate.com',
+                'nicolas@recirculate.com', 
+                'loe@recirculate.com',
+                'lucho@recirculate.com',
+                'gere@recirculate.com',
+                'pipo@recirculate.com'
+            ];
+            const userEmail = data.data.user.email.toLowerCase();
+            const isAuthorizedAdmin = adminEmails.includes(userEmail);
+            if (isAuthorizedAdmin) {
+                showMessage('¡Login exitoso! Accediendo al panel de administración...', 'success');
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 1000);
+            } else {
+                showMessage('¡Login exitoso! Redirigiendo a la tienda...', 'success');
+                setTimeout(() => {
+                    window.location.href = '../RecirculateLoe/home/home.html';
+                }, 1000);
+            }
+        } else {
+            showMessage(data.message || 'Error en el login', 'error');
+        }
+>>>>>>> rama-axel
     } catch (error) {
         console.error('Error en login:', error);
         showMessage('Error de conexión. Intenta nuevamente.', 'error');
@@ -71,6 +129,60 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     }
 });
 
+<<<<<<< HEAD
+=======
+// --- Google Sign-In ---
+async function handleGoogleLogin(response) {
+    const googleToken = response.credential;
+    const loading = document.getElementById('loading');
+    const messageDiv = document.getElementById('message');
+    if (loading) loading.style.display = 'block';
+    try {
+        const res = await fetch(`${API_BASE_URL}/auth/google-signin`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ token: googleToken })
+        });
+        const data = await res.json();
+        if (data.success) {
+            localStorage.setItem('authToken', data.data.token);
+            localStorage.setItem('userData', JSON.stringify(data.data.user));
+            // Lista de correos autorizados para el panel de administración
+            const adminEmails = [
+                'axel@recirculate.com',
+                'nicolas@recirculate.com', 
+                'loe@recirculate.com',
+                'lucho@recirculate.com',
+                'gere@recirculate.com',
+                'pipo@recirculate.com'
+            ];
+            const userEmail = data.data.user.email.toLowerCase();
+            const isAuthorizedAdmin = adminEmails.includes(userEmail);
+            if (isAuthorizedAdmin) {
+                showMessage('¡Login exitoso con Google! Accediendo al panel de administración...', 'success');
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 1000);
+            } else {
+                showMessage('¡Login exitoso con Google! Redirigiendo a la tienda...', 'success');
+                setTimeout(() => {
+                    window.location.href = '../RecirculateLoe/home/home.html';
+                }, 1000);
+            }
+        } else {
+            showMessage(data.message || 'Error en el login con Google', 'error');
+        }
+    } catch (error) {
+        console.error('Error en Google Sign-In:', error);
+        showMessage('Error de conexión. Intenta nuevamente.', 'error');
+    } finally {
+        if (loading) loading.style.display = 'none';
+    }
+}
+
+>>>>>>> rama-axel
 // Función para mostrar mensajes
 function showMessage(message, type) {
     const messageDiv = document.getElementById('message');
@@ -81,14 +193,20 @@ function showMessage(message, type) {
 async function verifyToken() {
     const token = localStorage.getItem('authToken');
     if (!token) return false;
+<<<<<<< HEAD
     
+=======
+>>>>>>> rama-axel
     try {
         const response = await fetch(`${API_BASE_URL}/auth/perfil`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
+<<<<<<< HEAD
         
+=======
+>>>>>>> rama-axel
         return response.ok;
     } catch (error) {
         return false;

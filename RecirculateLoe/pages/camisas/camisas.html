@@ -10,7 +10,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+<<<<<<< HEAD
 
+=======
+>>>>>>> rama-axel
   <header class="public-header fixed-header">
     <nav class="header-nav">
       <div class="header-left">
@@ -24,7 +27,11 @@
         <img src="../../assets/images/Recirculate-logo.png" alt="Recirculate Logo" class="logo-image">
       </a>
       <div class="header-right">
+<<<<<<< HEAD
         <a href="/auth/login.html" class="header-icon user-icon" data-tooltip="INICIAR SESIÓN"><i class="fas fa-user"></i></a>
+=======
+        <a href="../../auth/login.html" class="header-icon user-icon" data-tooltip="INICIAR SESIÓN"><i class="fas fa-user"></i></a>
+>>>>>>> rama-axel
         <a href="../../carrito/carrito.html" class="header-icon cart-icon">
           <i class="fas fa-shopping-cart"></i>
           <span id="cart-counter" class="cart-counter">0</span>
@@ -32,6 +39,7 @@
       </div>
     </nav>
   </header>
+<<<<<<< HEAD
 
 <!--SIDEBAR MENU-->  
 <div id="sidebar-menu" class="sidebar">
@@ -128,6 +136,90 @@
 
   <main class="public-main">
 
+=======
+  <div id="sidebar-menu" class="sidebar">
+    <button id="close-btn" class="close-btn">&times;</button>
+    <div class="sidebar-menu-list">
+      <div class="sidebar-category" data-category="hombre">
+        <div class="sidebar-category-header">
+          <span>HOMBRE</span>
+          <i class="fas fa-chevron-right toggle-icon"></i>
+        </div>
+        <div class="sidebar-submenu">
+          <a href="../hombre/hombre.html"><strong>Ver Todo Hombre</strong></a>
+          <a href="../remeras/remeras.html">Remeras</a>
+          <a href="../buzos/buzos.html">Buzos</a>
+          <a href="../camperas/camperas.html">Camperas</a>
+          <a href="../pantalones/pantalones.html">Pantalones</a>
+          <a href="../camisas/camisas.html">Camisas</a>
+        </div>
+      </div>
+      <div class="sidebar-category" data-category="mujer">
+        <div class="sidebar-category-header">
+          <span>MUJER</span>
+          <i class="fas fa-chevron-right toggle-icon"></i>
+        </div>
+        <div class="sidebar-submenu">
+          <a href="../mujer/mujer.html"><strong>Ver Todo Mujer</strong></a>
+          <a href="../Mremeras/Mremeras.html">Remeras/Tops</a>
+          <a href="../Mvestidos/Mvestidos.html">Vestidos/Monos</a>
+          <a href="../Mpolleras/Mpolleras.html">Polleras/Shorts/Skorts</a>
+        </div>
+      </div>
+      <a href="../unisex/unisex.html" class="sidebar-main-link">UNISEX</a>
+      <a href="../ingresos/ingresos.html" class="sidebar-main-link">INGRESOS</a>
+      <a href="../descuentos/descuentos.html" class="sidebar-main-link">DESCUENTOS</a>
+      <hr class="sidebar-divider">
+      <div class="sidebar-auth-group">
+        <a href="../../auth/login.html" class="sidebar-main-link">INICIAR SESIÓN</a>
+        <a href="../../auth/registro.html" class="sidebar-main-link">REGISTRARSE</a>
+      </div>
+    </div>
+  </div>
+  <div id="filter-sidebar" class="filter-sidebar">
+    <div class="filter-sidebar-header">
+      <h2>Filtros</h2>
+      <button id="close-filter-btn" class="close-btn">&times;</button>
+    </div>
+    <div class="filter-sidebar-content">
+      <div class="filter-section">
+        <h4>Precio</h4>
+        <div class="price-range-slider">
+          <div class="price-inputs">
+            <input type="number" id="min-price" value="30000" placeholder="Mín">
+            <span>-</span>
+            <input type="number" id="max-price" value="50000" placeholder="Máx">
+          </div>
+          <input type="range" class="price-slider" disabled> 
+        </div>
+      </div>
+      <div class="filter-section">
+        <h4>Color</h4>
+        <div class="filter-options color-options">
+          <button class="filter-option" data-color="negro" style="background-color: black;"></button>
+          <button class="filter-option" data-color="blanco" style="background-color: white; border: 1px solid #ccc;"></button>
+          <button class="filter-option" data-color="gris" style="background-color: grey;"></button>
+          <button class="filter-option" data-color="azul" style="background-color: blue;"></button>
+          <button class="filter-option" data-color="rojo" style="background-color: red;"></button>
+        </div>
+      </div>
+      <div class="filter-section">
+        <h4>Talle</h4>
+        <div class="filter-options size-options">
+          <button class="filter-option" data-size="S">S</button>
+          <button class="filter-option" data-size="M">M</button>
+          <button class="filter-option" data-size="L">L</button>
+          <button class="filter-option" data-size="XL">XL</button>
+        </div>
+      </div>
+    </div>
+    <div class="filter-sidebar-footer">
+      <button id="apply-filters-btn" class="apply-filters-btn">Añadir filtro</button>
+    </div>
+  </div>
+  <div class="overlay"></div>
+  <main class="public-main">
+>>>>>>> rama-axel
     <nav aria-label="breadcrumb">
       <ol class="breadcrumbs">
         <li class="breadcrumb-item"><a href="../../home/home.html">Inicio</a></li>
@@ -135,6 +227,7 @@
         <li class="breadcrumb-item active" aria-current="page">Camisas</li>
       </ol>
     </nav>
+<<<<<<< HEAD
 
     <div class="category-header">
       <h1>Camisas</h1>
@@ -231,6 +324,44 @@
   </div>
 </div>
 
+=======
+    <div class="category-header">
+      <h1>Camisas</h1>
+      <div class="filter-toolbar">
+        <select name="ordenar" id="ordenar">
+          <option value="destacados">Destacados</option>
+          <option value="precio-asc">Precio: Menor a Mayor</option>
+          <option value="precio-desc">Precio: Mayor a Menor</option>
+          <option value="nuevos">Más Nuevos</option>
+        </select>
+        <button class="filter-btn">Filtrar</button>
+      </div>
+    </div>
+    <section class="product-grid category-grid" id="productos-container">
+      <!-- Los productos se cargan dinámicamente desde la API -->
+    </section>
+  </main>
+  <div class="chatbot-container">
+    <button id="chatbot-toggle" class="chatbot-bubble">
+      <i class="fas fa-comment-dots"></i>
+    </button>
+    <div id="chatbot-window" class="chatbot-window">
+      <div class="chatbot-header">
+        <span>Asistente Virtual</span>
+        <button id="chatbot-close" class="chatbot-close-btn">&times;</button>
+      </div>
+      <div class="chatbot-body">
+        <div class="chat-message bot">
+          Hola 👋 ¿En qué puedo ayudarte hoy?
+        </div>
+      </div>
+      <div class="chatbot-footer">
+        <input type="text" placeholder="Escribe tu mensaje...">
+        <button><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+>>>>>>> rama-axel
   <footer class="public-footer">
     <div class="footer-container">
       <div class="footer-column">
@@ -263,15 +394,22 @@
         </div>
       </div>
     </div>
+<<<<<<< HEAD
     
     <!-- Línea divisoria -->
     <div class="footer-divider"></div>
     
+=======
+    <div class="footer-divider"></div>
+>>>>>>> rama-axel
     <div class="footer-bottom">
       <p>&copy; 2025 Recirculate. Todos los derechos reservados.</p>
     </div>
   </footer>
+<<<<<<< HEAD
   
+=======
+>>>>>>> rama-axel
   <script src="../../assets/pages.js"></script>
 </body>
 </html>

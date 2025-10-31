@@ -73,11 +73,18 @@ body, html {
   style.css - Estilos globales para la aplicación de ventas de ropa usada.
   Incluye responsividad, accesibilidad y estilos para formularios, tablas y mensajes.
   Se aplica la regla del 8 para márgenes, paddings y gaps.
+<<<<<<< HEAD
+=======
+  Incluye todas las media queries y mejoras de Nico para máxima responsividad.
+>>>>>>> rama-axel
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> rama-axel
 .cont-filtros button {
   background: #ffd84d;
   border: none;
@@ -118,6 +125,7 @@ a[href] > button,
 #menu-ordenar {
   padding: 8px 0;
 }
+<<<<<<< HEAD
 .ordenar-opcion {
   width: 100%;
   background: none;
@@ -127,6 +135,8 @@ a[href] > button,
   cursor: pointer;
   font-size: 1rem;
 }
+=======
+>>>>>>> rama-axel
 .ordenar-opcion:hover {
   background: #f0f0f0;
 }

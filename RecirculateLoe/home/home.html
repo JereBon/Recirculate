@@ -18,7 +18,15 @@
           <input type="text" id="search-input" class="search-input" placeholder="Buscar...">
         </div>
       </div>
+<<<<<<< HEAD
       <a href="javascript:void(0);" class="header-logo" id="home-logo">
+=======
+<<<<<<< HEAD
+      <a href="javascript:void(0);" class="header-logo" id="home-logo">
+=======
+      <a href="./home.html" class="header-logo">
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
         <img src="../assets/images/Recirculate-logo.png" alt="Recirculate Logo" class="logo-image">
       </a>
       <div class="header-right">
@@ -33,6 +41,10 @@
     </nav>
   </header>
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> rama-axel
 <div id="sidebar-menu" class="sidebar">
   <button id="close-btn" class="close-btn">&times;</button>
   
@@ -79,6 +91,19 @@
 </div>
 
 </div>
+<<<<<<< HEAD
+=======
+=======
+  <div id="sidebar-menu" class="sidebar">
+    <button id="close-btn" class="close-btn">&times;</button>
+    <a href="../pages/buzos/buzos.html">Buzos</a>
+    <a href="../pages/camperas/camperas.html">Camperas</a>
+    <a href="../pages/camisas/camisas.html">Camisas</a>
+    <a href="../pages/remeras/remeras.html">Remeras</a>
+    <a href="../pages/pantalones/pantalones.html">Pantalones</a>
+  </div>
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
   <div class="overlay"></div>
 
   <section class="animated-hero-section">
@@ -118,6 +143,10 @@
     </section>
 
     <section class="gender-category-section">
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> rama-axel
         <a href="../pages/hombre/hombre.html" class="gender-card">
             <img src="../assets/images/Hombre.png" alt="Categoría Hombre">
         </a>
@@ -126,6 +155,40 @@
         </a>
     </section>
 
+<<<<<<< HEAD
+=======
+=======
+        <a href="#" class="gender-card" onclick="loadGenderProducts('Hombre')">
+            <img src="../assets/images/Hombre.png" alt="Categoría Hombre">
+            <div class="gender-overlay">
+              <h3>HOMBRE</h3>
+              <p>Descubre productos para hombre</p>
+            </div>
+        </a>
+        <a href="#" class="gender-card" onclick="loadGenderProducts('Mujer')">
+            <img src="../assets/images/Mujer.png" alt="Categoría Mujer">
+            <div class="gender-overlay">
+              <h3>MUJER</h3>
+              <p>Descubre productos para mujer</p>
+            </div>
+        </a>
+    </section>
+
+    <!-- Modal para mostrar productos por género -->
+    <div id="gender-modal" class="gender-modal" style="display: none;">
+      <div class="gender-modal-content">
+        <div class="gender-modal-header">
+          <h2 id="gender-modal-title">Productos</h2>
+          <button class="gender-modal-close" onclick="closeGenderModal()">&times;</button>
+        </div>
+        <div id="gender-products-grid" class="product-grid">
+          <!-- Productos por género se cargan aquí -->
+        </div>
+      </div>
+    </div>
+
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
     <section class="benefits-section">
       <div class="benefit-item">
         <i class="fas fa-credit-card benefit-icon"></i>
@@ -144,11 +207,16 @@
       </div>
     </section>
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> rama-axel
     <section class="ingresos-section">
       <h2>Ingresos</h2>
     </section>
 
     <section class="featured-products-section">
+<<<<<<< HEAD
       <div class="product-grid">
         <div class="product-card" data-product-name="Campera Ecocuero">
           <div class="new-tag">NEW</div>
@@ -190,14 +258,30 @@
           <i class="fas fa-spinner fa-spin"></i>
           <p>Cargando últimos productos...</p>
         </div>
+=======
+      <div class="product-grid" id="productos-destacados">
+        <!-- Los productos destacados se cargan dinámicamente desde la API -->
+=======
+    <section class="featured-products-section">
+      <h2>Productos Destacados</h2>
+      <div class="product-grid" id="featured-products-grid">
+        <!-- Los productos destacados se cargan dinámicamente aquí -->
+        <div class="loading-message">Cargando productos destacados...</div>
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
       </div>
     </section>
 
     <section class="discount-section">
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> rama-axel
       <h2>Descuentos</h2>
     </section>
 
     <section class="featured-products-section">
+<<<<<<< HEAD
       <div class="product-grid">
         <div class="product-card" data-product-name="Vestido Italo">
           <div class="discount-tag">22% OFF</div>
@@ -229,6 +313,16 @@
           <p class="precio">$37.000 ARS</p>
           <button class="add-to-cart-btn">Añadir al carrito</button>
         </div>
+=======
+      <div class="product-grid" id="productos-descuentos">
+        <!-- Los productos con descuento se cargan dinámicamente desde la API -->
+=======
+      <h2>Últimos Agregados</h2>
+      <div class="product-grid" id="latest-products-grid">
+        <!-- Los últimos productos se cargan dinámicamente aquí -->
+        <div class="loading-message">Cargando últimos productos...</div>
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
       </div>
     </section>
   </main>
@@ -265,15 +359,28 @@
         </div>
       </div>
     </div>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> rama-axel
     
     <!-- Línea divisoria -->
     <div class="footer-divider"></div>
     
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
     <div class="footer-bottom">
       <p>&copy; 2025 Recirculate. Todos los derechos reservados.</p>
     </div>
   </footer>
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> rama-axel
 <div class="chatbot-container">
   <button id="chatbot-toggle" class="chatbot-bubble">
     <i class="fas fa-comment-dots"></i>
@@ -296,6 +403,7 @@
   </div>
 </div>
 
+<<<<<<< HEAD
   <script src="../assets/catalog-api.js"></script>
   <script type="module" src="home.js"></script>
   <script>
@@ -315,3 +423,268 @@
   </script>
 </body>
 </html>
+=======
+  <script type="module" src="../assets/user-menu.js"></script>
+  <script type="module" src="home.js"></script>
+</body>
+</html>
+=======
+  <!-- Modal Coming Soon -->
+  <div id="comingSoonModal" class="coming-soon-modal">
+    <div class="coming-soon-content">
+      <div class="construction-container">
+        <div class="construction-character">
+          <div class="character-body"></div>
+          <div class="character-head">
+            <div class="hard-hat"></div>
+          </div>
+          <div class="character-arms"></div>
+        </div>
+        <div class="construction-barrier">
+          <div class="barrier-stripe"></div>
+          <div class="barrier-stripe"></div>
+          <div class="barrier-stripe"></div>
+        </div>
+        <div class="traffic-cone"></div>
+        <div class="traffic-cone cone-2"></div>
+      </div>
+      
+      <div class="coming-soon-text">
+        <h2>PRÓXIMAMENTE!</h2>
+        <p>Estamos trabajando en la construcción de esta sección.</p>
+      </div>
+      
+      <button onclick="closeComingSoonModal()" class="back-to-home-btn">
+        <i class="fas fa-home"></i> Volver al Inicio
+      </button>
+    </div>
+  </div>
+
+  <style>
+  .coming-soon-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    animation: fadeIn 0.3s;
+  }
+
+  .coming-soon-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #ffd84d, #ffeb99);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    width: 90%;
+  }
+
+  .construction-container {
+    position: relative;
+    margin-bottom: 30px;
+    height: 120px;
+  }
+
+  .construction-character {
+    position: absolute;
+    left: 50%;
+    top: 20px;
+    transform: translateX(-50%);
+    animation: bounce 2s infinite;
+  }
+
+  .character-body {
+    width: 40px;
+    height: 60px;
+    background: #ddd;
+    border-radius: 20px;
+    position: relative;
+  }
+
+  .character-head {
+    width: 30px;
+    height: 30px;
+    background: #f4c2a1;
+    border-radius: 50%;
+    position: absolute;
+    top: -25px;
+    left: 5px;
+  }
+
+  .hard-hat {
+    width: 35px;
+    height: 20px;
+    background: #ffd84d;
+    border-radius: 50% 50% 0 0;
+    position: absolute;
+    top: -15px;
+    left: -2.5px;
+  }
+
+  .character-arms {
+    position: absolute;
+    top: 15px;
+    left: -15px;
+    width: 15px;
+    height: 30px;
+    background: #f4c2a1;
+    border-radius: 10px;
+    animation: wave 1.5s infinite;
+  }
+
+  .character-arms::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    width: 15px;
+    height: 30px;
+    background: #f4c2a1;
+    border-radius: 10px;
+    animation: wave 1.5s infinite reverse;
+  }
+
+  .construction-barrier {
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+    width: 100px;
+    height: 20px;
+    background: #ff6b6b;
+    transform: rotate(-10deg);
+  }
+
+  .barrier-stripe {
+    height: 33.33%;
+    background: repeating-linear-gradient(
+      45deg,
+      #ff6b6b,
+      #ff6b6b 10px,
+      white 10px,
+      white 20px
+    );
+  }
+
+  .traffic-cone {
+    position: absolute;
+    bottom: 0;
+    right: 30px;
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 40px solid #ff8c42;
+  }
+
+  .traffic-cone::after {
+    content: '';
+    position: absolute;
+    bottom: -35px;
+    left: -12px;
+    width: 24px;
+    height: 8px;
+    background: white;
+    border-radius: 2px;
+  }
+
+  .cone-2 {
+    right: 80px;
+    transform: scale(0.8);
+  }
+
+  .coming-soon-text h2 {
+    color: #ff6b42;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0 0 15px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .coming-soon-text p {
+    color: #333;
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+  }
+
+  .back-to-home-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+  }
+
+  .back-to-home-btn:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+  }
+
+  .back-to-home-btn i {
+    margin-right: 8px;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+    40% { transform: translateX(-50%) translateY(-10px); }
+    60% { transform: translateX(-50%) translateY(-5px); }
+  }
+
+  @keyframes wave {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(20deg); }
+  }
+
+  @media (max-width: 600px) {
+    .coming-soon-content {
+      padding: 30px 20px;
+      margin: 20px;
+    }
+    
+    .coming-soon-text h2 {
+      font-size: 2rem;
+    }
+  }
+  </style>
+
+  <script>
+  function showComingSoonModal() {
+    document.getElementById('comingSoonModal').style.display = 'block';
+    document.body.style.overflow = 'hidden'; // Prevenir scroll
+  }
+
+  function closeComingSoonModal() {
+    document.getElementById('comingSoonModal').style.display = 'none';
+    document.body.style.overflow = 'auto'; // Restaurar scroll
+  }
+
+  // Cerrar modal al hacer click fuera del contenido
+  document.getElementById('comingSoonModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeComingSoonModal();
+    }
+  });
+  </script>
+  
+  <script type="module" src="home.js"></script>
+</body>
+</html>
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel

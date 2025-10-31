@@ -1,0 +1,42 @@
+# Ignorar carpetas de recuperación fuera del repo
+../RecirculateLoeV3/
+../RecirculateLoeV4/
+../RecirculateLoeV5Final.rar
+../../hospital-jpa-final/
+../../NEW/
+../../RC1/
+../../Recirculate-master/
+../../RecirculateLoeV2 OLD/
+
+# Ignorar archivos viejos de V3 que están en V5Final (fuera de RecirculateLoe)
+../.delete_all
+../CHANGELOG_LOEV3.md
+../MERCADOPAGO_GUIA.md
+../README.md
+../RENDER_CONFIG.md
+../api/
+../assets/
+../auth/
+../db-check.html
+../failure.html
+../gastos/
+../index.html
+../pending.html
+../productos/
+../success.html
+../ventas/
+../welcome.html
+
+# Node modules si usás npm
+node_modules/
+
+# Archivos temporales
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp

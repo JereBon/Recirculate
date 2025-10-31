@@ -2,6 +2,12 @@ document.addEventListener("DOMContentLoaded", function() {
   // --- Cargar contador del carrito al inicio ---
   actualizarContadorCarrito();
 
+<<<<<<< HEAD
+=======
+  // --- Cargar productos destacados dinámicamente ---
+  cargarProductosDestacados();
+
+>>>>>>> rama-axel
   // --- LÓGICA PARA EL CHATBOT FLOTANTE ---
   const chatbotContainer = document.querySelector('.chatbot-container');
   const chatbotToggle = document.getElementById('chatbot-toggle');
@@ -18,13 +24,17 @@ document.addEventListener("DOMContentLoaded", function() {
       // Mostrar/Ocultar ventana del chat al hacer clic en el globito
       if (chatbotToggle && chatbotWindow) {
           chatbotToggle.addEventListener('click', () => {
+<<<<<<< HEAD
               chatbotWindow.classList.toggle('active');
+=======
+>>>>>>> rama-axel
           });
       }
       
       // Cerrar ventana del chat al hacer clic en la 'X'
       if (chatbotClose && chatbotWindow) {
           chatbotClose.addEventListener('click', () => {
+<<<<<<< HEAD
               chatbotWindow.classList.remove('active');
           });
       }
@@ -128,6 +138,19 @@ document.addEventListener("DOMContentLoaded", function() {
   const sidebar = document.getElementById('sidebar-menu');
   const body = document.body;
   const overlay = document.querySelector('.overlay');
+=======
+              chatbotWindow.style.display = 'none';
+          });
+      }
+    }
+
+  // --- Lógica para la barra lateral (sidebar) ---
+  const sidebar = document.getElementById('sidebar');
+  const body = document.body;
+  const menuBtn = document.getElementById('menu-btn');
+  const closeBtn = document.getElementById('close-btn');
+  const overlay = document.getElementById('sidebar-overlay');
+>>>>>>> rama-axel
 
   function openSidebar() {
     sidebar.classList.add('open');
@@ -227,7 +250,10 @@ document.addEventListener("DOMContentLoaded", function() {
   addToCartButtons.forEach((button, index) => {
     button.addEventListener('click', (e) => {
       e.preventDefault();
+<<<<<<< HEAD
       e.stopPropagation(); // Evitar que se active el click del card
+=======
+>>>>>>> rama-axel
       
       // Obtener información del producto desde el DOM
       const productCard = button.closest('.product-card');
@@ -298,6 +324,160 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
   // ============================================
+<<<<<<< HEAD
+=======
+// FUNCIÓN PARA CARGAR PRODUCTOS DESTACADOS DINÁMICAMENTE
+// ============================================
+
+async function cargarProductosDestacados() {
+  const API_URL = "https://recirculate-api.onrender.com/api/productos/destacados";
+  const carruselContainer = document.querySelector('.carrusel-container');
+  
+  if (!carruselContainer) return;
+  
+  try {
+    const response = await fetch(API_URL);
+    if (!response.ok) throw new Error('Error al cargar productos destacados');
+    
+    const productosDestacados = await response.json();
+    
+    if (productosDestacados.length === 0) {
+      console.log('No hay productos destacados disponibles');
+      return;
+    }
+    
+    // Limpiar carrusel existente
+    carruselContainer.innerHTML = '';
+    
+    // Crear nuevas cards dinámicamente
+    productosDestacados.forEach((producto, index) => {
+      const carruselItem = document.createElement('div');
+      carruselItem.className = 'carrusel-item';
+      carruselItem.dataset.productName = producto.nombre;
+      
+      // Construir HTML de descuento si existe
+      let discountHtml = '';
+      if (producto.descuento && producto.descuento > 0) {
+        discountHtml = `<div class="discount-tag">${producto.descuento}% OFF</div>`;
+      }
+      
+      // Construir HTML de nuevo si es destacado
+      let newHtml = '';
+      if (producto.es_nuevo || producto.es_destacado) {
+        newHtml = `<div class="new-tag">NEW</div>`;
+      }
+      
+      carruselItem.innerHTML = `
+        ${discountHtml}
+        ${newHtml}
+        <div class="product-images">
+          <img src="${producto.imagen_url || '../assets/images/placeholder.png'}" alt="${producto.nombre}" class="main-image">
+          <img src="${producto.imagen_hover || producto.imagen_url || '../assets/images/placeholder.png'}" alt="${producto.nombre} Hover" class="hover-image">
+        </div>
+        <h3>${producto.nombre}</h3>
+        <p class="precio">$${(producto.precio || 0).toLocaleString('es-AR')} ARS</p>
+        <button class="add-to-cart-btn">Añadir al carrito</button>
+      `;
+      
+      // Hacer el elemento clickeable (excepto el botón)
+      carruselItem.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('add-to-cart-btn')) {
+          // Registrar visita en el historial si el usuario está logueado
+          if (window.userMenuManager && window.userMenuManager.isLoggedIn) {
+            window.userMenuManager.trackProductVisit(producto);
+          }
+          // Aquí puedes agregar navegación al producto específico si tienes esas páginas
+          console.log('Producto clickeado:', producto.nombre);
+        }
+      });
+      
+      carruselContainer.appendChild(carruselItem);
+    });
+    
+    // Re-aplicar event listeners para los nuevos elementos
+    aplicarEventListenersCarrusel();
+    
+    // Re-aplicar animaciones de scroll
+    setupScrollAnimation();
+    
+    console.log(`✅ ${productosDestacados.length} productos destacados cargados dinámicamente`);
+    
+  } catch (error) {
+    console.error('Error al cargar productos destacados:', error);
+    // Mantener carrusel estático si hay error
+  }
+}
+
+function aplicarEventListenersCarrusel() {
+  // Event listeners para botones de agregar al carrito
+  const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+  addToCartButtons.forEach((button, index) => {
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const productCard = button.closest('.carrusel-item');
+      const nombre = productCard.querySelector('h3').textContent;
+      const precioTexto = productCard.querySelector('.precio').textContent;
+      const precio = parseFloat(precioTexto.replace(/[^\d]/g, ''));
+      const imagen = productCard.querySelector('.main-image').src;
+      
+      const producto = {
+        id: `prod_${Date.now()}_${index}`,
+        nombre,
+        precio,
+        imagen,
+        categoria: 'Destacado'
+      };
+      
+      agregarAlCarrito(producto);
+    });
+  });
+
+  // Event listeners para hacer clickeables las cards del carrusel
+  const productCards = document.querySelectorAll('.carrusel-item[data-product-name]');
+  productCards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      if (e.target.classList.contains('add-to-cart-btn') || 
+          e.target.closest('.add-to-cart-btn')) {
+        return;
+      }
+      
+      const productName = card.getAttribute('data-product-name');
+      const productSlug = productName
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, '-');
+      
+      let productPath = '';
+      const lowerName = productName.toLowerCase();
+      
+      if (lowerName.includes('campera')) {
+        productPath = `../productos/hombre/camperas/${productSlug}.html`;
+      } else if (lowerName.includes('top')) {
+        productPath = `../productos/mujer/remeras-tops/${productSlug}.html`;
+      } else if (lowerName.includes('pollera')) {
+        productPath = `../productos/mujer/polleras-shorts/${productSlug}.html`;
+      } else if (lowerName.includes('vestido')) {
+        productPath = `../productos/mujer/vestidos-monos/${productSlug}.html`;
+      } else if (lowerName.includes('remera')) {
+        productPath = `../productos/hombre/remeras/${productSlug}.html`;
+      } else if (lowerName.includes('camisa')) {
+        productPath = `../productos/hombre/camisas/${productSlug}.html`;
+      }
+      
+      if (productPath) {
+        window.location.href = productPath;
+      }
+    });
+    
+    card.style.cursor = 'pointer';
+  });
+}
+
+// ============================================
+>>>>>>> rama-axel
 // FUNCIONES DEL CARRITO (copiadas de utils.js para compatibilidad)
 // ============================================
 
@@ -379,6 +559,7 @@ function mostrarNotificacion(mensaje) {
 
   setupScrollAnimation();
 });
+<<<<<<< HEAD
 
 // --- Lógica para el menú lateral anidado (Categorías) ---
   const categoryHeaders = document.querySelectorAll('.sidebar-category-header');
@@ -400,3 +581,5 @@ function mostrarNotificacion(mensaje) {
   });
 
   
+=======
+>>>>>>> rama-axel

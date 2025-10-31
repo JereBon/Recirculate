@@ -7,6 +7,14 @@ const config = {
   connectionString: process.env.DATABASE_URL || 'postgresql://localhost:5432/recirculate',
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 };
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+const fs = require('fs');
+const path = require('path');
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
 
 // Cliente de PostgreSQL
 const client = new Client(config);
@@ -23,6 +31,16 @@ const connectDB = async () => {
     await createProductsTable();
     await createSalesTable();
     await createExpensesTable();
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+    await createPasswordResetTable();
+    
+    // Crear usuarios administradores autorizados
+    await setupAdminUsers();
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
     
   } catch (error) {
     if (error.code === '3D000') {
@@ -77,6 +95,24 @@ const createUsersTable = async () => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS usuarios (
       id SERIAL PRIMARY KEY,
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+
+    // Ejecutar fix_genero_constraint.sql automáticamente
+    try {
+      const sqlPath = path.join(__dirname, 'migrations', 'fix_genero_constraint.sql');
+      if (fs.existsSync(sqlPath)) {
+        const sql = fs.readFileSync(sqlPath, 'utf8');
+        await client.query(sql);
+        console.log('✅ Constraint de género corregido automáticamente');
+      }
+    } catch (err) {
+      console.error('❌ Error ejecutando fix_genero_constraint.sql:', err.message);
+    }
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
       nombre VARCHAR(255) NOT NULL,
       email VARCHAR(255) UNIQUE NOT NULL,
       password VARCHAR(255) NOT NULL,
@@ -156,13 +192,30 @@ const createProductsTable = async () => {
       nombre VARCHAR(255) NOT NULL,
       descripcion TEXT,
       categoria VARCHAR(100),
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+      genero VARCHAR(20) DEFAULT 'Unisex' CHECK (genero IN ('Hombre', 'Mujer', 'Unisex')),
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
       talle VARCHAR(50),
       color VARCHAR(50),
       marca VARCHAR(100),
       precio DECIMAL(10,2) NOT NULL,
       stock INTEGER DEFAULT 0,
       estado VARCHAR(50) DEFAULT 'Disponible',
+<<<<<<< HEAD
       imagen_url TEXT,
+=======
+<<<<<<< HEAD
+      imagen_url TEXT,
+      imagen_espalda_url TEXT,
+=======
+      destacado BOOLEAN DEFAULT TRUE,
+      imagen_url TEXT,
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
       proveedor VARCHAR(255),
       usuario_id INTEGER REFERENCES usuarios(id),
       fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -177,8 +230,33 @@ const createProductsTable = async () => {
     // Migración: Agregar columna proveedor si no existe
     await addProveedorColumn();
     
+<<<<<<< HEAD
     // Migración: Agregar columnas para múltiples imágenes
     await addImageColumns();
+=======
+<<<<<<< HEAD
+    // Migración: Agregar columna género si no existe
+    await addGeneroColumn();
+    
+    // Migración: Agregar columna es_destacado si no existe
+    await addDestacadoColumn();
+    
+    // Migración: Agregar columna descuento si no existe
+    await addDescuentoColumn();
+
+  // Migración: Agregar columna imagen_espalda_url si no existe
+  await addImagenEspaldaColumn();
+=======
+    // Migración: Agregar columna genero si no existe
+    await addGeneroColumn();
+    
+    // Migración: Agregar columna destacado si no existe
+    await addDestacadoColumn();
+    
+    // Limpiar productos de prueba
+    await clearTestProducts();
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
   } catch (error) {
     console.error('❌ Error creando tabla productos:', error);
   }
@@ -200,6 +278,7 @@ const addProveedorColumn = async () => {
   }
 };
 
+<<<<<<< HEAD
 // Función para agregar columnas de imágenes múltiples
 const addImageColumns = async () => {
   try {
@@ -226,10 +305,121 @@ const addImageColumns = async () => {
   } catch (error) {
     if (error.code !== '42701') {
       console.error('❌ Error agregando columnas de imágenes:', error.message);
+=======
+<<<<<<< HEAD
+// Función para agregar columna género a productos existentes
+const addGeneroColumn = async () => {
+  try {
+    await client.query(`
+      ALTER TABLE productos 
+      ADD COLUMN IF NOT EXISTS genero VARCHAR(20) DEFAULT 'unisex'
+    `);
+    console.log('✅ Columna género agregada/verificada');
+  } catch (error) {
+    // Si la columna ya existe, no es un error
+    if (error.code !== '42701') {
+      console.error('❌ Error agregando columna género:', error.message);
+=======
+// Función para agregar columna genero a productos existentes
+const addGeneroColumn = async () => {
+  try {
+    // Primero agregar la columna como opcional
+    await client.query(`
+      ALTER TABLE productos 
+      ADD COLUMN IF NOT EXISTS genero VARCHAR(20) DEFAULT 'Unisex' CHECK (genero IN ('Hombre', 'Mujer', 'Unisex'))
+    `);
+    
+    // Luego actualizar los registros existentes que tengan NULL
+    await client.query(`
+      UPDATE productos 
+      SET genero = 'Unisex' 
+      WHERE genero IS NULL
+    `);
+    
+    console.log('✅ Columna genero agregada/verificada con valores por defecto');
+  } catch (error) {
+    // Si la columna ya existe, no es un error
+    if (error.code !== '42701') {
+      console.error('❌ Error agregando columna genero:', error.message);
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
     }
   }
 };
 
+<<<<<<< HEAD
+// Función para agregar columna es_destacado a productos
+=======
+// Función para agregar columna destacado a productos existentes
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+const addDestacadoColumn = async () => {
+  try {
+    await client.query(`
+      ALTER TABLE productos 
+<<<<<<< HEAD
+      ADD COLUMN IF NOT EXISTS es_destacado BOOLEAN DEFAULT false
+    `);
+    console.log('✅ Columna es_destacado agregada/verificada');
+  } catch (error) {
+    // Si la columna ya existe, no es un error
+    if (error.code !== '42701') {
+      console.error('❌ Error agregando columna es_destacado:', error.message);
+=======
+      ADD COLUMN IF NOT EXISTS destacado BOOLEAN DEFAULT FALSE
+    `);
+    console.log('✅ Columna destacado agregada/verificada');
+  } catch (error) {
+    // Si la columna ya existe, no es un error
+    if (error.code !== '42701') {
+      console.error('❌ Error agregando columna destacado:', error.message);
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+    }
+  }
+};
+
+<<<<<<< HEAD
+// Función para agregar columna descuento a productos
+const addDescuentoColumn = async () => {
+  try {
+    await client.query(`
+      ALTER TABLE productos 
+      ADD COLUMN IF NOT EXISTS descuento INTEGER DEFAULT 0 CHECK (descuento >= 0 AND descuento <= 100)
+    `);
+    console.log('✅ Columna descuento agregada/verificada');
+  } catch (error) {
+    if (error.code !== '42701') {
+      console.error('❌ Error agregando columna descuento:', error.message);
+>>>>>>> rama-axel
+    }
+  }
+};
+
+<<<<<<< HEAD
+=======
+// Función para agregar columna imagen_espalda_url a productos
+const addImagenEspaldaColumn = async () => {
+  try {
+    await client.query(`
+      ALTER TABLE productos 
+      ADD COLUMN IF NOT EXISTS imagen_espalda_url TEXT
+    `);
+    console.log('✅ Columna imagen_espalda_url agregada/verificada');
+  } catch (error) {
+    if (error.code !== '42701') {
+      console.error('❌ Error agregando columna imagen_espalda_url:', error.message);
+    }
+=======
+// Función para limpiar productos de prueba
+const clearTestProducts = async () => {
+  try {
+    const result = await client.query('DELETE FROM productos');
+    console.log(`🧹 ${result.rowCount} productos de prueba eliminados`);
+  } catch (error) {
+    console.error('❌ Error eliminando productos de prueba:', error.message);
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+  }
+};
+
+>>>>>>> rama-axel
 // Crear tabla de ventas
 const createSalesTable = async () => {
   const createTableQuery = `
@@ -331,6 +521,54 @@ const createMPPaymentsTable = async () => {
   }
 };
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+// Crear tabla para códigos de recuperación de contraseña
+const createPasswordResetTable = async () => {
+  const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS password_reset_codes (
+      id SERIAL PRIMARY KEY,
+      email VARCHAR(255) NOT NULL,
+      codigo VARCHAR(6) NOT NULL,
+      expira_en TIMESTAMP NOT NULL,
+      usado BOOLEAN DEFAULT FALSE,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `;
+
+  // Crear índices por separado para PostgreSQL
+  const createIndexes = [
+    'CREATE INDEX IF NOT EXISTS idx_password_reset_email ON password_reset_codes(email)',
+    'CREATE INDEX IF NOT EXISTS idx_password_reset_codigo ON password_reset_codes(codigo)'
+  ];
+
+  try {
+    await client.query(createTableQuery);
+    
+    for (const indexQuery of createIndexes) {
+      await client.query(indexQuery);
+    }
+    
+    console.log('✅ Tabla password_reset_codes verificada/creada');
+  } catch (error) {
+    console.error('❌ Error creando tabla password_reset_codes:', error);
+  }
+};
+
+// Configurar usuarios administradores autorizados
+const setupAdminUsers = async () => {
+  try {
+    const { createAdminUsers } = require('./setup-admins');
+    await createAdminUsers(client);
+  } catch (error) {
+    console.error('❌ Error configurando usuarios admin:', error);
+  }
+};
+
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
+>>>>>>> rama-axel
 // Cerrar conexión
 const disconnectDB = async () => {
   try {
