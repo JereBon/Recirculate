@@ -443,6 +443,7 @@ td[data-label="Acciones"] {
 .btn:hover {
   opacity: 0.8;
 }
+<<<<<<< HEAD
 
 /* Estilos para formulario de productos */
 .form-grid {
@@ -695,3 +696,5 @@ td[data-label="Acciones"] {
     gap: 0.75rem;
   }
 }
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61

@@ -118,55 +118,6 @@ a[href] > button,
 #menu-ordenar {
   padding: 8px 0;
 }
-
-
-/* --- Media queries y responsividad de Nico --- */
-@media (max-width: 1200px) {
-  .product-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-@media (max-width: 900px) {
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (max-width: 600px) {
-  .product-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  .producto-num-mobile-td {
-    font-size: 1.1rem;
-    padding: 8px 0;
-    background: #f7f7f7;
-    color: #222;
-    border-radius: 8px;
-    text-align: center;
-  }
-  .product-card {
-    padding: 12px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px #0001;
-  }
-  .header-logo img {
-    width: 120px;
-    height: auto;
-  }
-  .sidebar {
-    width: 100vw;
-    left: 0;
-    right: 0;
-    border-radius: 0;
-  }
-  .cont-filtros {
-    width: 100vw;
-    left: 0;
-    right: 0;
-    border-radius: 0;
-  }
-}
-
 .ordenar-opcion:hover {
   background: #f0f0f0;
 }

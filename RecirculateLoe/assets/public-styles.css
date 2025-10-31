@@ -35,12 +35,17 @@ body, html {
   z-index: 1000;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   background-color: #ffd84d;
+<<<<<<< HEAD
   height: 100px;
+=======
+  height: 121px;
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
   padding: 0;
 }
 
 .header-nav {
   display: grid;
+<<<<<<< HEAD
   grid-template-columns: 200px 1fr 200px;
   align-items: center;
   width: 100%;
@@ -82,6 +87,33 @@ body, html {
 
 .logo-image {
   height: 80px;
+=======
+  grid-template-columns: 150px 1fr 150px;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: 100%;
+}
+
+.header-left, .header-right {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.logo-image {
+  height: 105px;
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
   width: auto;
   max-width: 350px;
   object-fit: contain;
@@ -193,6 +225,7 @@ body, html {
 }
 
 /* --- Menú Lateral (Sidebar) --- */
+<<<<<<< HEAD
 
 
 /* assets/public-styles.css */
@@ -294,6 +327,8 @@ body, html {
     max-height: 500px; /* Valor grande para asegurar que se muestre todo el contenido */
 }
 
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 .sidebar {
   height: 100%;
   width: 0;
@@ -304,11 +339,19 @@ body, html {
   background-color: #fff;
   overflow-x: hidden;
   transition: 0.5s;
+<<<<<<< HEAD
   padding-top: 90px;
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
 .sidebar.open {
   width: 350px;
+=======
+  padding-top: 120px;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+.sidebar.open {
+  width: 550px;
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 }
 .sidebar a {
   padding: 12px 32px;
@@ -323,8 +366,13 @@ body, html {
 }
 .sidebar .close-btn {
   position: absolute;
+<<<<<<< HEAD
   top: 30px;
   right: 20px; /* Cambiado de left a right con el mismo margen que los enlaces */
+=======
+  top: 40px;
+  left: 495px;
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
   font-size: 30px;
   color: #222;
   border: none;
@@ -344,19 +392,29 @@ body, html {
 
 /* --- Estilos de Secciones Principales --- */
 .public-main {
+<<<<<<< HEAD
   max-width: 100%;
   width: 100%;
   margin: 0 auto;
   padding: 0 23rem;
+=======
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
   padding-top: 145px;
   transition: opacity 0.5s;
 }
 
+<<<<<<< HEAD
 /* FORZAR que TODO dentro de public-main respete los límites */
 .public-main > * {
   max-width: 100%;
 }
 
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 /* --- Overlay --- */
 .overlay {
   position: fixed;
@@ -365,13 +423,20 @@ body, html {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.4);
+<<<<<<< HEAD
   z-index: 1000;
+=======
+  z-index: 100;
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
   display: none;
   transition: background-color 0.5s;
 }
 body.sidebar-active .public-main, body.sidebar-active .public-footer {
   opacity: 0.7;
+<<<<<<< HEAD
   
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 }
 body.sidebar-active .overlay {
   display: block;
@@ -381,7 +446,11 @@ body.sidebar-active .overlay {
 .animated-hero-section {
   text-align: center;
   padding: 6rem 2rem 2rem 2rem; /* CAMBIO: Relleno inferior reducido */
+<<<<<<< HEAD
   margin-top: 130px; 
+=======
+  margin-top: 150px; 
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
   background-image: url(./images/Banner.jpeg);
   background-size: cover;
   background-position: center;
@@ -444,9 +513,15 @@ body.sidebar-active .overlay {
   justify-content: center;
   align-items: center;
   width: 100%;
+<<<<<<< HEAD
   max-width: 100%;
   height: 640px;
   margin: -7rem auto 30px auto;
+=======
+  max-width: 1200px;
+  height: 640px;
+  margin: -7rem auto 30px auto; /* CAMBIO: Margen superior eliminado */
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
   gap: 8px;
   overflow: hidden;
 }
@@ -546,6 +621,7 @@ body.sidebar-active .overlay {
 }
 .add-to-cart-btn:hover { background-color: #ffe98a; }
 
+<<<<<<< HEAD
 /* --- Sección Ingresos --- */
 .ingresos-section {
   text-align: center;
@@ -553,6 +629,8 @@ body.sidebar-active .overlay {
   padding: 0;
 }
 
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 /* --- Sección Descuentos --- */
 .discount-section { text-align: center; margin: 60px 0; padding: 0; }
 .discount-btn {
@@ -617,6 +695,7 @@ body.sidebar-active .overlay {
   margin: 0;
 }
 
+<<<<<<< HEAD
 /* --- ESTILOS PARA EL CHATBOT FLOTANTE --- */
 
 .chatbot-container {
@@ -1030,6 +1109,27 @@ body.sidebar-active .overlay {
   font-size: 0.9rem;
   color: #999;
 }
+=======
+/* --- Footer --- */
+.public-footer { background-color: #222; color: #fff; padding: 40px 20px; }
+.footer-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #444;
+}
+.footer-column { flex: 1 1 200px; margin-bottom: 20px; }
+.footer-column h4 { font-size: 1.2rem; margin-bottom: 15px; }
+.footer-column p, .footer-column ul, .footer-column li { margin: 0; padding: 0; list-style: none; }
+.footer-column a { color: #fff; text-decoration: none; transition: color 0.2s; }
+.footer-column a:hover { color: #ffd84d; }
+.social-icons { display: flex; gap: 15px; }
+.social-icons a { font-size: 1.5rem; }
+.footer-bottom { text-align: center; padding-top: 20px; }
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 
 /* --- Media Queries --- */
 @media (max-width: 900px) {
@@ -1050,4 +1150,273 @@ body.sidebar-active .overlay {
   .animated-title { font-size: 2rem; }
   .hero-subtitle { font-size: 1rem; }
   .sidebar.open { width: 90%; }
+<<<<<<< HEAD
+=======
+}
+
+/* --- ESTILOS PARA PRODUCTOS DINÁMICOS --- */
+
+/* Grillas de productos */
+#featured-products-grid,
+#latest-products-grid,
+#gender-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 2rem 0;
+}
+
+/* Tarjetas de productos mejoradas */
+.product-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 1rem;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Tags especiales */
+.destacado-tag,
+.genero-tag {
+  position: absolute;
+  top: 10px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #fff;
+  z-index: 2;
+}
+
+.destacado-tag {
+  right: 10px;
+  background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+  animation: pulse 2s infinite;
+}
+
+.genero-tag {
+  left: 10px;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+}
+
+.genero-hombre {
+  background: linear-gradient(45deg, #4dabf7, #74c0fc);
+}
+
+.genero-mujer {
+  background: linear-gradient(45deg, #f06292, #f48fb1);
+}
+
+.genero-unisex {
+  background: linear-gradient(45deg, #9c27b0, #ba68c8);
+}
+
+/* Imágenes de productos */
+.product-images {
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .main-image {
+  transform: scale(1.05);
+}
+
+/* Información del producto */
+.product-card h3 {
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+  color: #333;
+  font-weight: 600;
+}
+
+.precio {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #2c5aa0;
+  margin: 0.5rem 0;
+}
+
+.product-details {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0.5rem 0;
+  line-height: 1.4;
+}
+
+.product-details span {
+  display: inline-block;
+  margin-right: 0.5rem;
+  padding: 2px 6px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.stock-info {
+  font-size: 0.8rem;
+  color: #28a745;
+  font-weight: 500;
+  margin: 0.5rem 0;
+}
+
+/* Botón añadir al carrito */
+.add-to-cart-btn {
+  width: 100%;
+  padding: 0.8rem;
+  background: linear-gradient(45deg, #ffd84d, #ffcc02);
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.add-to-cart-btn:hover {
+  background: linear-gradient(45deg, #ffcc02, #ffc107);
+  transform: translateY(-2px);
+}
+
+/* Modal de género */
+#gender-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.gender-modal-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 90%;
+  max-height: 90%;
+  overflow-y: auto;
+  position: relative;
+}
+
+.gender-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 1rem;
+}
+
+#gender-modal-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-modal:hover {
+  color: #333;
+}
+
+/* Mensajes de estado */
+.error-message,
+.no-products-message {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-style: italic;
+}
+
+.error-message {
+  color: #dc3545;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+}
+
+.no-products-message {
+  background: #e2e3e5;
+  border: 1px solid #d6d8db;
+  border-radius: 8px;
+}
+
+/* Animación para el tag destacado */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Responsive para productos */
+@media (max-width: 768px) {
+  #featured-products-grid,
+  #latest-products-grid,
+  #gender-products-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .gender-modal-content {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  
+  #gender-modal-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #featured-products-grid,
+  #latest-products-grid,
+  #gender-products-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .product-card {
+    padding: 0.8rem;
+  }
+  
+  .product-images {
+    height: 200px;
+  }
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 }

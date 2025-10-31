@@ -10,7 +10,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
 <header class="public-header fixed-header">
     <nav class="header-nav">
     <div class="header-left">
@@ -24,7 +23,7 @@
         <img src="../../assets/images/Recirculate-logo.png" alt="Recirculate Logo" class="logo-image">
     </a>
     <div class="header-right">
-        <a href="/auth/login.html" class="header-icon user-icon" data-tooltip="INICIAR SESIÓN"><i class="fas fa-user"></i></a>
+        <a href="../../auth/login.html" class="header-icon user-icon" data-tooltip="INICIAR SESIÓN"><i class="fas fa-user"></i></a>
         <a href="../../carrito/carrito.html" class="header-icon cart-icon">
         <i class="fas fa-shopping-cart"></i>
         <span id="cart-counter" class="cart-counter">0</span>
@@ -32,7 +31,6 @@
     </div>
     </nav>
 </header>
-
 <!-- SIDEBAR MENU-->
 <div id="sidebar-menu" class="sidebar">
   <button id="close-btn" class="close-btn">&times;</button>
@@ -140,7 +138,7 @@
       <h1>Buzos</h1>
         <div class="filter-toolbar">
           <select name="ordenar" id="ordenar">
-            <option value="default">Destacados</option>
+            <option value="destacados">Destacados</option>
             <option value="precio-asc">Precio: Menor a Mayor</option>
             <option value="precio-desc">Precio: Mayor a Menor</option>
             <option value="nuevos">Más Nuevos</option>
@@ -176,7 +174,7 @@
   </div>
 </div>
 
-  <footer class="public-footer">
+<footer class="public-footer">
     <div class="footer-container">
       <div class="footer-column">
         <h4>Recirculate</h4>
@@ -208,16 +206,12 @@
         </div>
       </div>
     </div>
-    
-    <!-- Línea divisoria -->
     <div class="footer-divider"></div>
-    
     <div class="footer-bottom">
       <p>&copy; 2025 Recirculate. Todos los derechos reservados.</p>
     </div>
   </footer>
   
-  <script src="../../assets/user-menu.js"></script>
   <script src="../../assets/pages.js"></script>
 </body>
 </html>

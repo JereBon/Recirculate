@@ -1,5 +1,5 @@
-// ver-productos.js - Muestra todos los productos y sus atributos, incluyendo imagen
-// Carga productos desde API, renderiza tabla con todos los campos, maneja edición, eliminación y búsqueda.
+// ver-productos.js - Muestra todos los productos y sus atributos, incluyendo imagen y mejoras visuales
+// Carga productos desde API, renderiza tabla con todos los campos, maneja edición, eliminación, búsqueda y filtros avanzados
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Elementos del DOM
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const errorDiv = document.getElementById("errorProductos");
 
   let allProductos = []; // Cache de todos los productos
-  let searchTerm = ''; // Término de búsqueda actual
+  let searchTerm = '';
   let filtros = { nombre: '', categoria: '', marca: '', genero: '', precioDesde: '', precioHasta: '', stockDesde: '', stockHasta: '', fechaDesde: '', fechaHasta: '' };
 
   // Función asíncrona para obtener productos desde la API
@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Función para filtrar productos según término de búsqueda y filtros aplicados
   function filtrarProductos(productos) {
     let filtered = productos;
-
     // Filtro por término de búsqueda
     if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase();
@@ -41,7 +40,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         (prod.id && prod.id.toString().toLowerCase().includes(term))
       );
     }
-
     // Filtros específicos
     if (filtros.nombre) {
       filtered = filtered.filter(p => p.nombre && p.nombre.toLowerCase().includes(filtros.nombre.toLowerCase()));
@@ -52,18 +50,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (filtros.marca) {
       filtered = filtered.filter(p => p.marca && p.marca.toLowerCase().includes(filtros.marca.toLowerCase()));
     }
-
-    // Simple filtering by genero only
+    // Filtro por género
     if (filtros.genero) {
       const generoFiltro = filtros.genero.toLowerCase();
       filtered = filtered.filter(p => p.genero && p.genero.toLowerCase() === generoFiltro);
     }
-    if (filtros.genero && filtros.categoria) {
-      const generoFiltro = filtros.genero.toLowerCase();
-      const categoriaFiltro = filtros.categoria.toLowerCase();
-      filtered = filtered.filter(p => p.genero && p.categoria && p.genero.toLowerCase() === generoFiltro && p.categoria.toLowerCase() === categoriaFiltro);
-    }
-
     if (filtros.precioDesde) {
       filtered = filtered.filter(p => p.precio != null && p.precio >= parseFloat(filtros.precioDesde));
     }
@@ -95,14 +86,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const productosFiltrados = filtrarProductos(allProductos);
     tabla.innerHTML = '';
     if (!productosFiltrados.length) {
-      // Mensaje si no hay productos o ninguno coincide con búsqueda
-      const colspan = 18; // ahora hay 18 columnas (se agregó 'Género' y 'Descuento')
+      const colspan = 18; // Incluye columna de género y mejoras visuales
       tabla.innerHTML = `<tr><td colspan="${colspan}" style="text-align:center; color:#888;">${searchTerm.trim() ? 'No se encontraron productos que coincidan con la búsqueda' : 'No hay productos cargados'}</td></tr>`;
       return;
     }
     // Detecta si es mobile para layout diferente
     const isMobile = window.matchMedia('(max-width: 600px)').matches;
-    // Crea fila por cada producto con todos los atributos y mejoras visuales de Nico
+    // Crea fila por cada producto con todos los atributos y mejoras visuales
     productosFiltrados.forEach((prod, idx) => {
       const idVisual = idx + 1;
       if (isMobile) {
@@ -122,7 +112,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           imagenHtml = `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" />`;
         }
       }
-      // --- Mejoras visuales: data-label en celdas ---
+      // --- Mejoras visuales: data-label en celdas, badge de género ---
       tr.innerHTML = `
         <td data-label="Imagen">${imagenHtml}</td>
         <td data-label="Nombre">${prod.nombre || ''}</td>
@@ -130,7 +120,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td data-label="Categoría">${prod.categoria || ''}</td>
         <td data-label="Talle">${prod.talle || ''}</td>
         <td data-label="Color">${prod.color || ''}</td>
-        <td data-label="Género">${prod.genero || ''}</td>
+        <td data-label="Género"><span style="background:${getGeneroColor(prod.genero)};padding:4px 8px;border-radius:12px;font-size:0.9em;font-weight:bold;">${prod.genero || '-'}</span></td>
         <td data-label="Marca">${prod.marca || ''}</td>
         <td data-label="Estado">${prod.estado || ''}</td>
         <td data-label="Precio">${prod.precio != null ? '$' + prod.precio : ''}</td>
@@ -138,6 +128,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td data-label="Moneda">ARS</td>
         <td data-label="Proveedor">${prod.proveedor || '-'} </td>
         <td data-label="Stock">${prod.stock != null ? prod.stock : ''}</td>
+        <td data-label="Destacado">
+          <label class="toggle-switch">
+            <input type="checkbox" ${prod.destacado ? 'checked' : ''} data-toggle-destacado="${prod.id}">
+            <span class="toggle-slider"></span>
+          </label>
+        </td>
         <td data-label="Activo">Sí</td>
         <td data-label="Creado">${prod.fecha_creacion ? new Date(prod.fecha_creacion).toLocaleString() : ''}</td>
         <td data-label="Actualizado">${prod.fecha_actualizacion ? new Date(prod.fecha_actualizacion).toLocaleString() : ''}</td>
@@ -153,12 +149,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Evento click en tabla para manejar botones de editar y eliminar
   tabla.addEventListener('click', async (e) => {
     if (e.target.dataset.edit !== undefined) {
-      // Redirige a página de edición con ID del producto
-  const id = e.target.dataset.edit;
-  // Redirige al formulario de edición con el id del producto
-  window.location.href = `registrar-producto.html?id=${id}`;
+      const id = e.target.dataset.edit;
+      window.location.href = `registrar-producto.html?id=${id}`;
     } else if (e.target.dataset.delete !== undefined) {
-      // Confirma y elimina producto, luego recarga tabla
       const id = e.target.dataset.delete;
       if (confirm('¿Seguro que deseas eliminar este producto?')) {
         try {
@@ -174,20 +167,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert('Error al eliminar producto: ' + (data.message || res.status));
             return;
           }
-          allProductos = allProductos.filter(p => p.id !== id); // Actualiza cache
-          cargarProductos(); // Refresca tabla
+          allProductos = allProductos.filter(p => p.id !== id);
+          cargarProductos();
         } catch (err) {
           alert('Error al eliminar producto');
         }
       }
-      // Eliminada lógica del botón Ver
     }
   });
 
   // Evento para búsqueda en tiempo real
   searchInput.addEventListener('input', (e) => {
     searchTerm = e.target.value;
-    cargarProductos(); // Re-renderiza con filtro
+    cargarProductos();
   });
 
   // Manejo del botón filtrar para mostrar panel lateral
@@ -221,6 +213,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     filtros.nombre = (fd.get('nombre') || '').trim();
     filtros.categoria = (fd.get('categoria') || '').trim();
     filtros.marca = (fd.get('marca') || '').trim();
+    filtros.genero = (fd.get('genero') || '').trim();
     filtros.proveedor = (fd.get('proveedor') || '').trim();
     filtros.precioDesde = fd.get('precioDesde') || '';
     filtros.precioHasta = fd.get('precioHasta') || '';
@@ -228,31 +221,64 @@ document.addEventListener('DOMContentLoaded', async () => {
     filtros.stockHasta = fd.get('stockHasta') || '';
     filtros.fechaDesde = fd.get('fechaDesde') || '';
     filtros.fechaHasta = fd.get('fechaHasta') || '';
-    filtros.activo = fd.get('activo') !== null;
     contFiltros.classList.remove('slide');
     setTimeout(() => containerFiltros.classList.remove('show'), 300);
     cargarProductos();
   });
 
   btnLimpiarFiltros.addEventListener('click', () => {
-    filtros = { nombre: '', categoria: '', marca: '', precioDesde: '', precioHasta: '', stockDesde: '', stockHasta: '', fechaDesde: '', fechaHasta: '' };
+    filtros = { nombre: '', categoria: '', marca: '', genero: '', precioDesde: '', precioHasta: '', stockDesde: '', stockHasta: '', fechaDesde: '', fechaHasta: '' };
     formFiltros.reset();
     cargarProductos();
   });
 
   // --- BOTÓN PARA AGREGAR PRODUCTOS ---
   const btnAgregarProducto = document.getElementById('btn-agregar-producto');
-
-  // Redirigir a página de productos (formulario original)
   if (btnAgregarProducto) {
     btnAgregarProducto.addEventListener('click', () => {
-      // Llevar al formulario de registro de producto
       window.location.href = 'registrar-producto.html';
     });
   }
+
+  // --- MANEJAR TOGGLE DE DESTACADO ---
+  document.addEventListener('change', async (e) => {
+    if (e.target.dataset.toggleDestacado) {
+      const productoId = e.target.dataset.toggleDestacado;
+      const destacado = e.target.checked;
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await fetch(`${API_URL}/${productoId}/destacado`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ destacado })
+        });
+        if (!response.ok) {
+          throw new Error('Error al cambiar estado destacado');
+        }
+        console.log(`Producto ${productoId} ${destacado ? 'marcado' : 'desmarcado'} como destacado`);
+      } catch (error) {
+        console.error('Error:', error);
+        e.target.checked = !destacado;
+        alert('Error al cambiar el estado destacado del producto');
+      }
+    }
+  });
 
   // Carga inicial de productos
   cargarProductos();
   // Re-renderiza al cambiar tamaño de ventana (responsive)
   window.addEventListener('resize', cargarProductos);
 });
+
+// Función para obtener color según género
+function getGeneroColor(genero) {
+  switch(genero) {
+    case 'Hombre': return '#87CEEB'; // Azul claro
+    case 'Mujer': return '#FFB6C1'; // Rosa claro
+    case 'Unisex': return '#98FB98'; // Verde claro
+    default: return '#F0F0F0'; // Gris claro
+  }
+}

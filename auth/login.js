@@ -1,7 +1,7 @@
 // login.js - Funcionalidad del formulario de login
 const API_BASE_URL = 'https://recirculate-api.onrender.com/api';
 
-// Verificar si ya está logueado (pero NO redirigir automáticamente)
+// Verificar si ya está logueado (NO redirigir automáticamente, solo mostrar mensaje)
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     if (token) {
@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Manejar envío del formulario
-
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('email').value;
@@ -26,18 +25,15 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     const loginBtn = document.getElementById('loginBtn');
     const loading = document.getElementById('loading');
     const messageDiv = document.getElementById('message');
-
     // Validaciones básicas
     if (!email || !password) {
         showMessage('Por favor, completa todos los campos', 'error');
         return;
     }
-
     // Mostrar loading
     loginBtn.disabled = true;
     loading.style.display = 'block';
     messageDiv.innerHTML = '';
-
     try {
         const response = await fetch(`${API_BASE_URL}/auth/login`, {
             method: 'POST',
@@ -46,13 +42,10 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             },
             body: JSON.stringify({ email, password })
         });
-
         const data = await response.json();
-
         if (data.success) {
             localStorage.setItem('authToken', data.data.token);
             localStorage.setItem('userData', JSON.stringify(data.data.user));
-
             // Lista de correos autorizados para el panel de administración
             const adminEmails = [
                 'axel@recirculate.com',
@@ -64,7 +57,6 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             ];
             const userEmail = data.data.user.email.toLowerCase();
             const isAuthorizedAdmin = adminEmails.includes(userEmail);
-
             if (isAuthorizedAdmin) {
                 showMessage('¡Login exitoso! Accediendo al panel de administración...', 'success');
                 setTimeout(() => {
@@ -149,14 +141,12 @@ function showMessage(message, type) {
 async function verifyToken() {
     const token = localStorage.getItem('authToken');
     if (!token) return false;
-    
     try {
         const response = await fetch(`${API_BASE_URL}/auth/perfil`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
-        
         return response.ok;
     } catch (error) {
         return false;

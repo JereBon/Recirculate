@@ -153,4 +153,8 @@ export function obtenerCarrito() {
 export function vaciarCarrito() {
   localStorage.removeItem('recirculate_carrito');
   actualizarContadorCarrito();
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61

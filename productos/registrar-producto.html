@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!--
   registrar-producto.html - Formulario para registrar un nuevo producto
   Incluye validaciones, sistema de descuentos y género obligatorio.
@@ -210,5 +211,143 @@ window.addEventListener("DOMContentLoaded", () => {
   actualizarCategorias();
 });
 </script>
+=======
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registrar Producto</title>
+  <link rel="stylesheet" href="../assets/style.css?v=2024-10-28">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <style>
+    /* Estilos específicos para dropdowns */
+    select {
+      width: 100%;
+      padding: 12px;
+      font-size: 14px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      background-color: white;
+      color: #333;
+      cursor: pointer;
+      appearance: menulist;
+      -webkit-appearance: menulist;
+      -moz-appearance: menulist;
+    }
+    
+    select:focus {
+      border-color: #ffd84d;
+      outline: none;
+      box-shadow: 0 0 5px rgba(255, 216, 77, 0.5);
+    }
+    
+    select option {
+      padding: 8px;
+      background-color: white;
+      color: #333;
+    }
+    
+    /* Asegurar que los labels sean visibles */
+    label {
+      display: block;
+      margin-bottom: 15px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    /* Destacar campos obligatorios */
+    label:has(select[required]):after,
+    label:has(input[required]):after {
+      content: " *";
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Registrar Producto</h2>
+    <form id="formProducto" class="form">
+      <label>Nombre: *
+        <input type="text" id="nombre" required>
+      </label>
+      
+      <label>Descripción:
+        <textarea id="descripcion" rows="3" placeholder="Descripción del producto"></textarea>
+      </label>
+      
+      <label>Categoría:
+        <input type="text" id="categoria" placeholder="Ej: Remeras, Pantalones, Zapatillas">
+      </label>
+      
+      <label>Talle:
+        <input type="text" id="talle" placeholder="Ej: S, M, L, XL, 40, 42">
+      </label>
+      
+      <label>Color:
+        <input type="text" id="color" placeholder="Ej: Azul, Rojo, Negro">
+      </label>
+      
+      <label>Marca:
+        <input type="text" id="marca" placeholder="Ej: Nike, Adidas, Zara">
+      </label>
+
+      <label for="genero">Género: *
+        <select id="genero" required>
+          <option value="">🎯 Seleccionar género</option>
+          <option value="Hombre">👨 Hombre</option>
+          <option value="Mujer">👩 Mujer</option>  
+          <option value="Unisex">👥 Unisex</option>
+        </select>
+      </label>
+      
+      <label for="estado">Estado del Producto: *
+        <select id="estado" name="estado" required>
+          <option value="">-- Seleccionar estado del producto --</option>
+          <option value="Nueva">🆕 Nueva (sin usar)</option>
+          <option value="Poco uso">✨ Poco uso (excelente estado)</option>
+          <option value="Buen estado">👍 Buen estado (algunas marcas mínimas)</option>
+          <option value="Usada">👕 Usada (signos de uso visibles)</option>
+          <option value="Muy usada">⚠️ Muy usada (desgaste considerable)</option>
+        </select>
+      </label>
+      
+
+      
+      <label>Precio: *
+        <input type="number" id="precio" min="0" step="0.01" required>
+      </label>
+      
+      <label>Stock: *
+        <input type="number" id="stock" min="0" required>
+      </label>
+      
+      <label>Imagen URL:
+        <input type="url" id="imagen_url" placeholder="https://ejemplo.com/imagen.jpg">
+      </label>
+      
+      <label>Proveedor:
+        <input type="text" id="proveedor" placeholder="Nombre del proveedor">
+      </label>
+      
+      <label>
+        <input type="checkbox" id="destacado" checked> 
+        Marcar como producto destacado
+      </label>
+      
+      <button type="submit" class="btn">Guardar Producto</button>
+
+      <div id="errorProducto" class="error"></div>
+      <div id="successProducto" class="success"></div>
+    </form>
+    <a href="ver-productos.html" class="btn-link">Ver productos</a>
+  </div>
+
+
+
+  <script type="module" src="registrar-producto.js"></script>
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 </body>
 </html>

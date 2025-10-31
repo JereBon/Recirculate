@@ -24,7 +24,7 @@
         <img src="../../assets/images/Recirculate-logo.png" alt="Recirculate Logo" class="logo-image">
       </a>
       <div class="header-right">
-        <a href="/auth/login.html" class="header-icon user-icon" data-tooltip="INICIAR SESIÓN"><i class="fas fa-user"></i></a>
+  <a href="../../auth/login.html" class="header-icon user-icon" data-tooltip="INICIAR SESIÓN"><i class="fas fa-user"></i></a>
         <a href="../../carrito/carrito.html" class="header-icon cart-icon">
           <i class="fas fa-shopping-cart"></i>
           <span id="cart-counter" class="cart-counter">0</span>
@@ -129,6 +129,15 @@
   </div>
 </div>
 
+  <div id="sidebar-menu" class="sidebar">
+    <button id="close-btn" class="close-btn">&times;</button>
+    <a href="../buzos/buzos.html">Buzos</a>
+    <a href="../camperas/camperas.html">Camperas</a>
+    <a href="../camisas/camisas.html">Camisas</a>
+    <a href="remeras.html">Remeras</a>
+    <a href="../pantalones/pantalones.html">Pantalones</a>
+  </div>
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
   <div class="overlay"></div>
 
   <main class="public-main">
@@ -137,6 +146,8 @@
       <ol class="breadcrumbs">
         <li class="breadcrumb-item"><a href="../../home/home.html">Inicio</a></li>
         <li class="breadcrumb-item"><a href="../hombre/hombre.html">Hombre</a></li>
+        <li class="breadcrumb-item"><a href="#">HOMBRE</a></li>
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
         <li class="breadcrumb-item active" aria-current="page">Remeras</li>
       </ol>
     </nav>
@@ -181,6 +192,76 @@
   </div>
 </div>
 
+      <div class="filter-toolbar">
+        <select name="ordenar" id="ordenar">
+          <option value="destacados">Destacados</option>
+          <option value="precio-asc">Precio: Menor a Mayor</option>
+          <option value="precio-desc">Precio: Mayor a Menor</option>
+          <option value="nuevos">Más Nuevos</option>
+        </select>
+        <button class="filter-btn">Filtrar</button>
+      </div>
+    </div>
+
+    <section class="product-grid category-grid">
+      <div class="product-card">
+        <div class="product-images">
+          <img src="../../assets/images/pages/remeras/Remera_gris_1.png" alt="Remera 1" class="main-image">
+          <img src="../../assets/images/pages/remeras/Remera_gris_2.png" alt="Remera 1 Hover" class="hover-image">
+        </div>
+        <h3>Remera Básica Negra</h3>
+        <p class="precio">$29.990 ARS</p>
+        <button class="add-to-cart-btn">Añadir al carrito</button>
+      </div>
+      <div class="product-card">
+        <div class="product-images">
+          <img src="../../assets/images/pages/remeras/Remera_roja.png" alt="Remera 2" class="main-image">
+          <img src="../../assets/images/pages/remeras/Remera_roja_2.png" alt="Remera 2 Hover" class="hover-image">
+        </div>
+        <h3>Remera Gráfica Roja</h3>
+        <p class="precio">$34.500 ARS</p>
+        <button class="add-to-cart-btn">Añadir al carrito</button>
+      </div>
+      <div class="product-card">
+        <div class="product-images">
+          <img src="../../assets/images/pages/remeras/Remera_negra_1.png" alt="Remera 3" class="main-image">
+          <img src="../../assets/images/pages/remeras/Remera_negra_2.png" alt="Remera 3 Hover" class="hover-image">
+        </div>
+        <h3>Remera Overzise Negra</h3>
+        <p class="precio">$41.000 ARS</p>
+        <button class="add-to-cart-btn">Añadir al carrito</button>
+      </div>
+      <div class="product-card">
+        <div class="product-images">
+          <img src="../../assets/images/pages/remeras/Remera Basica B&N 1.png" alt="Remera 4" class="main-image">
+          <img src="../../assets/images/pages/remeras/Remera Basica B&N 2.png" alt="Remera 4 Hover" class="hover-image">
+        </div>
+        <h3>Remera Básica B&N</h3>
+        <p class="precio">$38.000 ARS</p>
+        <button class="add-to-cart-btn">Añadir al carrito</button>
+      </div>
+      <div class="product-card">
+        <div class="product-images">
+          <img src="../../assets/images/pages/remeras/Remera Legends violeta 1.png" alt="Remera 5" class="main-image">
+          <img src="../../assets/images/pages/remeras/Remera Legends violeta 2.png" alt="Remera 5 Hover" class="hover-image">
+        </div>
+        <h3>Remera Legends Violeta</h3>
+        <p class="precio">$28.900 ARS</p>
+        <button class="add-to-cart-btn">Añadir al carrito</button>
+      </div>
+      <div class="product-card">
+        <div class="product-images">
+          <img src="../../assets/images/pages/remeras/Remera Basica Azul 1.png" alt="Remera 6" class="main-image">
+          <img src="../../assets/images/pages/remeras/Remera Basica Azul 2.png" alt="Remera 6 Hover" class="hover-image">
+        </div>
+        <h3>Remera Básica Azul</h3>
+        <p class="precio">$31.500 ARS</p>
+        <button class="add-to-cart-btn">Añadir al carrito</button>
+      </div>
+    </section>
+  </main>
+
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
   <footer class="public-footer">
     <div class="footer-container">
       <div class="footer-column">
@@ -214,9 +295,10 @@
       </div>
     </div>
     
-    <!-- Línea divisoria -->
-    <div class="footer-divider"></div>
+  <div class="footer-divider"></div>
     
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
     <div class="footer-bottom">
       <p>&copy; 2025 Recirculate. Todos los derechos reservados.</p>
     </div>
@@ -227,3 +309,10 @@
   <script src="../../assets/pages.js"></script>
 </body>
 </html>
+</body>
+</html>
+=======
+  <script src="../../assets/pages.js"></script>
+</body>
+</html>
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61

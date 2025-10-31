@@ -21,116 +21,23 @@ document.addEventListener("DOMContentLoaded", function() {
       // Mostrar/Ocultar ventana del chat al hacer clic en el globito
       if (chatbotToggle && chatbotWindow) {
           chatbotToggle.addEventListener('click', () => {
-              chatbotWindow.classList.toggle('active');
           });
       }
       
       // Cerrar ventana del chat al hacer clic en la 'X'
       if (chatbotClose && chatbotWindow) {
           chatbotClose.addEventListener('click', () => {
-              chatbotWindow.classList.remove('active');
+              chatbotWindow.style.display = 'none';
           });
       }
-
-      window.addEventListener('click', (event) => {
-         if (chatbotWindow && chatbotWindow.classList.contains('active') && 
-             !chatbotContainer.contains(event.target)) {
-           chatbotWindow.classList.remove('active');
-         }
-       });
-  }
-  // --- FIN LÓGICA CHATBOT ---
-
-  // --- Scroll suave al hacer click en el logo (cuando estás en el home) ---
-  const logo = document.querySelector('.header-logo');
-  
-  if (logo) {
-    let isScrolling = false; // Flag para controlar la animación
-    let animationId = null; // ID de la animación para cancelarla
-    
-    // Detectar cuando el usuario scrollea manualmente para cancelar la animación
-    const cancelScrollOnUserAction = () => {
-      if (isScrolling) {
-        isScrolling = false;
-        if (animationId) {
-          cancelAnimationFrame(animationId);
-          animationId = null;
-        }
-      }
-    };
-    
-    // Escuchar eventos de scroll manual (rueda del mouse, touch, etc)
-    window.addEventListener('wheel', cancelScrollOnUserAction, { passive: true });
-    window.addEventListener('touchstart', cancelScrollOnUserAction, { passive: true });
-    
-    logo.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      
-      // Si ya hay una animación en curso, no iniciar otra
-      if (isScrolling) return;
-      
-      isScrolling = true;
-      const startTime = performance.now();
-      const startScroll = document.documentElement.scrollTop || document.body.scrollTop;
-      const duration = 1000; // Duración en milisegundos (1 segundo)
-      
-      // Animación suave de scroll hacia arriba con easing
-      const scrollToTop = (currentTime) => {
-        if (!isScrolling) return; // Si fue cancelada, detener
-        
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1); // De 0 a 1
-        
-        // Easing function (ease-out cubic) para desaceleración suave
-        const easeOutCubic = 1 - Math.pow(1 - progress, 3);
-        
-        // Calcular nueva posición
-        const newScroll = startScroll * (1 - easeOutCubic);
-        document.documentElement.scrollTop = newScroll;
-        document.body.scrollTop = newScroll;
-        
-        // Continuar hasta llegar al tope
-        if (progress < 1) {
-          animationId = requestAnimationFrame(scrollToTop);
-        } else {
-          // Terminar exactamente en 0
-          document.documentElement.scrollTop = 0;
-          document.body.scrollTop = 0;
-          isScrolling = false;
-          animationId = null;
-        }
-      };
-      
-      animationId = requestAnimationFrame(scrollToTop);
-      return false;
-    });
-  }
-
-  // --- Lógica para el efecto de cambio de palabras ---
-  const words = document.querySelectorAll('.word');
-  if (words.length > 0) {
-    let currentIndex = 0;
-    function changeWord() {
-      const currentWord = words[currentIndex];
-      const nextIndex = (currentIndex + 1) % words.length;
-      const nextWord = words[nextIndex];
-
-      currentWord.classList.remove('active');
-      setTimeout(() => {
-        nextWord.classList.add('active');
-        currentIndex = nextIndex;
-      }, 800);
     }
-    setInterval(changeWord, 5000);
-  }
 
-  // --- Lógica para el panel lateral (Sidebar) ---
+  // --- Lógica para la barra lateral (sidebar) ---
+  const sidebar = document.getElementById('sidebar');
+  const body = document.body;
   const menuBtn = document.getElementById('menu-btn');
   const closeBtn = document.getElementById('close-btn');
-  const sidebar = document.getElementById('sidebar-menu');
-  const body = document.body;
-  const overlay = document.querySelector('.overlay');
+  const overlay = document.getElementById('sidebar-overlay');
 
   function openSidebar() {
     sidebar.classList.add('open');
@@ -230,7 +137,6 @@ document.addEventListener("DOMContentLoaded", function() {
   addToCartButtons.forEach((button, index) => {
     button.addEventListener('click', (e) => {
       e.preventDefault();
-      e.stopPropagation(); // Evitar que se active el click del card
       
       // Obtener información del producto desde el DOM
       const productCard = button.closest('.product-card');
@@ -533,24 +439,3 @@ function mostrarNotificacion(mensaje) {
 
   setupScrollAnimation();
 });
-
-// --- Lógica para el menú lateral anidado (Categorías) ---
-  const categoryHeaders = document.querySelectorAll('.sidebar-category-header');
-
-  categoryHeaders.forEach(header => {
-    header.addEventListener('click', () => {
-      const parentCategory = header.closest('.sidebar-category');
-      
-      // Cerrar todos los demás submenús
-      document.querySelectorAll('.sidebar-category').forEach(cat => {
-        if (cat !== parentCategory) {
-          cat.classList.remove('active');
-        }
-      });
-      
-      // Abrir o cerrar el submenú actual
-      parentCategory.classList.toggle('active');
-    });
-  });
-
-  

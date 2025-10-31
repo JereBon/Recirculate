@@ -129,6 +129,7 @@ crearItemHTML(item, index) {
       });
     }
 
+<<<<<<< HEAD
     // Funcionalidad del menú desplegable (categorías)
     const categoryHeaders = document.querySelectorAll('.sidebar-category-header');
     categoryHeaders.forEach(header => {
@@ -147,6 +148,8 @@ crearItemHTML(item, index) {
       });
     });
 
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
     // Funcionalidad del buscador
     const searchBtn = document.getElementById('search-btn');
     const searchContainer = document.getElementById('search-container');

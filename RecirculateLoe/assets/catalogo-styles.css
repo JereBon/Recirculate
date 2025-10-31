@@ -1,5 +1,6 @@
 /* assets/catalogo-styles.css */
 
+<<<<<<< HEAD
 /* --- ESTILOS PARA EL SIDEBAR DE FILTROS --- */
 
 .filter-sidebar {
@@ -174,10 +175,13 @@
   }
 }
 
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 /* --- Breadcrumbs --- */
 .breadcrumbs {
   list-style: none;
   padding: 0;
+<<<<<<< HEAD
   margin: 0 auto 2rem;
   font-size: 0.9rem;
   display: flex;
@@ -189,12 +193,21 @@
 .breadcrumb-item {
   display: inline-flex;
   align-items: center;
+=======
+  margin: 0 0 2rem 0;
+  font-size: 0.9rem;
+}
+
+.breadcrumb-item {
+  display: inline;
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
   color: #6c757d;
 }
 
 .breadcrumb-item a {
   color: #222;
   text-decoration: none;
+<<<<<<< HEAD
   transition: color 0.2s;
 }
 
@@ -215,6 +228,23 @@
 .breadcrumb-item.active {
   color: #222;
   font-weight: 500;
+=======
+}
+
+.breadcrumb-item a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: '>';
+  display: inline-block;
+  padding: 0 0.5rem;
+  color: #6c757d;
+}
+
+.breadcrumb-item.active {
+  font-weight: bold;
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 }
 
 /* --- Encabezado de Categoría --- */
@@ -222,16 +252,25 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+<<<<<<< HEAD
   margin: 0 auto 2rem;
   padding: 0 0 1rem 0;
   border-bottom: 1px solid #ddd;
   max-width: 100%;
+=======
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 }
 
 .category-header h1 {
   margin: 0;
   font-size: 2.5rem;
+<<<<<<< HEAD
   text-align: left;
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 }
 
 .filter-toolbar {
@@ -246,6 +285,7 @@
   border: 1px solid #ccc;
   font-family: "Poppins", sans-serif;
   font-size: 1rem;
+<<<<<<< HEAD
   background-color: white;
   cursor: pointer;
   transition: all 0.2s;
@@ -253,11 +293,14 @@
 
 .filter-toolbar select {
   min-width: 250px;
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 }
 
 .filter-toolbar .filter-btn {
   background-color: #222;
   color: #fff;
+<<<<<<< HEAD
   border-color: #222;
 }
 
@@ -276,3 +319,12 @@
   margin: 0 auto 4rem;
   padding: 0;
 }
+=======
+  cursor: pointer;
+  border-color: #222;
+}
+
+/* --- Grilla de Productos de Categoría --- */
+/* Esta clase hereda los estilos de .product-grid de public-styles.css */
+/* Podemos usarla para sobreescribir estilos si es necesario */
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61

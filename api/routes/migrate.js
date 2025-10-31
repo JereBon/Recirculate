@@ -76,6 +76,7 @@ router.get('/add-proveedor-column', async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 // Endpoint para agregar columna imagen_espalda_url
 router.get('/add-imagen-espalda-column', async (req, res) => {
   const client = new Client(config);
@@ -141,6 +142,8 @@ router.get('/add-imagen-espalda-column', async (req, res) => {
   }
 });
 
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 // Endpoint para verificar productos y sus proveedores
 router.get('/check-productos', async (req, res) => {
   const client = new Client(config);
@@ -149,7 +152,11 @@ router.get('/check-productos', async (req, res) => {
     await client.connect();
     
     const productos = await client.query(`
+<<<<<<< HEAD
       SELECT id, nombre, proveedor, imagen_url, imagen_espalda_url, fecha_creacion 
+=======
+      SELECT id, nombre, proveedor, fecha_creacion 
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
       FROM productos 
       ORDER BY id DESC 
       LIMIT 5

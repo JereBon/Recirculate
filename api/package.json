@@ -15,7 +15,10 @@
     "jsonwebtoken": "^9.0.2",
     "mercadopago": "^2.9.0",
     "multer": "^2.0.2",
+<<<<<<< HEAD
     "nodemailer": "^6.9.7",
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
     "pg": "^8.16.3",
     "socket.io": "^4.8.1"
   }

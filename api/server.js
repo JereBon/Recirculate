@@ -119,6 +119,7 @@ app.use('/api/setup', setupRoutes);
 const migrateRoutes = require('./routes/migrate');
 app.use('/api/migrate', migrateRoutes);
 
+<<<<<<< HEAD
 // --- RUTAS DE AUDITORÍA ---
 const auditRoutes = require('./routes/audit');
 app.use('/api/audit', auditRoutes);
@@ -131,6 +132,8 @@ app.use('/api/password-reset', passwordResetRoutes);
 const productRoutes = require('./routes/productos');
 app.use('/api/productos', productRoutes);
 
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 // --- SOCKET.IO ---
 io.on('connection', (socket) => {
   console.log('Cliente conectado a Socket.IO');
@@ -178,16 +181,73 @@ app.get('/api/productos/:id', async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
+=======
+// Obtener productos destacados
+app.get('/api/productos/categoria/destacados', async (req, res) => {
+  try {
+    console.log('⭐ GET /api/productos/categoria/destacados - Solicitando productos destacados...');
+    const productos = await Product.findFeatured(8);
+    console.log(`⭐ Productos destacados encontrados: ${productos.length}`);
+    res.json(productos);
+  } catch (error) {
+    console.error('❌ Error obteniendo productos destacados:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// Obtener productos por género
+app.get('/api/productos/genero/:genero', async (req, res) => {
+  try {
+    const { genero } = req.params;
+    console.log(`👔 GET /api/productos/genero/${genero} - Solicitando productos por género...`);
+    
+    const productos = await Product.findByGenero(genero);
+    console.log(`👔 Productos encontrados para ${genero}: ${productos.length}`);
+    res.json(productos);
+  } catch (error) {
+    console.error('❌ Error obteniendo productos por género:', error);
+    res.status(500).json({ error: error.message || 'Error interno del servidor' });
+  }
+});
+
+// Toggle destacado de un producto (solo admin)
+app.patch('/api/productos/:id/destacado', verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const { destacado } = req.body;
+    console.log(`⭐ PATCH /api/productos/${req.params.id}/destacado - Cambiando destacado a: ${destacado}`);
+    
+    const producto = await Product.toggleDestacado(req.params.id, destacado);
+    if (!producto) {
+      return res.status(404).json({ error: 'Producto no encontrado' });
+    }
+    
+    res.json(producto);
+  } catch (error) {
+    console.error('❌ Error cambiando estado destacado:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 // Crear producto (solo admin)
 app.post('/api/productos', verifyToken, verifyAdmin, async (req, res) => {
   try {
     console.log('📦 POST /api/productos - Creando producto...');
     console.log('📦 Datos recibidos:', JSON.stringify(req.body, null, 2));
+<<<<<<< HEAD
     console.log('📦 Usuario:', req.user);
     
     const nuevo = await Product.create({
       ...req.body,
       usuario_id: req.user?.id || null
+=======
+    console.log('📦 Usuario ID:', req.userId);
+    
+    const nuevo = await Product.create({
+      ...req.body,
+      usuario_id: req.userId
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
     });
     
     console.log('✅ Producto creado exitosamente:', JSON.stringify(nuevo, null, 2));

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registrar Productos de Mujer</title>
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .btn {
+      background: #e91e63;
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 10px;
+    }
+    .btn:hover {
+      background: #c2185b;
+    }
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .log {
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 14px;
+      margin-top: 20px;
+    }
+    .success { color: #28a745; }
+    .error { color: #dc3545; }
+    .info { color: #007bff; }
+    .producto-card {
+      background: #fff;
+      border: 2px solid #e91e63;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 10px 0;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    .producto-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .producto-info h4 {
+      margin: 0 0 5px 0;
+      color: #e91e63;
+      font-weight: bold;
+    }
+    .producto-info p {
+      margin: 2px 0;
+      color: #666;
+      font-size: 14px;
+    }
+    .header-title {
+      text-align: center;
+      color: #e91e63;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="header-title">👗 Registrar Productos de Mujer</h1>
+    
+    <div>
+      <p><strong>Este script registrará automáticamente 8 productos de ropa de mujer en la base de datos:</strong></p>
+      
+      <div id="productos-preview">
+        <!-- Los productos se mostrarán aquí -->
+      </div>
+      
+      <div style="text-align: center; margin: 30px 0;">
+        <button id="btn-registrar" class="btn">🚀 Registrar Todos los Productos</button>
+        <button id="btn-limpiar-log" class="btn" style="background: #6c757d;">🗑️ Limpiar Log</button>
+        <a href="../productos/productos.html" class="btn" style="background: #28a745; text-decoration: none;">📋 Ver Productos</a>
+        <a href="../index.html" class="btn" style="background: #17a2b8; text-decoration: none;">🏠 Volver al Inicio</a>
+      </div>
+      
+      <div id="log" class="log" style="display: none;">
+        <div class="info">📋 Consola de registro:</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="registrar-productos-mujer.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const btnRegistrar = document.getElementById('btn-registrar');
+      const btnLimpiarLog = document.getElementById('btn-limpiar-log');
+      const logDiv = document.getElementById('log');
+      const productosPreview = document.getElementById('productos-preview');
+
+      // Mostrar preview de productos
+      function mostrarProductos() {
+        productosPreview.innerHTML = '';
+        window.productosMujer.forEach(producto => {
+          const card = document.createElement('div');
+          card.className = 'producto-card';
+          card.innerHTML = `
+            <img src="${producto.imagen_url}" alt="${producto.nombre}" class="producto-img">
+            <div class="producto-info">
+              <h4>${producto.nombre}</h4>
+              <p><strong>Marca:</strong> ${producto.marca} | <strong>Talle:</strong> ${producto.talle} | <strong>Color:</strong> ${producto.color}</p>
+              <p><strong>Precio:</strong> $${producto.precio} | <strong>Stock:</strong> ${producto.stock} | <strong>Estado:</strong> ${producto.estado}</p>
+              <p><strong>Categoría:</strong> ${producto.categoria} | <strong>Género:</strong> ${producto.genero}</p>
+            </div>
+          `;
+          productosPreview.appendChild(card);
+        });
+      }
+
+      // Función para agregar mensaje al log
+      function agregarLog(mensaje, tipo = 'info') {
+        logDiv.style.display = 'block';
+        const div = document.createElement('div');
+        div.className = tipo;
+        div.textContent = `${new Date().toLocaleTimeString()} - ${mensaje}`;
+        logDiv.appendChild(div);
+        logDiv.scrollTop = logDiv.scrollHeight;
+      }
+
+      // Interceptar console.log para mostrar en el log
+      const originalConsoleLog = console.log;
+      const originalConsoleError = console.error;
+      
+      console.log = function(...args) {
+        originalConsoleLog.apply(console, args);
+        const mensaje = args.join(' ');
+        const tipo = mensaje.includes('✅') ? 'success' : mensaje.includes('❌') ? 'error' : 'info';
+        agregarLog(mensaje, tipo);
+      };
+      
+      console.error = function(...args) {
+        originalConsoleError.apply(console, args);
+        const mensaje = args.join(' ');
+        agregarLog(mensaje, 'error');
+      };
+
+      // Evento del botón registrar
+      btnRegistrar.addEventListener('click', async function() {
+        // Verificar autenticación
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          alert('❌ Debes estar autenticado para registrar productos. Ve al panel de administración primero.');
+          window.location.href = '../index.html';
+          return;
+        }
+
+        btnRegistrar.disabled = true;
+        btnRegistrar.textContent = '⏳ Registrando...';
+        
+        agregarLog('🚀 Iniciando registro de productos de mujer...', 'info');
+        
+        try {
+          await window.registrarProductosMujer();
+          agregarLog('🎉 ¡Proceso completado! Revisa el resumen arriba.', 'success');
+          btnRegistrar.textContent = '✅ Completado';
+          setTimeout(() => {
+            if (confirm('¿Quieres ir a ver los productos registrados?')) {
+              window.location.href = '../productos/productos.html';
+            }
+          }, 2000);
+        } catch (error) {
+          agregarLog(`❌ Error durante el proceso: ${error.message}`, 'error');
+          btnRegistrar.disabled = false;
+          btnRegistrar.textContent = '🚀 Registrar Todos los Productos';
+        }
+      });
+
+      // Evento del botón limpiar log
+      btnLimpiarLog.addEventListener('click', function() {
+        logDiv.innerHTML = '<div class="info">📋 Consola de registro:</div>';
+      });
+
+      // Mostrar productos al cargar
+      mostrarProductos();
+      agregarLog('✅ Script cargado correctamente. Haz clic en "Registrar" para comenzar.', 'success');
+    });
+  </script>
+</body>
+</html>

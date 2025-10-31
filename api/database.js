@@ -7,8 +7,11 @@ const config = {
   connectionString: process.env.DATABASE_URL || 'postgresql://localhost:5432/recirculate',
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 };
+<<<<<<< HEAD
 const fs = require('fs');
 const path = require('path');
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 
 // Cliente de PostgreSQL
 const client = new Client(config);
@@ -25,10 +28,13 @@ const connectDB = async () => {
     await createProductsTable();
     await createSalesTable();
     await createExpensesTable();
+<<<<<<< HEAD
     await createPasswordResetTable();
     
     // Crear usuarios administradores autorizados
     await setupAdminUsers();
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
     
   } catch (error) {
     if (error.code === '3D000') {
@@ -83,6 +89,7 @@ const createUsersTable = async () => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS usuarios (
       id SERIAL PRIMARY KEY,
+<<<<<<< HEAD
 
     // Ejecutar fix_genero_constraint.sql automáticamente
     try {
@@ -95,6 +102,8 @@ const createUsersTable = async () => {
     } catch (err) {
       console.error('❌ Error ejecutando fix_genero_constraint.sql:', err.message);
     }
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
       nombre VARCHAR(255) NOT NULL,
       email VARCHAR(255) UNIQUE NOT NULL,
       password VARCHAR(255) NOT NULL,
@@ -174,14 +183,23 @@ const createProductsTable = async () => {
       nombre VARCHAR(255) NOT NULL,
       descripcion TEXT,
       categoria VARCHAR(100),
+<<<<<<< HEAD
+=======
+      genero VARCHAR(20) DEFAULT 'Unisex' CHECK (genero IN ('Hombre', 'Mujer', 'Unisex')),
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
       talle VARCHAR(50),
       color VARCHAR(50),
       marca VARCHAR(100),
       precio DECIMAL(10,2) NOT NULL,
       stock INTEGER DEFAULT 0,
       estado VARCHAR(50) DEFAULT 'Disponible',
+<<<<<<< HEAD
       imagen_url TEXT,
       imagen_espalda_url TEXT,
+=======
+      destacado BOOLEAN DEFAULT TRUE,
+      imagen_url TEXT,
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
       proveedor VARCHAR(255),
       usuario_id INTEGER REFERENCES usuarios(id),
       fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -196,6 +214,7 @@ const createProductsTable = async () => {
     // Migración: Agregar columna proveedor si no existe
     await addProveedorColumn();
     
+<<<<<<< HEAD
     // Migración: Agregar columna género si no existe
     await addGeneroColumn();
     
@@ -207,6 +226,16 @@ const createProductsTable = async () => {
 
   // Migración: Agregar columna imagen_espalda_url si no existe
   await addImagenEspaldaColumn();
+=======
+    // Migración: Agregar columna genero si no existe
+    await addGeneroColumn();
+    
+    // Migración: Agregar columna destacado si no existe
+    await addDestacadoColumn();
+    
+    // Limpiar productos de prueba
+    await clearTestProducts();
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
   } catch (error) {
     console.error('❌ Error creando tabla productos:', error);
   }
@@ -228,6 +257,7 @@ const addProveedorColumn = async () => {
   }
 };
 
+<<<<<<< HEAD
 // Función para agregar columna género a productos existentes
 const addGeneroColumn = async () => {
   try {
@@ -240,15 +270,43 @@ const addGeneroColumn = async () => {
     // Si la columna ya existe, no es un error
     if (error.code !== '42701') {
       console.error('❌ Error agregando columna género:', error.message);
+=======
+// Función para agregar columna genero a productos existentes
+const addGeneroColumn = async () => {
+  try {
+    // Primero agregar la columna como opcional
+    await client.query(`
+      ALTER TABLE productos 
+      ADD COLUMN IF NOT EXISTS genero VARCHAR(20) DEFAULT 'Unisex' CHECK (genero IN ('Hombre', 'Mujer', 'Unisex'))
+    `);
+    
+    // Luego actualizar los registros existentes que tengan NULL
+    await client.query(`
+      UPDATE productos 
+      SET genero = 'Unisex' 
+      WHERE genero IS NULL
+    `);
+    
+    console.log('✅ Columna genero agregada/verificada con valores por defecto');
+  } catch (error) {
+    // Si la columna ya existe, no es un error
+    if (error.code !== '42701') {
+      console.error('❌ Error agregando columna genero:', error.message);
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
     }
   }
 };
 
+<<<<<<< HEAD
 // Función para agregar columna es_destacado a productos
+=======
+// Función para agregar columna destacado a productos existentes
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 const addDestacadoColumn = async () => {
   try {
     await client.query(`
       ALTER TABLE productos 
+<<<<<<< HEAD
       ADD COLUMN IF NOT EXISTS es_destacado BOOLEAN DEFAULT false
     `);
     console.log('✅ Columna es_destacado agregada/verificada');
@@ -256,10 +314,20 @@ const addDestacadoColumn = async () => {
     // Si la columna ya existe, no es un error
     if (error.code !== '42701') {
       console.error('❌ Error agregando columna es_destacado:', error.message);
+=======
+      ADD COLUMN IF NOT EXISTS destacado BOOLEAN DEFAULT FALSE
+    `);
+    console.log('✅ Columna destacado agregada/verificada');
+  } catch (error) {
+    // Si la columna ya existe, no es un error
+    if (error.code !== '42701') {
+      console.error('❌ Error agregando columna destacado:', error.message);
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
     }
   }
 };
 
+<<<<<<< HEAD
 // Función para agregar columna descuento a productos
 const addDescuentoColumn = async () => {
   try {
@@ -287,6 +355,15 @@ const addImagenEspaldaColumn = async () => {
     if (error.code !== '42701') {
       console.error('❌ Error agregando columna imagen_espalda_url:', error.message);
     }
+=======
+// Función para limpiar productos de prueba
+const clearTestProducts = async () => {
+  try {
+    const result = await client.query('DELETE FROM productos');
+    console.log(`🧹 ${result.rowCount} productos de prueba eliminados`);
+  } catch (error) {
+    console.error('❌ Error eliminando productos de prueba:', error.message);
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
   }
 };
 
@@ -391,6 +468,7 @@ const createMPPaymentsTable = async () => {
   }
 };
 
+<<<<<<< HEAD
 // Crear tabla para códigos de recuperación de contraseña
 const createPasswordResetTable = async () => {
   const createTableQuery = `
@@ -433,6 +511,8 @@ const setupAdminUsers = async () => {
   }
 };
 
+=======
+>>>>>>> 7e44d96cd7813967b3a60a834cefdad9f2e3cb61
 // Cerrar conexión
 const disconnectDB = async () => {
   try {

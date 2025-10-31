@@ -123,7 +123,7 @@
 </head>
 <body>
     <header>
-        <h1>Registro de Cliente</h1>
+        <h1>Registro</h1>
         <p>Crea tu cuenta en Recirculate</p>
     </header>
 
@@ -182,6 +182,7 @@
                     >
                 </div>
                 
+                <!-- Campos adicionales para clientes -->
                 <div class="form-group" id="clientFields">
                     <label for="telefono">Teléfono</label>
                     <input 
@@ -190,7 +191,6 @@
                         name="telefono" 
                         placeholder="Tu número de teléfono"
                         maxlength="20"
-                        required
                     >
                 </div>
                 
@@ -202,7 +202,6 @@
                         placeholder="Tu dirección completa"
                         rows="3"
                         style="padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; resize: vertical;"
-                        required
                     ></textarea>
                 </div>
                 
@@ -220,8 +219,34 @@
                     </div>
                 </div>
                 
+                <div class="form-group">
+                    <label for="rol">Tipo de cuenta</label>
+                    <select id="rol" name="rol">
+                        <option value="cliente">Cliente</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="tokenGroup" style="display: none;">
+                    <label for="adminToken">Token de administrador</label>
+                    <input 
+                        type="password" 
+                        id="adminToken" 
+                        name="adminToken" 
+                        placeholder="Ingresa el token de administrador"
+                        maxlength="10"
+                    >
+                    <div class="password-requirements">
+                        Necesario para crear cuenta de administrador
+                    </div>
+                </div>
+                
+                <div class="admin-note" id="adminNote" style="display: none;">
+                    <strong>Nota:</strong> Se requiere un token válido para crear cuentas de administrador.
+                </div>
+                
                 <button type="submit" class="auth-btn" id="registerBtn">
-                    Crear Cuenta de Cliente
+                    Crear Cuenta
                 </button>
                 
                 <div class="loading" id="loading">
@@ -231,6 +256,7 @@
             
             <div class="auth-link">
                 <p>¿Ya tienes cuenta? <a href="login.html">Inicia sesión aquí</a></p>
+                <p><a href="../index.html">Volver al inicio</a></p>
             </div>
         </div>
     </main>
