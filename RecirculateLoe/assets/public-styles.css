@@ -597,7 +597,7 @@ body, html {
 
 /* Clase activa: muestra el submenú */
 .sidebar-category.active .sidebar-submenu {
-    max-height: 500px; /* Valor grande para asegurar que se muestre todo el contenido */
+    max-height: 500px !important; /* Valor grande para asegurar que se muestre todo el contenido */
 }
 
 .sidebar {

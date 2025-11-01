@@ -215,6 +215,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const sidebar = document.getElementById('sidebar-menu');
     const categoryHeaders = document.querySelectorAll('.sidebar-category-header');
 
+    console.log('Pages.js cargado - Category headers encontrados:', categoryHeaders.length);
+
     if (menuBtn && sidebar) {
         menuBtn.addEventListener('click', (event) => {
             event.stopPropagation();
@@ -228,26 +230,33 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Verificar que los category headers existan antes de agregar listeners
     if (categoryHeaders && categoryHeaders.length > 0) {
-        categoryHeaders.forEach(header => {
+        console.log('Agregando event listeners a', categoryHeaders.length, 'category headers');
+        categoryHeaders.forEach((header, index) => {
             header.addEventListener('click', (event) => {
+                console.log('Click en category header', index);
                 // Asegurar que el click no se propague
                 event.stopPropagation();
                 
                 const parentCategory = header.closest('.sidebar-category');
-                if (!parentCategory) return;
+                if (!parentCategory) {
+                    console.warn('No se encontró parentCategory para header', index);
+                    return;
+                }
                 
                 const isActive = parentCategory.classList.contains('active');
+                console.log('Categoría activa:', isActive);
                 
                 // Cierra todos antes de abrir/cerrar el actual
                 document.querySelectorAll('.sidebar-category').forEach(cat => cat.classList.remove('active'));
                 
                 if (!isActive) {
                      parentCategory.classList.add('active');
+                     console.log('Categoría activada');
                 }
             });
         });
     } else {
-        console.warn('No se encontraron category headers');
+        console.warn('⚠️ No se encontraron category headers en el DOM');
     }
 
     // Cerrar sidebar al hacer clic en cualquier enlace del sidebar
