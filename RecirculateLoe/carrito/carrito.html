@@ -23,7 +23,7 @@
         <img src="../assets/images/Recirculate-logo.png" alt="Recirculate Logo" class="logo-image">
       </a>
       <div class="header-right">
-        <a href="../../auth/login.html" class="header-icon user-icon" data-tooltip="INICIAR SESIÓN">
+        <a href="#" class="header-icon user-icon" id="user-menu-trigger" data-tooltip="INICIAR SESIÓN">
           <i class="fas fa-user"></i>
         </a>
         <a href="./carrito.html" class="header-icon cart-icon">
@@ -97,6 +97,28 @@
 
     <div id="search-suggestions" class="search-suggestions">
       <!-- Sugerencias / productos pequeños (rellenados por JS) -->
+    </div>
+  </div>
+</div>
+
+<!-- Menú desplegable del usuario -->
+<div class="user-menu-dropdown" id="user-menu-dropdown">
+  <div class="user-menu-header">
+    <span class="user-name" id="user-menu-name">Usuario</span>
+  </div>
+  <div class="user-menu-options">
+    <a href="#" id="logout-option" class="user-menu-option">
+      <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+    </a>
+    <a href="../../index.html" id="admin-panel-option" class="user-menu-option" style="display: none;">
+      <i class="fas fa-cog"></i> Panel de administración
+    </a>
+  </div>
+  <div class="user-menu-divider"></div>
+  <div class="user-menu-history">
+    <h4>Últimos productos visitados</h4>
+    <div class="history-carousel" id="history-carousel">
+      <!-- Los productos se cargarán dinámicamente -->
     </div>
   </div>
 </div>
@@ -227,8 +249,36 @@
 
   <!-- Script del menú debe cargarse primero -->
   <script src="../assets/pages.js"></script>
+  <!-- Script del menú de usuario -->
+  <script src="../assets/user-menu.js"></script>
   <!-- Script del carrito -->
   <script src="carrito.js"></script>
+  
+  <!-- Inicializar menú de usuario -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Actualizar el icono y tooltip según el estado de autenticación
+      const authToken = localStorage.getItem('authToken');
+      const userData = localStorage.getItem('userData');
+      const userIcon = document.getElementById('user-menu-trigger');
+      
+      if (authToken && userData) {
+        const user = JSON.parse(userData);
+        userIcon.setAttribute('data-tooltip', user.nombre.toUpperCase());
+        userIcon.innerHTML = '<i class="fas fa-user-check"></i>';
+      } else {
+        userIcon.setAttribute('data-tooltip', 'INICIAR SESIÓN');
+        // Si hace clic y no está logueado, redirigir al login
+        userIcon.addEventListener('click', (e) => {
+          if (!localStorage.getItem('authToken')) {
+            e.preventDefault();
+            window.location.href = '../auth/login.html';
+          }
+        });
+      }
+    });
+  </script>
+  
   <script src='https://cdn.jotfor.ms/agent/embedjs/019a2cafb84e7b99aae78f82f10fd7c58f53/embed.js'></script>
 </body>
 </html>

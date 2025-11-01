@@ -272,10 +272,10 @@ crearItemHTML(item, index) {
     btnFinalizar.textContent = 'Procesando...';
 
     try {
-      const token = localStorage.getItem('recirculate_token');
+      const token = localStorage.getItem('authToken');
       if (!token) {
         alert('Debes iniciar sesión para continuar con la compra.');
-        window.location.href = '\auth\login.html';
+        window.location.href = '../auth/login.html';
         return;
       }
 
