@@ -194,4 +194,56 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
+    // --- Registrar visita al producto en el historial ---
+    function registrarVisitaProducto() {
+        // Verificar si el usuario está logueado
+        const authToken = localStorage.getItem('authToken');
+        if (!authToken) return;
+
+        // Obtener datos del producto actual
+        const nombreElement = document.querySelector('.producto-info h1');
+        const precioElement = document.querySelector('.producto-precio');
+        const imagenElement = document.querySelector('.imagen-principal img');
+        
+        if (!nombreElement || !precioElement || !imagenElement) return;
+
+        const nombre = nombreElement.textContent.trim();
+        const precioTexto = precioElement.textContent.trim();
+        const precio = parseFloat(precioTexto.replace(/[^\d]/g, ''));
+        const imagenUrl = imagenElement.src;
+        
+        // Determinar la categoría desde la URL o el breadcrumb
+        let categoria = 'remeras'; // default
+        const breadcrumbs = document.querySelectorAll('.breadcrumb-item a');
+        if (breadcrumbs.length >= 3) {
+            const categoriaElement = breadcrumbs[breadcrumbs.length - 1];
+            const categoriaText = categoriaElement.textContent.toLowerCase().trim();
+            categoria = categoriaText;
+        }
+
+        // Crear objeto del producto
+        const producto = {
+            id: `prod_${Date.now()}_${nombre.replace(/\s+/g, '_')}`,
+            nombre: nombre,
+            imagen_url: imagenUrl,
+            precio: precio,
+            categoria: categoria
+        };
+
+        // Esperar a que el userMenuManager esté disponible
+        const intentarRegistrar = () => {
+            if (window.userMenuManager) {
+                window.userMenuManager.trackProductVisit(producto);
+            } else {
+                // Reintentar después de un breve delay
+                setTimeout(intentarRegistrar, 100);
+            }
+        };
+        
+        intentarRegistrar();
+    }
+
+    // Registrar la visita cuando la página carga
+    registrarVisitaProducto();
+
 });

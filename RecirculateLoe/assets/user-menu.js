@@ -108,6 +108,28 @@ class UserMenuManager {
         userIcon.href = 'javascript:void(0);';
         userIcon.setAttribute('data-tooltip', 'MI CUENTA');
         
+        // Determinar rutas según la ubicación actual
+        const currentPath = window.location.pathname;
+        let homeUrl, adminUrl;
+        
+        if (currentPath.includes('/home/')) {
+            homeUrl = './home.html';
+            adminUrl = '../../index.html';
+        } else if (currentPath.includes('/pages/')) {
+            homeUrl = '../home/home.html';
+            adminUrl = '../../../index.html';
+        } else if (currentPath.includes('/productos/')) {
+            homeUrl = '../../../home/home.html';
+            adminUrl = '../../../../../index.html';
+        } else if (currentPath.includes('/carrito/')) {
+            homeUrl = '../home/home.html';
+            adminUrl = '../../../index.html';
+        } else {
+            // Fallback
+            homeUrl = 'RecirculateLoe/home/home.html';
+            adminUrl = 'index.html';
+        }
+        
         // Crear el menú desplegable
         const menuHTML = `
             <div class="user-menu-dropdown" id="userMenuDropdown">
@@ -116,12 +138,12 @@ class UserMenuManager {
                 </div>
                 
                 <div class="user-menu-options">
-                    <a href="../../home/home.html" class="user-menu-option">
+                    <a href="${homeUrl}" class="user-menu-option">
                         <i class="fas fa-home"></i>
                         Volver al Inicio
                     </a>
                     ${this.isAdmin() ? `
-                    <a href="../../index.html" class="user-menu-option admin-option">
+                    <a href="${adminUrl}" class="user-menu-option admin-option">
                         <i class="fas fa-cog"></i>
                         Panel de Administración
                     </a>
@@ -241,8 +263,24 @@ class UserMenuManager {
             // Mostrar mensaje de confirmación
             alert('Has cerrado sesión exitosamente');
             
+            // Determinar ruta al login según ubicación actual
+            const currentPath = window.location.pathname;
+            let loginUrl;
+            
+            if (currentPath.includes('/home/')) {
+                loginUrl = '../../auth/login.html';
+            } else if (currentPath.includes('/pages/')) {
+                loginUrl = '../../../auth/login.html';
+            } else if (currentPath.includes('/productos/')) {
+                loginUrl = '../../../../../auth/login.html';
+            } else if (currentPath.includes('/carrito/')) {
+                loginUrl = '../../../auth/login.html';
+            } else {
+                loginUrl = 'auth/login.html';
+            }
+            
             // Redirigir al login
-            window.location.href = '../../auth/login.html';
+            window.location.href = loginUrl;
         }
     }
 
@@ -336,16 +374,21 @@ class UserMenuManager {
         // Cerrar el menú
         this.closeUserMenu();
         
-        // Generar URL basada en la categoría y el path actual
+        // Por ahora, redirigir a la página de la categoría
+        // TODO: Cuando tengamos URLs individuales por producto, usar productId
         let productUrl;
         const currentPath = window.location.pathname;
         
+        // Determinar la ruta correcta según la ubicación actual
         if (currentPath.includes('/home/')) {
             productUrl = `../pages/${categoria}/${categoria}.html`;
         } else if (currentPath.includes('/pages/')) {
-            productUrl = `./${categoria}.html`;
+            productUrl = `../${categoria}/${categoria}.html`;
+        } else if (currentPath.includes('/productos/')) {
+            productUrl = `../../../pages/${categoria}/${categoria}.html`;
         } else {
-            productUrl = `../pages/${categoria}/${categoria}.html`;
+            // Fallback: intentar ir a la página desde la raíz
+            productUrl = `pages/${categoria}/${categoria}.html`;
         }
         
         window.location.href = productUrl;
