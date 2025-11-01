@@ -32,34 +32,132 @@ document.addEventListener('DOMContentLoaded', () => {
   // Escuchar cambios en el select de género
   generoSelect.addEventListener('change', actualizarCategorias);
 
-  // Elementos para subida de imágenes
-  const imagenFileInput = document.getElementById('imagen-file');
-  const imagenUploadStatus = document.getElementById('imagen-upload-status');
-  let imagenesSubidas = []; // Array para almacenar URLs de imágenes subidas
+  // Variables para almacenar URLs de imágenes
+  let imagenFrenteUrl = null;
+  let imagenEspaldaUrl = null;
 
-  // Evento para subir imagen seleccionada a Cloudinary vía API
-  imagenFileInput.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    imagenUploadStatus.textContent = 'Subiendo imagen...';
+  // Elementos para drag & drop
+  const dropZoneFrente = document.getElementById('drop-zone-frente');
+  const dropZoneEspalda = document.getElementById('drop-zone-espalda');
+  const imagenFrenteInput = document.getElementById('imagen-frente-file');
+  const imagenEspaldaInput = document.getElementById('imagen-espalda-file');
+  const previewFrente = document.getElementById('preview-frente');
+  const previewEspalda = document.getElementById('preview-espalda');
+  const statusFrente = document.getElementById('status-frente');
+  const statusEspalda = document.getElementById('status-espalda');
+
+  // Función para subir imagen a Cloudinary
+  async function uploadImageToCloudinary(file, tipo) {
+    const statusElement = tipo === 'frente' ? statusFrente : statusEspalda;
+    const previewElement = tipo === 'frente' ? previewFrente : previewEspalda;
+    
+    statusElement.textContent = 'Subiendo...';
+    statusElement.className = 'upload-status uploading';
+    
     const formData = new FormData();
     formData.append('imagen', file);
+    
     try {
       const res = await fetch('https://recirculate-api.onrender.com/api/upload', {
         method: 'POST',
         body: formData
       });
       const data = await res.json();
+      
       if (data.url) {
-        imagenesSubidas.push(data.url); // Agrega URL al array
-        imagenUploadStatus.textContent = 'Imagen subida ✔';
+        // Guardar URL según tipo
+        if (tipo === 'frente') {
+          imagenFrenteUrl = data.url;
+        } else {
+          imagenEspaldaUrl = data.url;
+        }
+        
+        // Mostrar preview
+        const img = previewElement.querySelector('img');
+        img.src = data.url;
+        previewElement.style.display = 'flex';
+        previewElement.previousElementSibling.style.display = 'none'; // Ocultar upload-area
+        
+        statusElement.textContent = '✓ Imagen subida exitosamente';
+        statusElement.className = 'upload-status success';
       } else {
-        imagenUploadStatus.textContent = 'Error al subir imagen';
+        statusElement.textContent = '✗ Error al subir imagen';
+        statusElement.className = 'upload-status error';
       }
     } catch (err) {
-      imagenUploadStatus.textContent = 'Error al subir imagen';
+      console.error('Error:', err);
+      statusElement.textContent = '✗ Error al subir imagen';
+      statusElement.className = 'upload-status error';
     }
-  });
+  }
+
+  // Función para remover imagen
+  window.removeImage = function(tipo) {
+    if (tipo === 'frente') {
+      imagenFrenteUrl = null;
+      imagenFrenteInput.value = '';
+      previewFrente.style.display = 'none';
+      previewFrente.previousElementSibling.style.display = 'flex'; // Mostrar upload-area
+      statusFrente.textContent = '';
+    } else {
+      imagenEspaldaUrl = null;
+      imagenEspaldaInput.value = '';
+      previewEspalda.style.display = 'none';
+      previewEspalda.previousElementSibling.style.display = 'flex'; // Mostrar upload-area
+      statusEspalda.textContent = '';
+    }
+  };
+
+  // Configurar drag & drop para ambas zonas
+  function setupDragAndDrop(dropZone, fileInput, tipo) {
+    // Prevenir comportamiento por defecto
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    });
+
+    // Agregar clase visual al arrastrar sobre la zona
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropZone.addEventListener(eventName, () => {
+        dropZone.classList.add('dragover');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, () => {
+        dropZone.classList.remove('dragover');
+      });
+    });
+
+    // Manejar drop de archivo
+    dropZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        const file = files[0];
+        if (file.type.startsWith('image/')) {
+          uploadImageToCloudinary(file, tipo);
+        } else {
+          const statusElement = tipo === 'frente' ? statusFrente : statusEspalda;
+          statusElement.textContent = '✗ Solo se permiten imágenes';
+          statusElement.className = 'upload-status error';
+        }
+      }
+    });
+
+    // Manejar selección desde PC
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        uploadImageToCloudinary(file, tipo);
+      }
+    });
+  }
+
+  // Inicializar drag & drop para ambas zonas
+  setupDragAndDrop(dropZoneFrente, imagenFrenteInput, 'frente');
+  setupDragAndDrop(dropZoneEspalda, imagenEspaldaInput, 'espalda');
   // Elementos del formulario y tabla
   const form = document.getElementById('producto-form');
   const tabla = document.getElementById('tabla-productos').querySelector('tbody');
@@ -86,6 +184,9 @@ document.addEventListener('DOMContentLoaded', () => {
     cancelarBtn.style.display = 'none';
     // Limpia mensajes de error en campos específicos
     ['e-nombre','e-precio','e-stock'].forEach(id => document.getElementById(id).textContent = '');
+    // Resetear imágenes
+    removeImage('frente');
+    removeImage('espalda');
   }
 
   // Función para renderizar tabla de productos: obtiene datos, crea filas con nombre, precio, stock y botones editar/borrar
@@ -182,7 +283,8 @@ document.addEventListener('DOMContentLoaded', () => {
       precio: parseFloat(form.precio.value),
       stock: parseInt(form.stock.value, 10),
       proveedor: form['proveedor-nombre'].value.trim(), // Agregar campo proveedor
-      imagen_url: imagenesSubidas.length > 0 ? imagenesSubidas[0] : null // Solo primera imagen
+      imagen_frente_url: imagenFrenteUrl, // Imagen frontal
+      imagen_espalda_url: imagenEspaldaUrl // Imagen trasera
     };
     if (editandoId !== null) {
       // Si editando, actualiza producto existente
@@ -228,7 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     limpiarFormulario();
-    imagenesSubidas = []; // Resetea imágenes subidas
     renderTabla(); // Re-renderiza tabla
   });
 
@@ -249,10 +350,26 @@ document.addEventListener('DOMContentLoaded', () => {
         form.marca.value = prod.marca || '';
         form.estado.value = prod.estado || '';
         form.precio.value = prod.precio || '';
-        // PostgreSQL no tiene moneda ni proveedor
-        imagenesSubidas = prod.imagen_url ? [prod.imagen_url] : [];
-        imagenUploadStatus.textContent = imagenesSubidas.length ? 'Imagen cargada ✔' : '';
         form.stock.value = prod.stock || '';
+        // Cargar imágenes frente y espalda
+        if (prod.imagen_frente_url) {
+          imagenFrenteUrl = prod.imagen_frente_url;
+          const imgFrente = previewFrente.querySelector('img');
+          imgFrente.src = prod.imagen_frente_url;
+          previewFrente.style.display = 'flex';
+          previewFrente.previousElementSibling.style.display = 'none';
+          statusFrente.textContent = '✓ Imagen cargada';
+          statusFrente.className = 'upload-status success';
+        }
+        if (prod.imagen_espalda_url) {
+          imagenEspaldaUrl = prod.imagen_espalda_url;
+          const imgEspalda = previewEspalda.querySelector('img');
+          imgEspalda.src = prod.imagen_espalda_url;
+          previewEspalda.style.display = 'flex';
+          previewEspalda.previousElementSibling.style.display = 'none';
+          statusEspalda.textContent = '✓ Imagen cargada';
+          statusEspalda.className = 'upload-status success';
+        }
         editandoId = id;
         cancelarBtn.style.display = ''; // Muestra botón cancelar
       }
@@ -296,9 +413,26 @@ document.addEventListener('DOMContentLoaded', () => {
           form.estado.value = prod.estado || '';
           form.precio.value = prod.precio || '';
           form['proveedor-nombre'].value = prod.proveedor || ''; // Cargar proveedor
-          imagenesSubidas = prod.imagen_url ? [prod.imagen_url] : [];
-          imagenUploadStatus.textContent = imagenesSubidas.length ? 'Imagen cargada ✔' : '';
           form.stock.value = prod.stock || '';
+          // Cargar imágenes frente y espalda
+          if (prod.imagen_frente_url) {
+            imagenFrenteUrl = prod.imagen_frente_url;
+            const imgFrente = previewFrente.querySelector('img');
+            imgFrente.src = prod.imagen_frente_url;
+            previewFrente.style.display = 'flex';
+            previewFrente.previousElementSibling.style.display = 'none';
+            statusFrente.textContent = '✓ Imagen cargada';
+            statusFrente.className = 'upload-status success';
+          }
+          if (prod.imagen_espalda_url) {
+            imagenEspaldaUrl = prod.imagen_espalda_url;
+            const imgEspalda = previewEspalda.querySelector('img');
+            imgEspalda.src = prod.imagen_espalda_url;
+            previewEspalda.style.display = 'flex';
+            previewEspalda.previousElementSibling.style.display = 'none';
+            statusEspalda.textContent = '✓ Imagen cargada';
+            statusEspalda.className = 'upload-status success';
+          }
           editandoId = editId;
           cancelarBtn.style.display = '';
         }

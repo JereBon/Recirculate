@@ -178,6 +178,8 @@ const createProductsTable = async () => {
     await addProveedorColumn();
     // Migración: Agregar columna genero si no existe
     await addGeneroColumn();
+    // Migración: Agregar columnas de imágenes frontal y trasera
+    await addImagenesColumns();
   } catch (error) {
     console.error('❌ Error creando tabla productos:', error);
   }
@@ -316,6 +318,32 @@ const createMPPaymentsTable = async () => {
   }
 };
 
+// Función para agregar columnas de imagen frontal y trasera
+const addImagenesColumns = async () => {
+  try {
+    // Agregar columnas para imágenes frontal y trasera
+    await client.query(`
+      ALTER TABLE productos 
+      ADD COLUMN IF NOT EXISTS imagen_frente_url TEXT,
+      ADD COLUMN IF NOT EXISTS imagen_espalda_url TEXT
+    `);
+    console.log('✅ Columnas imagen_frente_url e imagen_espalda_url agregadas/verificadas');
+    
+    // Migrar datos existentes de imagen_url a imagen_frente_url
+    await client.query(`
+      UPDATE productos 
+      SET imagen_frente_url = imagen_url 
+      WHERE imagen_url IS NOT NULL AND imagen_frente_url IS NULL
+    `);
+    console.log('✅ Datos de imagen_url migrados a imagen_frente_url');
+  } catch (error) {
+    // Si las columnas ya existen, no es un error crítico
+    if (error.code !== '42701') {
+      console.error('❌ Error agregando columnas de imágenes:', error.message);
+    }
+  }
+};
+
 // Cerrar conexión
 const disconnectDB = async () => {
   try {
@@ -329,5 +357,6 @@ const disconnectDB = async () => {
 module.exports = {
   client,
   connectDB,
-  disconnectDB
+  disconnectDB,
+  addImagenesColumns
 };

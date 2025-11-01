@@ -60,7 +60,8 @@ class Product {
         precio,
         stock = 0,
         estado = 'Disponible',
-        imagen_url,
+        imagen_frente_url,
+        imagen_espalda_url,
         usuario_id,
         proveedor,
         genero
@@ -69,14 +70,14 @@ class Product {
       const query = `
         INSERT INTO productos (
           nombre, descripcion, categoria, talle, color, marca, 
-          precio, stock, estado, imagen_url, usuario_id, proveedor, genero
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+          precio, stock, estado, imagen_frente_url, imagen_espalda_url, usuario_id, proveedor, genero
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
         RETURNING *
       `;
 
       const values = [
         nombre, descripcion, categoria, talle, color, marca,
-        precio, stock, estado, imagen_url, usuario_id, proveedor, genero
+        precio, stock, estado, imagen_frente_url, imagen_espalda_url, usuario_id, proveedor, genero
       ];
 
       const result = await client.query(query, values);
@@ -100,7 +101,8 @@ class Product {
         precio,
         stock,
         estado,
-        imagen_url,
+        imagen_frente_url,
+        imagen_espalda_url,
         proveedor,
         genero
       } = productData;
@@ -109,14 +111,14 @@ class Product {
         UPDATE productos 
         SET nombre = $2, descripcion = $3, categoria = $4, talle = $5, 
             color = $6, marca = $7, precio = $8, stock = $9, estado = $10, 
-            imagen_url = $11, proveedor = $12, genero = $13, fecha_actualizacion = CURRENT_TIMESTAMP
+            imagen_frente_url = $11, imagen_espalda_url = $12, proveedor = $13, genero = $14, fecha_actualizacion = CURRENT_TIMESTAMP
         WHERE id = $1
         RETURNING *
       `;
 
       const values = [
         id, nombre, descripcion, categoria, talle, color, marca,
-        precio, stock, estado, imagen_url, proveedor, genero
+        precio, stock, estado, imagen_frente_url, imagen_espalda_url, proveedor, genero
       ];
 
       const result = await client.query(query, values);
