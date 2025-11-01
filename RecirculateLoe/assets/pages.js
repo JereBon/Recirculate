@@ -226,19 +226,29 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     if (closeBtn) closeBtn.addEventListener('click', closeAnyOpenSidebar);
 
-    categoryHeaders.forEach(header => {
-        header.addEventListener('click', () => {
-            const parentCategory = header.closest('.sidebar-category');
-            const isActive = parentCategory.classList.contains('active');
-            
-            // Cierra todos antes de abrir/cerrar el actual
-            document.querySelectorAll('.sidebar-category').forEach(cat => cat.classList.remove('active'));
-            
-            if (!isActive) {
-                 parentCategory.classList.add('active');
-            }
+    // Verificar que los category headers existan antes de agregar listeners
+    if (categoryHeaders && categoryHeaders.length > 0) {
+        categoryHeaders.forEach(header => {
+            header.addEventListener('click', (event) => {
+                // Asegurar que el click no se propague
+                event.stopPropagation();
+                
+                const parentCategory = header.closest('.sidebar-category');
+                if (!parentCategory) return;
+                
+                const isActive = parentCategory.classList.contains('active');
+                
+                // Cierra todos antes de abrir/cerrar el actual
+                document.querySelectorAll('.sidebar-category').forEach(cat => cat.classList.remove('active'));
+                
+                if (!isActive) {
+                     parentCategory.classList.add('active');
+                }
+            });
         });
-    });
+    } else {
+        console.warn('No se encontraron category headers');
+    }
 
     // Cerrar sidebar al hacer clic en cualquier enlace del sidebar
     if (sidebar) {
