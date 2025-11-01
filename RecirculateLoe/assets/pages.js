@@ -240,6 +240,16 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
+    // Cerrar sidebar al hacer clic en cualquier enlace del sidebar
+    if (sidebar) {
+        const sidebarLinks = sidebar.querySelectorAll('a');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                closeAnyOpenSidebar();
+            });
+        });
+    }
+
     // --- Lógica Específica: Sidebar de Filtros (Derecho) ---
     const filterBtn = document.querySelector('.filter-btn');
     const filterSidebar = document.getElementById('filter-sidebar');

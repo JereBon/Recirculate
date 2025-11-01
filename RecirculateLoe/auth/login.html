@@ -4,10 +4,148 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - Recirculate</title>
-    <link rel="stylesheet" href="../../assets/public-styles.css">
-    <link rel="stylesheet" href="../../assets/auth-styles.css">
+    <link rel="stylesheet" href="../assets/public-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            padding-top: 80px;
+        }
+        .login-main {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 90%;
+        }
+        .login-container h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+        }
+        .login-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .login-container label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .login-container input {
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .login-container input:focus {
+            outline: none;
+            border-color: #ffd84d;
+        }
+        .login-container button[type="submit"] {
+            padding: 0.75rem;
+            background: #ffd84d;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+        .login-container button[type="submit"]:hover {
+            background: #ffcd1a;
+        }
+        .login-container p {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .login-container a {
+            color: #ffd84d;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .login-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
+
+  <header class="public-header fixed-header">
+    <nav class="header-nav">
+      <div class="header-left">
+        <button id="menu-btn" class="header-icon menu-icon"><i class="fas fa-bars"></i></button>
+        <div id="search-container" class="search-container">
+          <button id="search-btn" class="header-icon search-icon"><i class="fas fa-search"></i></button>
+          <input type="text" id="search-input" class="search-input" placeholder="Buscar...">
+        </div>
+      </div>
+      <a href="../home/home.html" class="header-logo">
+        <img src="../assets/images/Recirculate-logo.png" alt="Recirculate Logo" class="logo-image">
+      </a>
+      <div class="header-right">
+        <a href="login.html" class="header-icon user-icon" data-tooltip="INICIAR SESIÓN">
+          <i class="fas fa-user"></i>
+        </a>
+        <a href="../carrito/carrito.html" class="header-icon cart-icon">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cart-counter" class="cart-counter">0</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <div id="sidebar-menu" class="sidebar">
+    <button id="close-btn" class="close-btn">&times;</button>
+    
+    <div class="sidebar-menu-list">
+      <div class="sidebar-category" data-category="hombre">
+        <div class="sidebar-category-header">
+          <span>HOMBRE</span>
+          <i class="fas fa-chevron-right toggle-icon"></i>
+        </div>
+        <div class="sidebar-submenu">
+          <a href="../pages/hombre/hombre.html"><strong>Ver Todo Hombre</strong></a>
+          <a href="../pages/remeras/remeras.html">Remeras</a>
+          <a href="../pages/buzos/buzos.html">Buzos</a>
+          <a href="../pages/camperas/camperas.html">Camperas</a>
+          <a href="../pages/pantalones/pantalones.html">Pantalones</a>
+          <a href="../pages/camisas/camisas.html">Camisas</a> 
+        </div>
+      </div>
+
+      <div class="sidebar-category" data-category="mujer">
+        <div class="sidebar-category-header">
+          <span>MUJER</span>
+          <i class="fas fa-chevron-right toggle-icon"></i>
+        </div>
+        <div class="sidebar-submenu">
+          <a href="../pages/mujer/mujer.html"><strong>Ver Todo Mujer</strong></a>
+          <a href="../pages/Mremeras/Mremeras.html">Remeras/Tops</a>
+          <a href="../pages/Mvestidos/Mvestidos.html">Vestidos/Monos</a>
+          <a href="../pages/Mpolleras/Mpolleras.html">Polleras/Shorts/Skorts</a>
+        </div>
+      </div>
+
+      <a href="../pages/unisex/unisex.html" class="sidebar-main-link">UNISEX</a>
+      <a href="../pages/ingresos/ingresos.html" class="sidebar-main-link">INGRESOS</a>
+      <a href="../pages/descuentos/descuentos.html" class="sidebar-main-link">DESCUENTOS</a>
+
+      <hr class="sidebar-divider">
+
+      <div class="sidebar-auth-group">
+          <a href="login.html" class="sidebar-main-link">INICIAR SESIÓN</a>
+          <a href="registro.html" class="sidebar-main-link">REGISTRARSE</a>
+      </div>
+    </div>
+  </div>
+
     <main class="login-main">
         <section class="login-container">
             <h1>Iniciar Sesión</h1>
@@ -21,6 +159,9 @@
             <p>¿No tienes cuenta? <a href="registro.html">Regístrate</a></p>
         </section>
     </main>
+    
+    <!-- Scripts para el menú desplegable -->
+    <script src="../assets/pages.js"></script>
     <script src="../../auth/login.js"></script>
 </body>
 </html>

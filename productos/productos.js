@@ -158,23 +158,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inicializar drag & drop para ambas zonas
   setupDragAndDrop(dropZoneFrente, imagenFrenteInput, 'frente');
   setupDragAndDrop(dropZoneEspalda, imagenEspaldaInput, 'espalda');
-  // Elementos del formulario y tabla
+  // Elementos del formulario
   const form = document.getElementById('producto-form');
-  const tabla = document.getElementById('tabla-productos').querySelector('tbody');
   const cancelarBtn = document.getElementById('cancelar-edicion');
 
   let editandoId = null; // ID del producto siendo editado, null si creando
-  let productosCache = []; // Cache de productos para edición rápida
   const API_URL = 'https://recirculate-api.onrender.com/api'; // URL base de la API
-
-
-  // Función asíncrona para obtener productos desde la API y actualizar cache
-  async function obtenerProductos() {
-    const res = await fetch(API_URL + '/productos');
-    const data = await res.json();
-    productosCache = data;
-    return data;
-  }
 
   // Función para resetear formulario, ocultar botón cancelar y limpiar errores
   function limpiarFormulario() {
@@ -189,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
     removeImage('espalda');
   }
 
+  /* TABLA DE PRODUCTOS REMOVIDA - La lista de productos ahora se gestiona desde ver-productos.html
   // Función para renderizar tabla de productos: obtiene datos, crea filas con nombre, precio, stock y botones editar/borrar
   async function renderTabla() {
     const productos = await obtenerProductos();
@@ -223,6 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
       tabla.appendChild(tr);
     });
   }
+  */
 
   // Función para validar campos obligatorios del formulario: nombre, género, precio >=0, stock >=0
   function validarFormulario() {
@@ -300,7 +291,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (data.message) {
         alert(data.message); // Alerta si producto eliminado por stock
         limpiarFormulario();
-        renderTabla();
         return;
       }
     } else {
@@ -330,9 +320,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     limpiarFormulario();
-    renderTabla(); // Re-renderiza tabla
   });
 
+  /* EVENTOS DE TABLA REMOVIDOS - La edición y eliminación ahora se gestiona desde ver-productos.html
   // Evento click en tabla: maneja botones editar y borrar
   tabla.addEventListener('click', async (e) => {
     if (e.target.dataset.edit !== undefined) {
@@ -385,10 +375,10 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
         limpiarFormulario();
-        renderTabla();
       }
     }
   });
+  */
 
   // Evento click en botón cancelar: resetea formulario
   cancelarBtn.addEventListener('click', limpiarFormulario);
@@ -439,9 +429,4 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .catch(err => console.error('Error al cargar producto para editar:', err));
   }
-
-  // Renderiza tabla inicial al cargar página
-  renderTabla();
-  // Re-renderiza al cambiar tamaño de ventana (responsive)
-  window.addEventListener('resize', renderTabla);
 });
