@@ -6,6 +6,26 @@
   <title>Recirculate</title>
   <link rel="stylesheet" href="../assets/public-styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script>
+    // Verificar si el usuario intenta acceder directamente (sin autenticación)
+    document.addEventListener('DOMContentLoaded', () => {
+      const authToken = localStorage.getItem('authToken');
+      const userData = localStorage.getItem('userData');
+      
+      // Actualizar el icono de usuario según el estado de autenticación
+      const userIcon = document.querySelector('.user-icon');
+      
+      if (authToken && userData) {
+        const user = JSON.parse(userData);
+        // Cambiar el tooltip y el link si está logueado
+        userIcon.setAttribute('data-tooltip', user.nombre.toUpperCase());
+        userIcon.setAttribute('href', '#'); // Mantener en la tienda
+        
+        // Opcional: Cambiar el ícono para indicar que está logueado
+        userIcon.innerHTML = '<i class="fas fa-user-check"></i>';
+      }
+    });
+  </script>
 </head>
 <body>
 

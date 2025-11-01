@@ -18,11 +18,19 @@ document.addEventListener('DOMContentLoaded', () => {
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const email = emailInput.value;
+    const password = passwordInput.value;
     const loginBtn = document.getElementById('loginBtn');
     const loading = document.getElementById('loading');
     const messageDiv = document.getElementById('message');
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+    
+    // Limpiar estados de error previos
+    emailInput.classList.remove('input-error');
+    passwordInput.classList.remove('input-error');
+    forgotPasswordLink.classList.remove('show');
     
     // Validaciones básicas
     if (!email || !password) {
@@ -53,22 +61,52 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             
             showMessage('¡Login exitoso! Redirigiendo...', 'success');
             
-            // Redirigir después de 1 segundo
+            // Redirigir según el rol del usuario
             setTimeout(() => {
-                window.location.href = '../index.html';
+                if (data.data.user.rol === 'admin') {
+                    // Si es admin, ir al panel de administración
+                    window.location.href = '../index.html';
+                } else {
+                    // Si es cliente, ir a la tienda pública
+                    window.location.href = '../RecirculateLoe/home/home.html';
+                }
             }, 1000);
             
         } else {
-            showMessage(data.message || 'Error en el login', 'error');
+            // Error de credenciales: activar estados de error
+            emailInput.classList.add('input-error');
+            passwordInput.classList.add('input-error');
+            forgotPasswordLink.classList.add('show');
+            showMessage(data.message || 'Credenciales incorrectas', 'error');
         }
         
     } catch (error) {
         console.error('Error en login:', error);
+        // También mostrar error visual en caso de fallo de conexión
+        emailInput.classList.add('input-error');
+        passwordInput.classList.add('input-error');
         showMessage('Error de conexión. Intenta nuevamente.', 'error');
     } finally {
         loginBtn.disabled = false;
         loading.style.display = 'none';
     }
+});
+
+// Manejar clic en "¿Olvidaste tu contraseña?"
+document.getElementById('forgotPasswordBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    
+    if (!email) {
+        showMessage('Por favor, ingresa tu correo electrónico primero', 'error');
+        return;
+    }
+    
+    // Por ahora solo mostramos un mensaje, luego integraremos con n8n
+    showMessage('Funcionalidad de recuperación de contraseña en desarrollo. Próximamente disponible.', 'success');
+    
+    // TODO: Aquí se integrará con n8n para enviar el email de recuperación
+    // sendPasswordResetEmail(email);
 });
 
 /**
@@ -103,7 +141,13 @@ async function handleGoogleLogin(response) {
             showMessage('¡Login exitoso! Redirigiendo...', 'success');
             
             setTimeout(() => {
-                window.location.href = '../index.html'; // Redirige al panel de admin
+                if (data.data.user.rol === 'admin') {
+                    // Si es admin, ir al panel de administración
+                    window.location.href = '../index.html';
+                } else {
+                    // Si es cliente, ir a la tienda pública
+                    window.location.href = '../RecirculateLoe/home/home.html';
+                }
             }, 1000);
             
         } else {
@@ -164,6 +208,31 @@ function isAdmin() {
 // Función para obtener el token
 function getAuthToken() {
     return localStorage.getItem('authToken');
+}
+
+// TODO: Función para enviar email de recuperación de contraseña (implementar con n8n)
+async function sendPasswordResetEmail(email) {
+    try {
+        // Endpoint que se conectará con n8n para enviar el email
+        const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showMessage('Se ha enviado un correo para restablecer tu contraseña', 'success');
+        } else {
+            showMessage(data.message || 'Error al enviar el correo', 'error');
+        }
+    } catch (error) {
+        console.error('Error enviando email de recuperación:', error);
+        showMessage('Error al enviar el correo de recuperación', 'error');
+    }
 }
 
 // Exportar funciones globalmente

@@ -10,6 +10,33 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Panel de Administración</title>
   <link rel="stylesheet" href="assets/style.css" />
+  <script>
+    // Protección: Verificar que el usuario sea admin
+    document.addEventListener('DOMContentLoaded', () => {
+      const userData = localStorage.getItem('userData');
+      const authToken = localStorage.getItem('authToken');
+      
+      // Si no hay token, redirigir al login
+      if (!authToken) {
+        window.location.href = 'auth/login.html';
+        return;
+      }
+      
+      // Si hay token, verificar que sea admin
+      if (userData) {
+        const user = JSON.parse(userData);
+        if (user.rol !== 'admin') {
+          // Si no es admin, redirigir a la tienda
+          alert('⚠️ No tienes permisos para acceder al panel de administración');
+          window.location.href = 'RecirculateLoe/home/home.html';
+          return;
+        }
+      } else {
+        // Si no hay datos de usuario, redirigir al login
+        window.location.href = 'auth/login.html';
+      }
+    });
+  </script>
 </head>
 <body>
   <header>
