@@ -78,6 +78,14 @@
         <h2>Filtrar productos</h2>
         <form id="form-filtros">
           <label>Nombre:<br><input type="text" name="nombre"></label><br>
+          <label>Género:<br>
+            <select name="genero">
+              <option value="">Todos</option>
+              <option value="hombre">Hombre</option>
+              <option value="mujer">Mujer</option>
+              <option value="unisex">Unisex</option>
+            </select>
+          </label><br>
           <label>Categoría:<br><input type="text" name="categoria"></label><br>
           <label>Marca:<br><input type="text" name="marca"></label><br>
           <label>Proveedor:<br><input type="text" name="proveedor"></label><br>
@@ -103,6 +111,7 @@
           <th>Imagen</th>
           <th>Nombre</th>
           <th>Descripción</th>
+          <th>Género</th>
           <th>Categoría</th>
           <th>Talle</th>
           <th>Color</th>

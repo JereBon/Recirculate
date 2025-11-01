@@ -30,8 +30,20 @@
           <textarea id="descripcion" placeholder="Ej: Remera de algodón, poco uso" rows="2" style="font-family: inherit; font-size: 1rem; padding: 8px; border-radius: 8px; border: 1px solid #bbb;"></textarea>
         </div>
         <div class="form-group">
+          <label for="genero">Género</label>
+          <select id="genero" required aria-required="true">
+            <option value="">Seleccionar género...</option>
+            <option value="hombre">Hombre</option>
+            <option value="mujer">Mujer</option>
+            <option value="unisex">Unisex</option>
+          </select>
+          <small class="error-msg" id="e-genero"></small>
+        </div>
+        <div class="form-group">
           <label for="categoria">Categoría</label>
-          <input type="text" id="categoria" placeholder="Ej: Remera, Pantalón, Campera" />
+          <select id="categoria">
+            <option value="">Seleccionar categoría...</option>
+          </select>
         </div>
         <div class="form-group">
           <label for="talle">Talle</label>

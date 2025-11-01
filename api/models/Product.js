@@ -62,20 +62,21 @@ class Product {
         estado = 'Disponible',
         imagen_url,
         usuario_id,
-        proveedor
+        proveedor,
+        genero
       } = productData;
 
       const query = `
         INSERT INTO productos (
           nombre, descripcion, categoria, talle, color, marca, 
-          precio, stock, estado, imagen_url, usuario_id, proveedor
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+          precio, stock, estado, imagen_url, usuario_id, proveedor, genero
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
         RETURNING *
       `;
 
       const values = [
         nombre, descripcion, categoria, talle, color, marca,
-        precio, stock, estado, imagen_url, usuario_id, proveedor
+        precio, stock, estado, imagen_url, usuario_id, proveedor, genero
       ];
 
       const result = await client.query(query, values);
@@ -100,21 +101,22 @@ class Product {
         stock,
         estado,
         imagen_url,
-        proveedor
+        proveedor,
+        genero
       } = productData;
 
       const query = `
         UPDATE productos 
         SET nombre = $2, descripcion = $3, categoria = $4, talle = $5, 
             color = $6, marca = $7, precio = $8, stock = $9, estado = $10, 
-            imagen_url = $11, proveedor = $12, fecha_actualizacion = CURRENT_TIMESTAMP
+            imagen_url = $11, proveedor = $12, genero = $13, fecha_actualizacion = CURRENT_TIMESTAMP
         WHERE id = $1
         RETURNING *
       `;
 
       const values = [
         id, nombre, descripcion, categoria, talle, color, marca,
-        precio, stock, estado, imagen_url, proveedor
+        precio, stock, estado, imagen_url, proveedor, genero
       ];
 
       const result = await client.query(query, values);

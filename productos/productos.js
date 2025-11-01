@@ -3,6 +3,35 @@
 
 // Espera a que el DOM cargue completamente antes de ejecutar lógica
 document.addEventListener('DOMContentLoaded', () => {
+  // Definir categorías por género
+  const categoriasPorGenero = {
+    hombre: ['Remeras', 'Buzos', 'Camperas', 'Pantalones', 'Camisas'],
+    mujer: ['Remeras', 'Tops', 'Vestidos', 'Monos', 'Polleras', 'Shorts', 'Skorts'],
+    unisex: ['Remeras', 'Camperas', 'Pantalones', 'Buzos']
+  };
+
+  // Elementos del formulario
+  const generoSelect = document.getElementById('genero');
+  const categoriaSelect = document.getElementById('categoria');
+
+  // Función para actualizar las categorías según el género seleccionado
+  function actualizarCategorias() {
+    const generoSeleccionado = generoSelect.value;
+    categoriaSelect.innerHTML = '<option value="">Seleccionar categoría...</option>';
+    
+    if (generoSeleccionado && categoriasPorGenero[generoSeleccionado]) {
+      categoriasPorGenero[generoSeleccionado].forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        categoriaSelect.appendChild(option);
+      });
+    }
+  }
+
+  // Escuchar cambios en el select de género
+  generoSelect.addEventListener('change', actualizarCategorias);
+
   // Elementos para subida de imágenes
   const imagenFileInput = document.getElementById('imagen-file');
   const imagenUploadStatus = document.getElementById('imagen-upload-status');
@@ -94,10 +123,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Función para validar campos obligatorios del formulario: nombre, precio >=0, stock >=0
+  // Función para validar campos obligatorios del formulario: nombre, género, precio >=0, stock >=0
   function validarFormulario() {
     let valido = true;
     const nombre = form.nombre.value.trim();
+    const genero = form.genero.value;
     const precio = form.precio.value;
     const stock = form.stock.value;
     if (!nombre) {
@@ -105,6 +135,12 @@ document.addEventListener('DOMContentLoaded', () => {
       valido = false;
     } else {
       document.getElementById('e-nombre').textContent = '';
+    }
+    if (!genero) {
+      document.getElementById('e-genero').textContent = 'El género es obligatorio';
+      valido = false;
+    } else {
+      document.getElementById('e-genero').textContent = '';
     }
     if (!precio || precio < 0) {
       document.getElementById('e-precio').textContent = 'Precio inválido';
@@ -137,6 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nuevo = {
       nombre: form.nombre.value.trim(),
       descripcion: form.descripcion.value.trim(),
+      genero: form.genero.value.trim(),
       categoria: form.categoria.value.trim(),
       talle: form.talle.value.trim(),
       color: form.color.value.trim(),
@@ -204,6 +241,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (prod) {
         form.nombre.value = prod.nombre || '';
         form.descripcion.value = prod.descripcion || '';
+        form.genero.value = prod.genero || '';
+        actualizarCategorias(); // Actualizar categorías según género
         form.categoria.value = prod.categoria || '';
         form.talle.value = prod.talle || '';
         form.color.value = prod.color || '';
@@ -248,6 +287,8 @@ document.addEventListener('DOMContentLoaded', () => {
           // Carga datos del producto en formulario para edición
           form.nombre.value = prod.nombre || '';
           form.descripcion.value = prod.descripcion || '';
+          form.genero.value = prod.genero || '';
+          actualizarCategorias(); // Actualizar categorías según género
           form.categoria.value = prod.categoria || '';
           form.talle.value = prod.talle || '';
           form.color.value = prod.color || '';

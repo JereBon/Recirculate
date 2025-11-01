@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let allProductos = []; // Cache de todos los productos
   let searchTerm = ''; // Término de búsqueda actual
-  let filtros = { nombre: '', categoria: '', marca: '', precioDesde: '', precioHasta: '', stockDesde: '', stockHasta: '', fechaDesde: '', fechaHasta: '' };
+  let filtros = { nombre: '', genero: '', categoria: '', marca: '', precioDesde: '', precioHasta: '', stockDesde: '', stockHasta: '', fechaDesde: '', fechaHasta: '' };
 
   // Función asíncrona para obtener productos desde la API
   async function fetchProductos() {
@@ -45,6 +45,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Filtros específicos
     if (filtros.nombre) {
       filtered = filtered.filter(p => p.nombre && p.nombre.toLowerCase().includes(filtros.nombre.toLowerCase()));
+    }
+    if (filtros.genero) {
+      filtered = filtered.filter(p => p.genero && p.genero.toLowerCase() === filtros.genero.toLowerCase());
     }
     if (filtros.categoria) {
       filtered = filtered.filter(p => p.categoria && p.categoria.toLowerCase().includes(filtros.categoria.toLowerCase()));
@@ -87,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     tabla.innerHTML = '';
     if (!productosFiltrados.length) {
       // Mensaje si no hay productos o ninguno coincide con búsqueda
-      const colspan = searchTerm.trim() ? 16 : 16;
+      const colspan = searchTerm.trim() ? 17 : 17;
       tabla.innerHTML = `<tr><td colspan="${colspan}" style="text-align:center; color:#888;">${searchTerm.trim() ? 'No se encontraron productos que coincidan con la búsqueda' : 'No hay productos cargados'}</td></tr>`;
       return;
     }
@@ -100,16 +103,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Agrega fila extra para mobile con número de producto
         const trProd = document.createElement('tr');
         trProd.className = 'producto-num-mobile';
-        trProd.innerHTML = `<td colspan="16" class="producto-num-mobile-td">Producto #${idVisual}</td>`;
+        trProd.innerHTML = `<td colspan="17" class="producto-num-mobile-td">Producto #${idVisual}</td>`;
         tabla.appendChild(trProd);
       }
       const tr = document.createElement('tr');
+      // Formatear género con primera letra mayúscula
+      const generoFormateado = prod.genero ? prod.genero.charAt(0).toUpperCase() + prod.genero.slice(1) : '';
       tr.innerHTML = `
         <td data-label="Imagen">
           ${prod.imagen_url ? `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" />` : ''}
         </td>
         <td data-label="Nombre">${prod.nombre || ''}</td>
         <td data-label="Descripción">${prod.descripcion || ''}</td>
+        <td data-label="Género">${generoFormateado}</td>
         <td data-label="Categoría">${prod.categoria || ''}</td>
         <td data-label="Talle">${prod.talle || ''}</td>
         <td data-label="Color">${prod.color || ''}</td>
@@ -187,6 +193,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     e.preventDefault();
     const fd = new FormData(formFiltros);
     filtros.nombre = (fd.get('nombre') || '').trim();
+    filtros.genero = (fd.get('genero') || '').trim();
     filtros.categoria = (fd.get('categoria') || '').trim();
     filtros.marca = (fd.get('marca') || '').trim();
     filtros.proveedor = (fd.get('proveedor') || '').trim();
@@ -203,7 +210,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   btnLimpiarFiltros.addEventListener('click', () => {
-    filtros = { nombre: '', categoria: '', marca: '', precioDesde: '', precioHasta: '', stockDesde: '', stockHasta: '', fechaDesde: '', fechaHasta: '' };
+    filtros = { nombre: '', genero: '', categoria: '', marca: '', precioDesde: '', precioHasta: '', stockDesde: '', stockHasta: '', fechaDesde: '', fechaHasta: '' };
     formFiltros.reset();
     cargarProductos();
   });
