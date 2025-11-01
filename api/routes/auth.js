@@ -10,7 +10,7 @@ const router = express.Router();
 
 // --- CONFIGURACIÓN DE GOOGLE ---
 // REEMPLAZA ESTO con tu CLIENT_ID real de la consola de Google
-const GOOGLE_CLIENT_ID = 438077826741-urpa2vhu8761v332srgmk82b6ngaajef.apps.googleusercontent.com;
+const GOOGLE_CLIENT_ID = "438077826741-urpa2vhu8761v332srgmk82b6ngaajef.apps.googleusercontent.com";
 const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 // -------------------------------
 
