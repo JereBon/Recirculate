@@ -1,214 +1,29 @@
-<!--
-  registrar-producto.html - Formulario para registrar un nuevo producto
-  Incluye validaciones, sistema de descuentos y género obligatorio.
--->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
   <title>Registrar Producto</title>
-  <link rel="stylesheet" href="../assets/style.css" />
+  <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
-  <header>
-    <h1>Registrar Producto</h1>
-    <div style="margin-bottom: 18px;">
-      <a href="ver-productos.html"><button>← Volver a Productos</button></a>
-    </div>
-  </header>
-  <main class="main">
-    <form id="formProducto" novalidate>
-      <div class="form-group">
-        <label for="nombre">Nombre</label>
-        <input id="nombre" type="text" required aria-required="true" placeholder="Ej: Remera básica negra" />
-        <small class="error-msg" id="e-nombre"></small>
-      </div>
-      
-      <div class="form-group">
-        <label for="genero">Género</label>
-        <select id="genero" required aria-required="true">
-          <option value="">--Seleccionar--</option>
-          <option value="hombre">Hombre</option>
-          <option value="mujer">Mujer</option>
-          <option value="unisex">Unisex</option>
-        </select>
-        <small class="error-msg" id="e-genero"></small>
-      </div>
-
-      <div class="form-group">
-        <label for="categoria">Categoría</label>
-        <select id="categoria" required aria-required="true">
-          <option value="">--Seleccionar--</option>
-        </select>
-        <small class="error-msg" id="e-categoria"></small>
-      </div>
-
-      
-      <div class="form-group">
-        <label for="talle">Talle</label>
-        <input id="talle" type="text" placeholder="Ej: M, L, XL, 42" />
-        <small class="error-msg" id="e-talle"></small>
-      </div>
-      
-      <div class="form-group">
-        <label for="color">Color</label>
-        <input id="color" type="text" placeholder="Ej: Negro, Azul, Rojo" />
-        <small class="error-msg" id="e-color"></small>
-      </div>
-      
-      <div class="form-group">
-        <label for="marca">Marca</label>
-        <input id="marca" type="text" placeholder="Ej: Nike, Adidas" />
-        <small class="error-msg" id="e-marca"></small>
-      </div>
-      
-      <div class="form-group">
-        <label for="precio">Precio</label>
-        <input id="precio" type="number" min="0" step="0.01" required aria-required="true" placeholder="0.00" />
-        <small class="error-msg" id="e-precio"></small>
-      </div>
-      
-      <div class="form-group">
-        <label for="stock">Stock</label>
-        <input id="stock" type="number" min="0" required aria-required="true" placeholder="0" />
-        <small class="error-msg" id="e-stock"></small>
-      </div>
-      
-      <div class="form-group">
-        <label for="descuento">Descuento (%)</label>
-        <input id="descuento" type="number" min="0" max="100" step="1" placeholder="Ej: 25 (para 25% OFF)" />
-        <small style="color: #666; display: block; margin-top: 4px;">Opcional - Deja vacío si no hay descuento (0-100%)</small>
-        <small class="error-msg" id="e-descuento"></small>
-      </div>
-      
-      <div class="form-group">
-        <label for="proveedor">Proveedor</label>
-        <input id="proveedor" type="text" placeholder="Ej: Distribuidora ABC" />
-        <small class="error-msg" id="e-proveedor"></small>
-      </div>
-      
-      <div class="form-group">
-        <label for="descripcion">Descripción</label>
-        <textarea id="descripcion" rows="3" placeholder="Descripción detallada del producto..."></textarea>
-        <small class="error-msg" id="e-descripcion"></small>
-      </div>
-      
-      <!-- Sección de subida de imágenes con Cloudinary -->
-      <div class="form-group">
-        <label>Imágenes del Producto (Obligatorio)</label>
-        <small style="color: #666; display: block; margin-bottom: 10px;">
-          Sube 2 imágenes: frente y espalda del producto. Arrastra las imágenes aquí o haz clic para seleccionarlas.
-        </small>
-        
-        <div class="images-upload-container">
-          <!-- Imagen Frente -->
-          <div class="image-upload-zone" id="upload-frente">
-            <div class="upload-content">
-              <div class="upload-icon">📷</div>
-              <div class="upload-text">
-                <strong>Imagen Frente</strong>
-                <p>Arrastra aquí o haz clic</p>
-              </div>
-              <input type="file" id="file-frente" accept="image/*" style="display: none;">
-            </div>
-            <div class="image-preview" id="preview-frente" style="display: none;">
-              <img id="img-frente" src="" alt="Vista previa frente">
-              <div class="image-actions">
-                <button type="button" class="btn-remove" onclick="removeImage('frente')">✖</button>
-                <span class="image-label">FRENTE</span>
-              </div>
-            </div>
-            <div class="upload-progress" id="progress-frente" style="display: none;">
-              <div class="progress-bar">
-                <div class="progress-fill"></div>
-              </div>
-              <span class="progress-text">Subiendo...</span>
-            </div>
-          </div>
-
-          <!-- Imagen Espalda -->
-          <div class="image-upload-zone" id="upload-espalda">
-            <div class="upload-content">
-              <div class="upload-icon">📷</div>
-              <div class="upload-text">
-                <strong>Imagen Espalda</strong>
-                <p>Arrastra aquí o haz clic</p>
-              </div>
-              <input type="file" id="file-espalda" accept="image/*" style="display: none;">
-            </div>
-            <div class="image-preview" id="preview-espalda" style="display: none;">
-              <img id="img-espalda" src="" alt="Vista previa espalda">
-              <div class="image-actions">
-                <button type="button" class="btn-remove" onclick="removeImage('espalda')">✖</button>
-                <span class="image-label">ESPALDA</span>
-              </div>
-            </div>
-            <div class="upload-progress" id="progress-espalda" style="display: none;">
-              <div class="progress-bar">
-                <div class="progress-fill"></div>
-              </div>
-              <span class="progress-text">Subiendo...</span>
-            </div>
-          </div>
-        </div>
-        
-        <small class="error-msg" id="e-imagenes"></small>
-      </div>
-      
-      <button type="submit" class="primary">Guardar Producto</button>
-      <div class="success-msg" id="success-msg"></div>
+  <div class="container">
+    <h2>Registrar Producto</h2>
+    <form id="formProducto" class="form">
+      <label>Nombre:
+        <input type="text" id="nombre" required>
+      </label>
+      <label>Stock:
+        <input type="number" id="stock" min="0" required>
+      </label>
+      <label>Precio:
+        <input type="number" id="precio" min="0" required>
+      </label>
+      <button type="submit" class="btn">Guardar Producto</button>
+      <div id="errorProducto" class="error"></div>
+      <div id="successProducto" class="success"></div>
     </form>
-  </main>
+    <a href="ver-productos.html" class="btn-link">Ver productos</a>
+  </div>
   <script type="module" src="registrar-producto.js"></script>
-<script>
-// Opciones de categoría por género (sin accesorios, sin categorías cruzadas)
-const categoriasPorGenero = {
-  hombre: [
-    { value: "remeras", label: "Remeras" },
-    { value: "buzos", label: "Buzos" },
-    { value: "camisas", label: "Camisas" },
-    { value: "camperas", label: "Camperas" },
-    { value: "pantalones", label: "Pantalones" }
-  ],
-  mujer: [
-    { value: "remeras", label: "Remeras" },
-    { value: "buzos", label: "Buzos" },
-    { value: "camisas", label: "Camisas" },
-    { value: "camperas", label: "Camperas" },
-    { value: "pantalones", label: "Pantalones" },
-    { value: "vestidos", label: "Vestidos" },
-    { value: "polleras", label: "Polleras" }
-  ],
-  unisex: [
-    { value: "remeras", label: "Remeras" },
-    { value: "buzos", label: "Buzos" },
-    { value: "camisas", label: "Camisas" },
-    { value: "camperas", label: "Camperas" },
-    { value: "pantalones", label: "Pantalones" },
-    { value: "vestidos", label: "Vestidos" },
-    { value: "polleras", label: "Polleras" }
-  ]
-};
-
-function actualizarCategorias() {
-  const genero = document.getElementById("genero").value;
-  const categoriaSelect = document.getElementById("categoria");
-  categoriaSelect.innerHTML = '<option value="">--Seleccionar--</option>';
-  if (categoriasPorGenero[genero]) {
-    categoriasPorGenero[genero].forEach(opt => {
-      const option = document.createElement("option");
-      option.value = opt.value;
-      option.textContent = opt.label;
-      categoriaSelect.appendChild(option);
-    });
-  }
-}
-document.getElementById("genero").addEventListener("change", actualizarCategorias);
-window.actualizarCategorias = actualizarCategorias;
-window.addEventListener("DOMContentLoaded", () => {
-  actualizarCategorias();
-});
-</script>
 </body>
 </html>

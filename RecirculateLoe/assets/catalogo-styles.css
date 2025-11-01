@@ -186,6 +186,12 @@
   max-width: 100%;
 }
 
+@media (max-width: 600px) {
+  .breadcrumbs {
+    margin-top: 5rem;
+  }
+}
+
 .breadcrumb-item {
   display: inline-flex;
   align-items: center;
@@ -226,6 +232,14 @@
   padding: 0 0 1rem 0;
   border-bottom: 1px solid #ddd;
   max-width: 100%;
+}
+
+@media (max-width: 420px) {
+  /* Oculta completamente el H1 del category header en pantallas <=420px */
+  .category-header h1,
+  .category-header .page-title { 
+    display: none !important;
+  }
 }
 
 .category-header h1 {

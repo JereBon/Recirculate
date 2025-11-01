@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - Recirculate</title>
     <link rel="stylesheet" href="../assets/style.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         .auth-container {
             max-width: 400px;
@@ -117,44 +118,34 @@
             <div id="message"></div>
             
             <form id="loginForm" class="auth-form">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
-                        required 
-                        placeholder="tu@email.com"
-                    >
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">Contraseña</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        required 
-                        placeholder="Tu contraseña"
-                    >
-                </div>
-                
                 <button type="submit" class="auth-btn" id="loginBtn">
                     Iniciar Sesión
                 </button>
-                
-                <div class="loading" id="loading">
-                    Iniciando sesión...
-                </div>
             </form>
-            
+
+            <div id="g_id_onload"
+                 data-client_id="438077826741-urpa2vhu8761v332srgmk82b6ngaajef.apps.googleusercontent.com"
+                 data-callback="handleGoogleLogin"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-size="large"
+                 data-theme="outline"
+                 data-text="sign_in_with"
+                 data-shape="rectangular"
+                 data-logo_alignment="left"
+                 style="width: 100%; display: flex; justify-content: center; margin-top: 16px;">
+            </div>
+
             <div class="auth-link">
                 <p>¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a></p>
-                <p><a href="../RecirculateLoe/home/home.html">Volver al inicio</a></p>
+                <p><a href="../index.html">Volver al inicio</a></p>
             </div>
         </div>
     </main>
 
     <script src="login.js"></script>
+</body>
 </body>
 </html>

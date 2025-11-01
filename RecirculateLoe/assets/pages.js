@@ -4,202 +4,6 @@
 // FUNCIONES GLOBALES (Definidas fuera de DOMContentLoaded)
 // ============================================
 
-// --- Función para obtener la categoría actual basada en la URL ---
-function getCurrentCategory() {
-    const currentPath = window.location.pathname;
-    
-    if (currentPath.includes('/remeras/')) return 'remeras';
-    if (currentPath.includes('/buzos/')) return 'buzos';
-    if (currentPath.includes('/pantalones/')) return 'pantalones';
-    if (currentPath.includes('/camperas/')) return 'camperas';
-    if (currentPath.includes('/camisas/')) return 'camisas';
-    if (currentPath.includes('/vestidos/') || currentPath.includes('/Mvestidos/')) return 'vestidos';
-    if (currentPath.includes('/polleras/') || currentPath.includes('/Mpolleras/')) return 'polleras';
-    if (currentPath.includes('/Mremeras/')) return 'remeras';
-    if (currentPath.includes('/hombre/')) return 'hombre';
-    if (currentPath.includes('/mujer/')) return 'mujer';
-    if (currentPath.includes('/unisex/')) return 'unisex';
-    
-    return 'general';
-}
-
-// --- Función para cargar productos dinámicamente desde API ---
-async function cargarProductosPorGenero(genero) {
-    const API_URL = "https://recirculate-api.onrender.com/api/productos";
-    const productGrid = document.querySelector('.product-grid');
-    
-    if (!productGrid) return; // Si no hay grid, salir
-    
-    try {
-        // Mostrar mensaje de carga
-        productGrid.innerHTML = '<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 3rem; font-size: 1.2rem; color: #666;">Cargando productos...</div>';
-        
-        // Hacer petición a la API
-        let url = API_URL;
-        if (genero && genero !== 'todos') {
-            url = `${API_URL}/genero/${genero}`;
-        }
-
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Error al cargar productos');
-
-        let productos = await response.json();
-
-        // Obtener categoría actual de la URL
-        const categoriaActual = getCurrentCategory();
-
-        // Filtrar productos por género y categoría (case-insensitive)
-        if (categoriaActual && categoriaActual !== 'general' && categoriaActual !== 'hombre' && categoriaActual !== 'mujer' && categoriaActual !== 'unisex') {
-            productos = productos.filter(producto => {
-                const cat = (producto.categoria || '').toLowerCase();
-                const gen = (producto.genero || '').toLowerCase();
-                return gen === genero.toLowerCase() && cat === categoriaActual.toLowerCase();
-            });
-        }
-
-        // Limpiar grid
-        productGrid.innerHTML = '';
-
-        if (productos.length === 0) {
-            productGrid.innerHTML = '<div class="no-products-message" style="grid-column: 1 / -1; text-align: center; padding: 3rem; font-size: 1.2rem; color: #666;">No hay productos disponibles en esta sección.</div>';
-            return;
-        }
-
-        // Crear cards de productos dinámicamente
-        productos.forEach((producto, index) => {
-            const productCard = document.createElement('div');
-            productCard.className = 'product-card';
-            productCard.dataset.precio = producto.precio || 0;
-            productCard.dataset.color = (producto.color || '').toLowerCase();
-            productCard.dataset.talle = (producto.talle || '').toUpperCase();
-            productCard.dataset.originalOrder = index;
-            productCard.dataset.descuento = 0; // Por defecto
-            productCard.dataset.isNew = 'false'; // Por defecto
-
-            // Calcular descuento si existe (usa descuento de la DB)
-            let discountHtml = '';
-            if (producto.descuento && producto.descuento > 0) {
-                discountHtml = `<div class="discount-tag">${producto.descuento}% OFF</div>`;
-                productCard.dataset.descuento = producto.descuento;
-            }
-
-            // Verificar si es nuevo
-            let newHtml = '';
-            if (producto.es_nuevo || producto.es_destacado) {
-                newHtml = `<div class="new-tag">NEW</div>`;
-                productCard.dataset.isNew = 'true';
-            }
-
-            // Construir HTML de la card
-            productCard.innerHTML = `
-                ${discountHtml}
-                ${newHtml}
-                <div class="product-images">
-                    <img src="${producto.imagen_url || '../../assets/images/placeholder.png'}" alt="${producto.nombre}" class="main-image">
-                    <img src="${producto.imagen_hover || producto.imagen_url || '../../assets/images/placeholder.png'}" alt="${producto.nombre} Hover" class="hover-image">
-                </div>
-                <h3>${producto.nombre}</h3>
-                <p class="precio">$${(producto.precio || 0).toLocaleString('es-AR')} ARS</p>
-                <button class="add-to-cart-btn">Añadir al carrito</button>
-            `;
-
-            productGrid.appendChild(productCard);
-        });
-
-        // Re-aplicar event listeners para los nuevos productos
-        aplicarEventListenersProductos();
-
-        // Re-ejecutar animaciones de scroll
-        setupScrollAnimation();
-        
-    } catch (error) {
-        console.error('Error al cargar productos:', error);
-        productGrid.innerHTML = '<div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 3rem; font-size: 1.2rem; color: #e74c3c;">Error al cargar productos. Intenta recargar la página.</div>';
-    }
-}
-
-// --- Función para aplicar event listeners a productos dinámicos ---
-function aplicarEventListenersProductos() {
-    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-    addToCartButtons.forEach((button, index) => {
-        // Remover listeners anteriores
-        button.replaceWith(button.cloneNode(true));
-        const newButton = document.querySelectorAll('.add-to-cart-btn')[index];
-        
-        newButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation(); // Prevenir navegación al detalle
-            const productCard = newButton.closest('.product-card');
-            const nombre = productCard.querySelector('h3').textContent;
-            const precioTexto = productCard.querySelector('.precio').textContent;
-            const precio = parseFloat(precioTexto.replace(/[^\d]/g, '')); 
-            const imagen = productCard.querySelector('.main-image').src;
-            
-            const producto = {
-                id: `prod_${Date.now()}_${index}`, 
-                nombre,
-                precio,
-                imagen,
-                categoria: 'Producto'
-            };
-            agregarAlCarrito(producto);
-        });
-    });
-    
-    // Hacer las tarjetas clickeables para navegación
-    const productCards = document.querySelectorAll('.product-card');
-    productCards.forEach(card => {
-        card.addEventListener('click', (e) => {
-            // Si el click fue en el botón de agregar al carrito, no hacer nada
-            if (e.target.closest('.add-to-cart-btn')) {
-                return;
-            }
-            
-            // Registrar visita en el historial si el usuario está logueado
-            if (window.userMenuManager && window.userMenuManager.isLoggedIn) {
-                // Obtener datos del producto desde los elementos de la tarjeta
-                const productData = {
-                    id: card.dataset.productId || Date.now(), // Usar ID real si está disponible
-                    nombre: card.querySelector('h3').textContent.trim(),
-                    imagen_url: card.querySelector('.main-image').src,
-                    precio: parseInt(card.querySelector('.precio').textContent.replace(/[^\d]/g, '')),
-                    categoria: getCurrentCategory()
-                };
-                
-                window.userMenuManager.trackProductVisit(productData);
-            }
-            
-            // Obtener el nombre del producto y generar el slug para la URL
-            const productName = card.querySelector('h3').textContent.trim();
-            const normalizedName = productName.replace(/B&N/gi, 'BN');
-            const productSlug = normalizedName
-                .toLowerCase()
-                .normalize("NFD").replace(/[\u0300-\u036f]/g, "") 
-                .replace(/[^a-z0-9]+/g, '-') 
-                .replace(/^-+|-+$/g, ''); 
-            
-            // Detectar la categoría y género basándose en la URL actual
-            const currentPath = window.location.pathname;
-            let productPath = '';
-            
-            if (currentPath.includes('/hombre/')) {
-                productPath = `../../productos/hombre/general/${productSlug}.html`;
-            } else if (currentPath.includes('/mujer/')) {
-                productPath = `../../productos/mujer/general/${productSlug}.html`;
-            } else if (currentPath.includes('/unisex/')) {
-                productPath = `../../productos/unisex/${productSlug}.html`;
-            } else {
-                productPath = `../../productos/${productSlug}.html`;
-            }
-            
-            // Redirigir a la página del producto
-            window.location.href = productPath;
-        });
-        
-        card.style.cursor = 'pointer';
-    });
-}
-
 // --- Funciones del Carrito (Asumiendo que no están en utils.js o no se importan) ---
 function agregarAlCarrito(producto) {
     let carrito = JSON.parse(localStorage.getItem('recirculate_carrito') || '[]');
@@ -345,38 +149,23 @@ function filterProducts(minPrice, maxPrice, selectedColors, selectedSizes) {
 document.addEventListener("DOMContentLoaded", function() {
     
     actualizarContadorCarrito(); // Carga inicial del contador
-    
-    // --- Detectar género automáticamente y cargar productos desde API ---
-    const currentPath = window.location.pathname;
-    let generoActual = null;
-    
-    if (currentPath.includes('/hombre/')) {
-        generoActual = 'hombre';
-    } else if (currentPath.includes('/mujer/')) {
-        generoActual = 'mujer';
-    } else if (currentPath.includes('/unisex/')) {
-        generoActual = 'unisex';
-    }
-    
-    // Cargar productos dinámicamente si estamos en una página de género
-    if (generoActual && document.querySelector('.product-grid')) {
-        cargarProductosPorGenero(generoActual);
-    } else {
-        // Si no es página de género, aplicar listeners a productos estáticos existentes
-        aplicarEventListenersProductos();
-    }
-
-    // --- Referencias globales del DOM ---
-    const chatbotContainer = document.querySelector('.chatbot-container');
 
     // --- Lógica del Logo ---
     const logo = document.querySelector('.header-logo');
     if (logo) {
-        logo.addEventListener('click', (e) => {
-            e.stopPropagation();
-            // Siempre redirige al home desde páginas de categoría
-            window.location.href = '../home/home.html'; 
-        });
+        // Evitar añadir el handler de redirect cuando ya estamos en la página home
+        const isHomePage = /\/home(\/home)?\.html$/.test(window.location.pathname) || /\/home\.html$/.test(window.location.pathname);
+        if (!isHomePage) {
+            logo.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Redirigir al home usando el resolvedor para mantener rutas correctas
+                if (typeof resolveMappedUrl === 'function') {
+                    window.location.href = resolveMappedUrl('home/home.html');
+                } else {
+                    window.location.href = '../home/home.html';
+                }
+            });
+        }
     }
     
     // --- Lógica Común Sidebars y Overlay ---
@@ -388,12 +177,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const openSidebars = document.querySelectorAll('.sidebar.open, .filter-sidebar.open');
         openSidebars.forEach(sb => sb.classList.remove('open'));
         body.classList.remove('sidebar-active');
-        if (overlay) overlay.style.zIndex = 1000; // Restaura z-index del overlay general
+    // rely on CSS z-index; avoid inline z-index changes to prevent stacking issues
         
-        // Mostrar el chatbot cuando se cierra cualquier sidebar
-        if (chatbotContainer) {
-            chatbotContainer.style.display = 'block';
-        }
     }
 
     if (overlay) {
@@ -404,13 +189,19 @@ document.addEventListener("DOMContentLoaded", function() {
     window.addEventListener('click', (event) => {
         const sidebar = document.getElementById('sidebar-menu');
         const filterSidebar = document.getElementById('filter-sidebar');
+        const searchSidebar = document.getElementById('sidebar-search');
         const menuBtn = document.getElementById('menu-btn');
         const filterBtn = document.querySelector('.filter-btn');
+        const searchBtnHeader = document.getElementById('search-btn');
+        const searchInputHeader = document.getElementById('search-input');
 
-        let clickedInsideSidebar = (sidebar && sidebar.contains(event.target)) || 
+        let clickedInsideSidebar = (sidebar && sidebar.contains(event.target)) ||
                                    (filterSidebar && filterSidebar.contains(event.target)) ||
+                                   (searchSidebar && searchSidebar.contains(event.target)) ||
                                    event.target === menuBtn || (menuBtn && menuBtn.contains(event.target)) ||
-                                   event.target === filterBtn || (filterBtn && filterBtn.contains(event.target));
+                                   event.target === filterBtn || (filterBtn && filterBtn.contains(event.target)) ||
+                                   event.target === searchBtnHeader || (searchBtnHeader && searchBtnHeader.contains(event.target)) ||
+                                   event.target === searchInputHeader || (searchInputHeader && searchInputHeader.contains(event.target));
 
         if (!clickedInsideSidebar && body.classList.contains('sidebar-active')) {
              closeAnyOpenSidebar();
@@ -430,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function() {
             closeAnyOpenSidebar(); // Cierra otros sidebars primero
             sidebar.classList.add('open');
             body.classList.add('sidebar-active');
-            if (overlay) overlay.style.zIndex = 1000;
+            // avoid changing overlay z-index here
         });
     }
     if (closeBtn) closeBtn.addEventListener('click', closeAnyOpenSidebar);
@@ -461,12 +252,8 @@ document.addEventListener("DOMContentLoaded", function() {
             closeAnyOpenSidebar(); // Cierra otros sidebars primero
             filterSidebar.classList.add('open');
             body.classList.add('sidebar-active');
-            if (overlay) overlay.style.zIndex = 1000; // Asegura que esté detrás del filtro
-            
-            // Ocultar el chatbot cuando se abre el sidebar de filtros
-            if (chatbotContainer) {
-                chatbotContainer.style.display = 'none';
-            }
+            // avoid changing overlay z-index here
+
         });
     }
     if (closeFilterBtn) {
@@ -527,57 +314,228 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // --- Lógica para el Buscador Integrado ---
+    // --- Lógica para el Buscador (usar sidebar en todas las páginas) ---
     const searchContainer = document.getElementById('search-container');
     const searchBtn = document.getElementById('search-btn');
     const searchInput = document.getElementById('search-input');
 
-    function performSearch(query) {
-        const searchTerm = query.toLowerCase();
-        const searchMap = {
-            'remera': '../remeras/remeras.html', 'remeras': '../remeras/remeras.html',
-            'pantalon': '../pantalones/pantalones.html', 'pantalones': '../pantalones/pantalones.html',
-            'buzo': '../buzos/buzos.html', 'buzos': '../buzos/buzos.html',
-            'camisa': '../camisas/camisas.html', 'camisas': '../camisas/camisas.html',
-            'campera': '../camperas/camperas.html', 'camperas': '../camperas/camperas.html',
-            'jacket': '../camperas/camperas.html', 'hoodie': '../buzos/buzos.html',
-            'sudadera': '../buzos/buzos.html', 'polo': '../camisas/camisas.html',
-            'shirt': '../remeras/remeras.html', 'jean': '../pantalones/pantalones.html',
-            'jeans': '../pantalones/pantalones.html', 'jogger': '../pantalones/pantalones.html',
-            'home': '../home/home.html', 'inicio': '../home/home.html'
-        };
+    // Si el sidebar de búsqueda no está presente en el DOM, lo inyectamos para que esté disponible en todas las páginas
+        if (!document.getElementById('sidebar-search')) {
+                const sidebarHtml = `
+                <div id="sidebar-search" class="sidebar search-sidebar">
+                    <button id="search-close-btn" class="close-btn">&times;</button>
+                    <div class="search-top">
+                        <div class="search-top-left">
+                            <button id="search-btn-icon" class="header-icon search-icon" aria-label="Buscar"><i class="fas fa-search"></i></button>
+                            <input id="search-sidebar-input" type="text" class="search-top-input" placeholder="¿Qué busca?">
+                        </div>
+                    </div>
+                    <hr class="search-divider">
+                    <div class="sidebar-search-content">
+                        <div id="search-results" class="search-results"></div>
+                        <div id="search-suggestions" class="search-suggestions"></div>
+                    </div>
+                </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', sidebarHtml);
+        }
 
-        if (searchMap[searchTerm]) {
-            window.location.href = searchMap[searchTerm];
+    // Referencias a elementos del sidebar (ya existentes o recién inyectados)
+    const sidebarSearch = document.getElementById('sidebar-search');
+    const searchCloseBtn = document.getElementById('search-close-btn');
+    const searchSidebarInput = document.getElementById('search-sidebar-input');
+    const searchSidebarGo = document.getElementById('search-sidebar-go');
+    const searchResultsContainer = document.getElementById('search-results');
+    const searchSuggestionsContainer = document.getElementById('search-suggestions');
+
+    // Catálogo hardcodeado y mapa de búsqueda (compartido con home)
+    const catalog = [
+      { name: 'Campera Ecocuero', url: '../productos/hombre/camperas/campera-ecocuero.html', img: '../assets/images/pages/camperas/Campera Ecocuero 1.png', price: '$70.000' },
+      { name: 'Top Pegaso Bordo', url: '../productos/mujer/remeras-tops/top-pegaso-bordo.html', img: '../assets/images/pages/Mremeras/4 Top Pegaso Bordo a.png', price: '$105.000' },
+      { name: 'Pollera Samer', url: '../productos/mujer/polleras-shorts/pollera-samer.html', img: '../assets/images/pages/Mpolleras/1 Pollera Samer a.png', price: '$65.000' },
+      { name: 'Vestido Italo', url: '../productos/mujer/vestidos-monos/vestido-italo.html', img: '../assets/images/pages/Mvestidos/6 Vestido Italo a.png', price: '$138.000' }
+    ];
+
+    // Mapeo lógico a rutas dentro de la carpeta del sitio. Usamos rutas relativas
+    // a la raíz del proyecto (a partir de la carpeta RecirculateLoe) y las
+    // resolvemos dinámicamente en tiempo de ejecución para que funcionen desde
+    // cualquier subdirectorio (home, páginas de categoría, productos, etc.).
+    const searchMap = {
+      'remera': 'pages/remeras/remeras.html', 'remeras': 'pages/remeras/remeras.html',
+      'pantalon': 'pages/pantalones/pantalones.html', 'pantalones': 'pages/pantalones/pantalones.html',
+      'buzo': 'pages/buzos/buzos.html', 'buzos': 'pages/buzos/buzos.html',
+      'camisa': 'pages/camisas/camisas.html', 'camisas': 'pages/camisas/camisas.html',
+      'campera': 'pages/camperas/camperas.html', 'camperas': 'pages/camperas/camperas.html',
+      'jacket': 'pages/camperas/camperas.html', 'hoodie': 'pages/buzos/buzos.html',
+      'sudadera': 'pages/buzos/buzos.html', 'polo': 'pages/camisas/camisas.html',
+      'shirt': 'pages/remeras/remeras.html', 'jean': 'pages/pantalones/pantalones.html',
+      'jeans': 'pages/pantalones/pantalones.html', 'jogger': 'pages/pantalones/pantalones.html',
+      'home': 'home/home.html', 'inicio': 'home/home.html'
+    };
+
+    // Construye una URL absoluta basada en la carpeta "RecirculateLoe" encontrada
+    // en el `location.pathname`. Esto asegura que `pages/...` se resuelva al
+    // mismo lugar sin importar si estamos en `home/`, `pages/...` o `productos/...`.
+    function resolveMappedUrl(mappedPath) {
+        try {
+            // Si ya es absoluta desde la raíz, devolverla (soporta '/foo/bar')
+            if (mappedPath.startsWith('/') || mappedPath.startsWith('http')) return mappedPath;
+            const segments = window.location.pathname.split('/');
+            const idx = segments.lastIndexOf('RecirculateLoe');
+            if (idx !== -1) {
+                const base = segments.slice(0, idx + 1).join('/'); // e.g. '/.../RecirculateLoe'
+                return window.location.origin + base + '/' + mappedPath.replace(/^\/+/, '');
+            }
+            // Fallback sencillo: construir a partir del origin
+            return window.location.origin + '/' + mappedPath.replace(/^\/+/, '');
+        } catch (err) {
+            console.warn('resolveMappedUrl error:', err);
+            return mappedPath; // último recurso
+        }
+    }
+
+    // Funciones para mostrar/ocultar y realizar búsquedas en el sidebar
+    function openSearchSidebar() {
+        // Cerrar otros sidebars primero
+        closeAnyOpenSidebar();
+        if (sidebarSearch) {
+            sidebarSearch.classList.add('open');
+            body.classList.add('sidebar-active');
+            if (searchResultsContainer) { searchResultsContainer.innerHTML = ''; searchResultsContainer.classList.remove('visible'); }
+            if (searchSuggestionsContainer) { searchSuggestionsContainer.innerHTML = ''; searchSuggestionsContainer.classList.remove('visible'); }
+            if (searchSidebarInput) { searchSidebarInput.value = ''; setTimeout(() => searchSidebarInput.focus(), 50); }
+            // avoid changing overlay z-index here
+        }
+    }
+
+    function closeSearchSidebar() {
+        if (sidebarSearch) {
+            sidebarSearch.classList.remove('open');
+            body.classList.remove('sidebar-active');
+            // avoid changing overlay z-index here
+        }
+    }
+
+    function renderSearchResults(results) {
+        if (!searchResultsContainer) return;
+        if (results.length === 0) {
+            searchResultsContainer.innerHTML = `<p class="no-results">No se encontraron productos.</p>`;
+            searchResultsContainer.classList.add('visible');
+            if (searchSuggestionsContainer) searchSuggestionsContainer.classList.remove('visible');
             return;
         }
+        searchResultsContainer.innerHTML = '';
+        results.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'search-result-card';
+            card.innerHTML = `
+                <img src="${item.img}" alt="${item.name}" class="search-thumb">
+                <div class="search-info">
+                  <strong class="search-name">${item.name}</strong>
+                  <span class="search-price">${item.price}</span>
+                </div>
+            `;
+            card.addEventListener('click', () => { window.location.href = item.url; });
+            searchResultsContainer.appendChild(card);
+        });
+        searchResultsContainer.classList.add('visible');
+        if (searchSuggestionsContainer) searchSuggestionsContainer.classList.remove('visible');
+    }
+
+    function performSidebarSearch(query) {
+        const searchTerm = query.toLowerCase();
+        const results = catalog.filter(item => item.name.toLowerCase().includes(searchTerm));
+        if (results.length > 0) {
+            renderSearchResults(results);
+            openSearchSidebar();
+            return;
+        }
+        // fallback a mapa de categorías
         for (const [key, url] of Object.entries(searchMap)) {
             if (key.includes(searchTerm) || searchTerm.includes(key)) {
-                window.location.href = url;
+                window.location.href = resolveMappedUrl(url);
                 return;
             }
         }
-        alert(`No se encontraron resultados para "${query}". Intenta buscar: remeras, pantalones, buzos, camisas o camperas.`);
+        // si no hay nada
+        if (searchResultsContainer) {
+            searchResultsContainer.innerHTML = `<p class="no-results">No se encontraron resultados para "${query}".</p>`;
+            searchResultsContainer.classList.add('visible');
+            openSearchSidebar();
+        } else {
+            alert(`No se encontraron resultados para "${query}".`);
+        }
     }
 
-    if (searchBtn) {
-        searchBtn.addEventListener('click', () => {
-            const isExpanded = searchContainer.classList.contains('active');
-            if (isExpanded && searchInput.value !== '') {
-                performSearch(searchInput.value.trim());
-            } else {
-                searchContainer.classList.toggle('active');
-                if (searchContainer.classList.contains('active')) {
-                    searchInput.focus();
-                }
+    // Exponer las funciones principales al scope global para que otras páginas
+    // (por ejemplo `home/home.js`) puedan reutilizar el mismo comportamiento
+    // de búsqueda / sidebar sin duplicar código.
+    window.openSearchSidebar = openSearchSidebar;
+    window.closeSearchSidebar = closeSearchSidebar;
+    window.performSidebarSearch = performSidebarSearch;
+
+    // Función global para ir al carrito usando el resolvedor de rutas para
+    // asegurar que la URL siempre apunte a la copia correcta del sitio.
+    window.goToCart = function() {
+        try {
+            window.location.href = resolveMappedUrl('carrito/carrito.html');
+        } catch (err) {
+            // Fallback simple
+            window.location.href = '/carrito/carrito.html';
+        }
+    };
+
+    // Normalizar enlaces estáticos que apuntan al carrito en el DOM para evitar
+    // errores 404 cuando el sitio se sirve desde una subcarpeta diferente.
+    document.querySelectorAll('a[href]').forEach(a => {
+        try {
+            const href = a.getAttribute('href');
+            if (!href) return;
+            // Si el enlace apunta a cualquier ruta que contenga 'carrito', lo
+            // resolvemos a la URL correcta en tiempo de ejecución.
+            if (href.includes('carrito')) {
+                a.href = resolveMappedUrl('carrito/carrito.html');
             }
-        });
+        } catch (err) { /* ignore malformed hrefs */ }
+    });
+
+    // Interceptar botones/links con texto "Comprar Ahora" para usar la URL
+    // resuelta por `goToCart()` y así evitar rutas relativas rotas.
+    document.querySelectorAll('button, a').forEach(el => {
+        try {
+            const txt = (el.textContent || '').trim().toLowerCase();
+            if (txt.includes('comprar ahora') || txt === 'comprar ahora') {
+                el.addEventListener('click', (ev) => {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    // Si antes añadimos el producto al localStorage, ya está.
+                    // Redirigimos al carrito usando la URL resuelta.
+                    if (typeof window.goToCart === 'function') window.goToCart();
+                });
+            }
+        } catch (err) { /* ignore */ }
+    });
+
+    // Event listeners: reemplazar el comportamiento inline por abrir el sidebar
+    if (searchBtn) {
+        searchBtn.addEventListener('click', (e) => { e.stopPropagation(); openSearchSidebar(); });
     }
 
     if (searchInput) {
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && searchInput.value.trim() !== '') {
-                performSearch(searchInput.value.trim());
+                performSidebarSearch(searchInput.value.trim());
+            }
+        });
+    }
+
+    // listeners para elementos del sidebar
+    if (searchCloseBtn) searchCloseBtn.addEventListener('click', closeSearchSidebar);
+    // No hay botón "Buscar" en el sidebar: la búsqueda se ejecuta al presionar Enter en los inputs
+    if (searchSidebarInput) {
+        searchSidebarInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && searchSidebarInput.value.trim() !== '') {
+                performSidebarSearch(searchSidebarInput.value.trim());
             }
         });
     }
@@ -830,29 +788,5 @@ document.addEventListener("DOMContentLoaded", function() {
             addBtn.style.cursor = 'pointer';
         }
     });
-
-    // --- Lógica para el Chatbot ---
-    const chatbotToggle = document.getElementById('chatbot-toggle');
-    const chatbotWindow = document.getElementById('chatbot-window');
-    const chatbotClose = document.getElementById('chatbot-close');
-      
-    if (chatbotContainer) { 
-        if (chatbotToggle && chatbotWindow) {
-            chatbotToggle.addEventListener('click', () => {
-                chatbotWindow.classList.toggle('active');
-            });
-        }
-        if (chatbotClose && chatbotWindow) {
-            chatbotClose.addEventListener('click', () => {
-                chatbotWindow.classList.remove('active');
-            });
-        }
-        // Cerrar al hacer clic fuera del chatbot
-        window.addEventListener('click', (event) => {
-            if (chatbotWindow && chatbotWindow.classList.contains('active') && !chatbotContainer.contains(event.target)) {
-                 chatbotWindow.classList.remove('active');
-            }
-        });
-    }
 
 }); // Fin del DOMContentLoaded

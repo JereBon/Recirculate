@@ -149,58 +149,8 @@
         </div>
     </div>
 
-    <section class="product-grid category-grid" id="productos-container">
-      <!-- Los productos se cargan dinámicamente desde la API -->
-    </section>
-  </main>
-
-<div class="chatbot-container">
-  <button id="chatbot-toggle" class="chatbot-bubble">
-    <i class="fas fa-comment-dots"></i>
-  </button>
-
-  <div id="chatbot-window" class="chatbot-window">
-    <div class="chatbot-header">
-      <span>Asistente Virtual</span>
-      <button id="chatbot-close" class="chatbot-close-btn">&times;</button>
-    </div>
-    <div class="chatbot-body">
-      <div id="chatbot-messages" class="chatbot-messages">
-        <div class="chatbot-message bot-message">
-          ¡Hola! ¿En qué puedo ayudarte hoy?
-        </div>
-      </div>
-    </div>
-    <div class="chatbot-footer">
-      <input type="text" id="chatbot-input" class="chatbot-input" placeholder="Escribe tu mensaje...">
-      <button id="chatbot-send" class="chatbot-send-btn">
-        <i class="fas fa-paper-plane"></i>
-      </button>
-    </div>
-  </div>
-</div>
-
-<script src="../../assets/utils.js"></script>
-<script src="../../assets/pages.js"></script>
-
-</body>
-</html>
-
-<!--
-  Página de Camisas - RecirculateLoe
-  
-  Esta página muestra el catálogo de camisas disponibles con las siguientes funcionalidades:
-  - Grid responsivo de productos
-  - Filtros por precio, descuento y fecha
-  - Funcionalidad de añadir al carrito
-  - Chatbot integrado para asistencia al cliente
-  
-  Los productos se cargan dinámicamente desde la API del backend
-  utilizando el sistema de filtrado por género implementado.
--->
-
-    <section class="product-grid category-grid" id="productos-container">
-      <!-- Los productos se cargan dinámicamente desde la API -->
+    <section class="product-grid category-grid">
+      <div class="product-card">
         <div class="product-images">
           <img src="../../assets/images/pages/camisas/Camisa Mist Negra 1.png" alt="Camisa 1" class="main-image">
           <img src="../../assets/images/pages/camisas/Camisa Mist Negra 2.png" alt="Camisa 1 Hover" class="hover-image">
@@ -259,28 +209,6 @@
     </section>
   </main>
 
-<div class="chatbot-container">
-  <button id="chatbot-toggle" class="chatbot-bubble">
-    <i class="fas fa-comment-dots"></i>
-  </button>
-
-  <div id="chatbot-window" class="chatbot-window">
-    <div class="chatbot-header">
-      <span>Asistente Virtual</span>
-      <button id="chatbot-close" class="chatbot-close-btn">&times;</button>
-    </div>
-    <div class="chatbot-body">
-      <div class="chat-message bot">
-        Hola 👋 ¿En qué puedo ayudarte hoy?
-      </div>
-      </div>
-    <div class="chatbot-footer">
-      <input type="text" placeholder="Escribe tu mensaje...">
-      <button><i class="fas fa-paper-plane"></i></button>
-    </div>
-  </div>
-</div>
-
   <footer class="public-footer">
     <div class="footer-container">
       <div class="footer-column">
@@ -322,7 +250,7 @@
     </div>
   </footer>
   
-  <script src="../../assets/user-menu.js"></script>
   <script src="../../assets/pages.js"></script>
+  <script src='https://cdn.jotfor.ms/agent/embedjs/019a2cafb84e7b99aae78f82f10fd7c58f53/embed.js'></script>
 </body>
 </html>

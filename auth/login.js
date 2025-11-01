@@ -1,19 +1,14 @@
 // login.js - Funcionalidad del formulario de login
 const API_BASE_URL = 'https://recirculate-api.onrender.com/api';
 
-// Verificar si ya está logueado (pero NO redirigir automáticamente)
+// Verificar si ya está logueado
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     if (token) {
-        // Verificar token válido pero no redirigir automáticamente
+        // Verificar token válido
         verifyToken().then(isValid => {
             if (isValid) {
-                // Mostrar mensaje opcional de que ya está logueado
-                showMessage('Ya tienes una sesión activa', 'info');
-            } else {
-                // Limpiar token inválido
-                localStorage.removeItem('authToken');
-                localStorage.removeItem('userData');
+                window.location.href = '../index.html';
             }
         });
     }
@@ -56,30 +51,12 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             localStorage.setItem('authToken', data.data.token);
             localStorage.setItem('userData', JSON.stringify(data.data.user));
             
-            // Lista de correos autorizados para el panel de administración
-            const adminEmails = [
-                'axel@recirculate.com',
-                'nicolas@recirculate.com', 
-                'loe@recirculate.com',
-                'lucho@recirculate.com',
-                'gere@recirculate.com',
-                'pipo@recirculate.com'
-            ];
+            showMessage('¡Login exitoso! Redirigiendo...', 'success');
             
-            const userEmail = data.data.user.email.toLowerCase();
-            const isAuthorizedAdmin = adminEmails.includes(userEmail);
-            
-            if (isAuthorizedAdmin) {
-                showMessage('¡Login exitoso! Accediendo al panel de administración...', 'success');
-                setTimeout(() => {
-                    window.location.href = '../index.html';
-                }, 1000);
-            } else {
-                showMessage('¡Login exitoso! Redirigiendo a la tienda...', 'success');
-                setTimeout(() => {
-                    window.location.href = '../RecirculateLoe/home/home.html';
-                }, 1000);
-            }
+            // Redirigir después de 1 segundo
+            setTimeout(() => {
+                window.location.href = '../index.html';
+            }, 1000);
             
         } else {
             showMessage(data.message || 'Error en el login', 'error');
@@ -93,6 +70,53 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         loading.style.display = 'none';
     }
 });
+
+/**
+* 4. FUNCIÓN CALLBACK DE GOOGLE
+* Esta función es llamada por el script de Google cuando el usuario inicia sesión.
+*/
+async function handleGoogleLogin(response) {
+    const googleToken = response.credential; // Este es el ID Token de Google
+    
+    // Muestra "Iniciando sesión..."
+    const loading = document.getElementById('loading');
+    const messageDiv = document.getElementById('message');
+    if (loading) loading.style.display = 'block';
+    
+    try {
+        // Envía el token de Google a tu backend para verificación
+        const res = await fetch(`${API_BASE_URL}/auth/google-signin`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ token: googleToken })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            // ¡Éxito! El backend verificó a Google y te dio su PROPIO token
+            localStorage.setItem('authToken', data.data.token);
+            localStorage.setItem('userData', JSON.stringify(data.data.user));
+            
+            showMessage('¡Login exitoso! Redirigiendo...', 'success');
+            
+            setTimeout(() => {
+                window.location.href = '../index.html'; // Redirige al panel de admin
+            }, 1000);
+            
+        } else {
+            showMessage(data.message || 'Error en el login con Google', 'error');
+        }
+
+    } catch (error) {
+        console.error('Error en Google Sign-In:', error);
+        showMessage('Error de conexión. Intenta nuevamente.', 'error');
+    } finally {
+        if (loading) loading.style.display = 'none';
+    }
+}
 
 // Función para mostrar mensajes
 function showMessage(message, type) {

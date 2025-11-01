@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let allProductos = []; // Cache de todos los productos
   let searchTerm = ''; // Término de búsqueda actual
-  let filtros = { nombre: '', categoria: '', marca: '', genero: '', precioDesde: '', precioHasta: '', stockDesde: '', stockHasta: '', fechaDesde: '', fechaHasta: '' };
+  let filtros = { nombre: '', categoria: '', marca: '', precioDesde: '', precioHasta: '', stockDesde: '', stockHasta: '', fechaDesde: '', fechaHasta: '' };
 
   // Función asíncrona para obtener productos desde la API
   async function fetchProductos() {
@@ -52,18 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (filtros.marca) {
       filtered = filtered.filter(p => p.marca && p.marca.toLowerCase().includes(filtros.marca.toLowerCase()));
     }
-
-    // Simple filtering by genero only
-    if (filtros.genero) {
-      const generoFiltro = filtros.genero.toLowerCase();
-      filtered = filtered.filter(p => p.genero && p.genero.toLowerCase() === generoFiltro);
-    }
-    if (filtros.genero && filtros.categoria) {
-      const generoFiltro = filtros.genero.toLowerCase();
-      const categoriaFiltro = filtros.categoria.toLowerCase();
-      filtered = filtered.filter(p => p.genero && p.categoria && p.genero.toLowerCase() === generoFiltro && p.categoria.toLowerCase() === categoriaFiltro);
-    }
-
+    // Proveedor no existe en PostgreSQL - removido
     if (filtros.precioDesde) {
       filtered = filtered.filter(p => p.precio != null && p.precio >= parseFloat(filtros.precioDesde));
     }
@@ -82,6 +71,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (filtros.fechaHasta) {
       filtered = filtered.filter(p => p.fecha_creacion && new Date(p.fecha_creacion) <= new Date(filtros.fechaHasta));
     }
+    // Campo activo no existe en PostgreSQL - removido
+
     return filtered;
   }
 
@@ -96,93 +87,68 @@ document.addEventListener('DOMContentLoaded', async () => {
     tabla.innerHTML = '';
     if (!productosFiltrados.length) {
       // Mensaje si no hay productos o ninguno coincide con búsqueda
-      const colspan = 18; // ahora hay 18 columnas (se agregó 'Género' y 'Descuento')
+      const colspan = searchTerm.trim() ? 16 : 16;
       tabla.innerHTML = `<tr><td colspan="${colspan}" style="text-align:center; color:#888;">${searchTerm.trim() ? 'No se encontraron productos que coincidan con la búsqueda' : 'No hay productos cargados'}</td></tr>`;
       return;
     }
     // Detecta si es mobile para layout diferente
     const isMobile = window.matchMedia('(max-width: 600px)').matches;
     // Crea fila por cada producto con todos los atributos
-      productosFiltrados.forEach((prod, idx) => {
-        const idVisual = idx + 1;
-        if (isMobile) {
-          const trProd = document.createElement('tr');
-          trProd.className = 'producto-num-mobile';
-          trProd.innerHTML = `<td colspan="18" class="producto-num-mobile-td">Producto #${idVisual}</td>`;
-          tabla.appendChild(trProd);
-        }
-        const tr = document.createElement('tr');
-        // --- IMAGEN CON HOVER ---
-        let imagenHtml = '';
-        if (prod.imagen_url) {
-          // Si hay imagen_hover, agrega eventos para cambiar la imagen al hacer hover
-          const hoverImg = prod.imagen_hover || prod.imagen_espalda_url;
-          if (hoverImg) {
-            imagenHtml = `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" onmouseover="this.src='${hoverImg}'" onmouseout="this.src='${prod.imagen_url}'" />`;
-          } else {
-            imagenHtml = `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" />`;
-          }
-        }
-        tr.innerHTML = `
-          <td data-label="Imagen">
-            ${imagenHtml}
-          </td>
-          <td data-label="Nombre">${prod.nombre || ''}</td>
-          <td data-label="Descripción">${prod.descripcion || ''}</td>
-          <td data-label="Categoría">${prod.categoria || ''}</td>
-          <td data-label="Talle">${prod.talle || ''}</td>
-          <td data-label="Color">${prod.color || ''}</td>
-          <td data-label="Género">${prod.genero || ''}</td>
-          <td data-label="Marca">${prod.marca || ''}</td>
-          <td data-label="Estado">${prod.estado || ''}</td>
-          <td data-label="Precio">${prod.precio != null ? '$' + prod.precio : ''}</td>
-          <td data-label="Descuento">${prod.descuento ? prod.descuento + '%' : '0%'}</td>
-          <td data-label="Moneda">ARS</td>
-          <td data-label="Proveedor">${prod.proveedor || '-'} </td>
-          <td data-label="Stock">${prod.stock != null ? prod.stock : ''}</td>
-          <td data-label="Activo">Sí</td>
-          <td data-label="Creado">${prod.fecha_creacion ? new Date(prod.fecha_creacion).toLocaleString() : ''}</td>
-          <td data-label="Actualizado">${prod.fecha_actualizacion ? new Date(prod.fecha_actualizacion).toLocaleString() : ''}</td>
-          <td data-label="Acciones">
-            <button data-edit="${prod.id}" class="primary">Editar</button>
-            <button data-delete="${prod.id}" style="background:#e74c3c; color:#fff; margin-left:8px;">Eliminar</button>
-          </td>
-        `;
-        tabla.appendChild(tr);
-      });
+    productosFiltrados.forEach((prod, idx) => {
+      const idVisual = idx + 1;
+      if (isMobile) {
+        // Agrega fila extra para mobile con número de producto
+        const trProd = document.createElement('tr');
+        trProd.className = 'producto-num-mobile';
+        trProd.innerHTML = `<td colspan="16" class="producto-num-mobile-td">Producto #${idVisual}</td>`;
+        tabla.appendChild(trProd);
+      }
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td data-label="Imagen">
+          ${prod.imagen_url ? `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" />` : ''}
+        </td>
+        <td data-label="Nombre">${prod.nombre || ''}</td>
+        <td data-label="Descripción">${prod.descripcion || ''}</td>
+        <td data-label="Categoría">${prod.categoria || ''}</td>
+        <td data-label="Talle">${prod.talle || ''}</td>
+        <td data-label="Color">${prod.color || ''}</td>
+        <td data-label="Marca">${prod.marca || ''}</td>
+        <td data-label="Estado">${prod.estado || ''}</td>
+        <td data-label="Precio">${prod.precio != null ? '$' + prod.precio : ''}</td>
+        <td data-label="Moneda">ARS</td>
+        <td data-label="Proveedor">${prod.proveedor || '-'}</td>
+        <td data-label="Stock">${prod.stock != null ? prod.stock : ''}</td>
+        <td data-label="Activo">Sí</td>
+        <td data-label="Creado">${prod.fecha_creacion ? new Date(prod.fecha_creacion).toLocaleString() : ''}</td>
+        <td data-label="Actualizado">${prod.fecha_actualizacion ? new Date(prod.fecha_actualizacion).toLocaleString() : ''}</td>
+        <td data-label="Acciones">
+          <button data-edit="${prod.id}" class="primary">Editar</button>
+          <button data-delete="${prod.id}" style="background:#e74c3c; color:#fff; margin-left:8px;">Eliminar</button>
+        </td>
+      `;
+      tabla.appendChild(tr);
+    });
   }
 
   // Evento click en tabla para manejar botones de editar y eliminar
   tabla.addEventListener('click', async (e) => {
     if (e.target.dataset.edit !== undefined) {
       // Redirige a página de edición con ID del producto
-  const id = e.target.dataset.edit;
-  // Redirige al formulario de edición con el id del producto
-  window.location.href = `registrar-producto.html?id=${id}`;
+      const id = e.target.dataset.edit;
+      window.location.href = `productos.html?id=${id}`;
     } else if (e.target.dataset.delete !== undefined) {
       // Confirma y elimina producto, luego recarga tabla
       const id = e.target.dataset.delete;
       if (confirm('¿Seguro que deseas eliminar este producto?')) {
         try {
-          const token = localStorage.getItem('authToken');
-          const res = await fetch(`${API_URL}/${id}`, {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-          if (!res.ok) {
-            const data = await res.json();
-            alert('Error al eliminar producto: ' + (data.message || res.status));
-            return;
-          }
+          await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
           allProductos = allProductos.filter(p => p.id !== id); // Actualiza cache
           cargarProductos(); // Refresca tabla
         } catch (err) {
           alert('Error al eliminar producto');
         }
       }
-      // Eliminada lógica del botón Ver
     }
   });
 
@@ -248,8 +214,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Redirigir a página de productos (formulario original)
   if (btnAgregarProducto) {
     btnAgregarProducto.addEventListener('click', () => {
-      // Llevar al formulario de registro de producto
-      window.location.href = 'registrar-producto.html';
+      window.location.href = 'productos.html';
     });
   }
 

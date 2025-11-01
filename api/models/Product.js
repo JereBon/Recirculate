@@ -61,32 +61,23 @@ class Product {
         stock = 0,
         estado = 'Disponible',
         imagen_url,
-        imagen_hover,
-        imagen_espalda_url,
         usuario_id,
-        proveedor,
-        genero = 'unisex',
-        descuento = 0
+        proveedor
       } = productData;
 
-      // Primero crear el producto
       const query = `
         INSERT INTO productos (
           nombre, descripcion, categoria, talle, color, marca, 
-          precio, stock, estado, imagen_url, imagen_hover, imagen_espalda_url, usuario_id, proveedor, genero, descuento
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+          precio, stock, estado, imagen_url, usuario_id, proveedor
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
         RETURNING *
       `;
-      // Log para debug: mostrar toda la fila enviada
-      console.log('DEBUG fila enviada:', {
-        nombre, descripcion, categoria, talle, color, marca,
-        precio, stock, estado, imagen_url, imagen_hover, imagen_espalda_url, usuario_id, proveedor, genero, descuento
-      });
 
       const values = [
         nombre, descripcion, categoria, talle, color, marca,
-        precio, stock, estado, imagen_url, imagen_hover, imagen_espalda_url, usuario_id, proveedor, genero, descuento
+        precio, stock, estado, imagen_url, usuario_id, proveedor
       ];
+
       const result = await client.query(query, values);
       return result.rows[0];
     } catch (error) {
@@ -109,25 +100,21 @@ class Product {
         stock,
         estado,
         imagen_url,
-        imagen_hover,
-        imagen_espalda_url,
-        proveedor,
-        genero,
-        descuento
+        proveedor
       } = productData;
 
       const query = `
         UPDATE productos 
         SET nombre = $2, descripcion = $3, categoria = $4, talle = $5, 
             color = $6, marca = $7, precio = $8, stock = $9, estado = $10, 
-            imagen_url = $11, imagen_hover = $12, imagen_espalda_url = $13, proveedor = $14, genero = $15, descuento = $16, fecha_actualizacion = CURRENT_TIMESTAMP
+            imagen_url = $11, proveedor = $12, fecha_actualizacion = CURRENT_TIMESTAMP
         WHERE id = $1
         RETURNING *
       `;
 
       const values = [
         id, nombre, descripcion, categoria, talle, color, marca,
-        precio, stock, estado, imagen_url, imagen_hover, imagen_espalda_url, proveedor, genero, descuento
+        precio, stock, estado, imagen_url, proveedor
       ];
 
       const result = await client.query(query, values);
@@ -165,64 +152,6 @@ class Product {
       return result.rows[0];
     } catch (error) {
       console.error('Error eliminando producto:', error);
-      throw error;
-    }
-  }
-
-  // Obtener productos destacados (últimos 5)
-  static async getDestacados() {
-    try {
-      const query = `
-        SELECT * FROM productos 
-        WHERE es_destacado = true 
-        ORDER BY fecha_creacion DESC 
-        LIMIT 5
-      `;
-      const result = await client.query(query);
-      return result.rows;
-    } catch (error) {
-      console.error('Error obteniendo productos destacados:', error);
-      throw error;
-    }
-  }
-
-  // Obtener productos por género
-  static async getByGenero(genero) {
-    try {
-      const query = `
-        SELECT * FROM productos 
-        WHERE genero = $1 OR genero = 'unisex'
-        ORDER BY fecha_creacion DESC
-      `;
-      const result = await client.query(query, [genero]);
-      return result.rows;
-    } catch (error) {
-      console.error('Error obteniendo productos por género:', error);
-      throw error;
-    }
-  }
-
-  // Sistema de rotación de destacados (últimos 5 productos)
-  static async updateDestacados() {
-    try {
-      // Primero, quitar la marca de destacado de todos los productos
-      await client.query('UPDATE productos SET es_destacado = false');
-
-      // Marcar los últimos 5 productos como destacados
-      const query = `
-        UPDATE productos 
-        SET es_destacado = true 
-        WHERE id IN (
-          SELECT id FROM productos 
-          ORDER BY fecha_creacion DESC 
-          LIMIT 5
-        )
-      `;
-      await client.query(query);
-
-      console.log('✅ Sistema de destacados actualizado - últimos 5 productos marcados');
-    } catch (error) {
-      console.error('Error actualizando destacados:', error);
       throw error;
     }
   }

@@ -2,45 +2,6 @@ document.addEventListener("DOMContentLoaded", function() {
   // --- Cargar contador del carrito al inicio ---
   actualizarContadorCarrito();
 
-  // --- Cargar productos destacados dinámicamente ---
-  cargarProductosDestacados();
-
-  // --- LÓGICA PARA EL CHATBOT FLOTANTE ---
-  const chatbotContainer = document.querySelector('.chatbot-container');
-  const chatbotToggle = document.getElementById('chatbot-toggle');
-  const chatbotWindow = document.getElementById('chatbot-window');
-  const chatbotClose = document.getElementById('chatbot-close');
-
-  // Ocultar chatbot en la página de login (si este archivo se usara allí)
-  // const isLoginPage = window.location.pathname.includes('login.html');
-  // if (isLoginPage && chatbotContainer) {
-  //   chatbotContainer.style.display = 'none';
-  // } else if (chatbotContainer) {
-    
-  if (chatbotContainer) { // Asegura que el contenedor exista antes de añadir listeners
-      // Mostrar/Ocultar ventana del chat al hacer clic en el globito
-      if (chatbotToggle && chatbotWindow) {
-          chatbotToggle.addEventListener('click', () => {
-              chatbotWindow.classList.toggle('active');
-          });
-      }
-      
-      // Cerrar ventana del chat al hacer clic en la 'X'
-      if (chatbotClose && chatbotWindow) {
-          chatbotClose.addEventListener('click', () => {
-              chatbotWindow.classList.remove('active');
-          });
-      }
-
-      window.addEventListener('click', (event) => {
-         if (chatbotWindow && chatbotWindow.classList.contains('active') && 
-             !chatbotContainer.contains(event.target)) {
-           chatbotWindow.classList.remove('active');
-         }
-       });
-  }
-  // --- FIN LÓGICA CHATBOT ---
-
   // --- Scroll suave al hacer click en el logo (cuando estás en el home) ---
   const logo = document.querySelector('.header-logo');
   
@@ -152,77 +113,10 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
-  // --- Lógica para el Buscador Integrado ---
-  const searchContainer = document.getElementById('search-container');
-  const searchBtn = document.getElementById('search-btn');
-  const searchInput = document.getElementById('search-input');
-
-  if (searchBtn) {
-    searchBtn.addEventListener('click', () => {
-      const isExpanded = searchContainer.classList.contains('active');
-      if (isExpanded && searchInput.value !== '') {
-        performSearch(searchInput.value.trim());
-      } else {
-        searchContainer.classList.toggle('active');
-        if (searchContainer.classList.contains('active')) {
-          searchInput.focus();
-        }
-      }
-    });
-  }
-
-  // Buscar al presionar Enter
-  if (searchInput) {
-    searchInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && searchInput.value.trim() !== '') {
-        performSearch(searchInput.value.trim());
-      }
-    });
-  }
-
-  // Función para realizar la búsqueda
-  function performSearch(query) {
-    const searchTerm = query.toLowerCase();
-    
-    // Mapeo de términos de búsqueda a páginas
-    const searchMap = {
-      'remera': '../pages/remeras/remeras.html',
-      'remeras': '../pages/remeras/remeras.html',
-      'pantalon': '../pages/pantalones/pantalones.html',
-      'pantalones': '../pages/pantalones/pantalones.html',
-      'buzo': '../pages/buzos/buzos.html',
-      'buzos': '../pages/buzos/buzos.html',
-      'camisa': '../pages/camisas/camisas.html',
-      'camisas': '../pages/camisas/camisas.html',
-      'campera': '../pages/camperas/camperas.html',
-      'camperas': '../pages/camperas/camperas.html',
-      'jacket': '../pages/camperas/camperas.html',
-      'hoodie': '../pages/buzos/buzos.html',
-      'sudadera': '../pages/buzos/buzos.html',
-      'polo': '../pages/camisas/camisas.html',
-      'shirt': '../pages/remeras/remeras.html',
-      'jean': '../pages/pantalones/pantalones.html',
-      'jeans': '../pages/pantalones/pantalones.html',
-      'jogger': '../pages/pantalones/pantalones.html'
-    };
-
-    // Buscar coincidencia exacta
-    if (searchMap[searchTerm]) {
-      window.location.href = searchMap[searchTerm];
-      return;
-    }
-
-    // Buscar coincidencias parciales
-    for (const [key, url] of Object.entries(searchMap)) {
-      if (key.includes(searchTerm) || searchTerm.includes(key)) {
-        window.location.href = url;
-        return;
-      }
-    }
-
-    // Si no encuentra nada, mostrar mensaje
-    alert(`No se encontraron resultados para "${query}". Intenta buscar: remeras, pantalones, buzos, camisas o camperas.`);
-  }
+  // --- Buscador: delegar al comportamiento central definido en assets/pages.js ---
+  // Eliminamos la implementación duplicada para usar la única fuente de la verdad.
+  // Asegurarnos de que el overlay use la función global de cierre si está disponible.
+  if (overlay) overlay.addEventListener('click', () => { closeSidebar(); if (window.closeSearchSidebar) window.closeSearchSidebar(); });
   
   // --- Lógica para el Contador del Carrito ---
   const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
@@ -301,157 +195,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
   // ============================================
-// FUNCIÓN PARA CARGAR PRODUCTOS DESTACADOS DINÁMICAMENTE
-// ============================================
-
-async function cargarProductosDestacados() {
-  const API_URL = "https://recirculate-api.onrender.com/api/productos/destacados";
-  const carruselContainer = document.querySelector('.carrusel-container');
-  
-  if (!carruselContainer) return;
-  
-  try {
-    const response = await fetch(API_URL);
-    if (!response.ok) throw new Error('Error al cargar productos destacados');
-    
-    const productosDestacados = await response.json();
-    
-    if (productosDestacados.length === 0) {
-      console.log('No hay productos destacados disponibles');
-      return;
-    }
-    
-    // Limpiar carrusel existente
-    carruselContainer.innerHTML = '';
-    
-    // Crear nuevas cards dinámicamente
-    productosDestacados.forEach((producto, index) => {
-      const carruselItem = document.createElement('div');
-      carruselItem.className = 'carrusel-item';
-      carruselItem.dataset.productName = producto.nombre;
-      
-      // Construir HTML de descuento si existe
-      let discountHtml = '';
-      if (producto.descuento && producto.descuento > 0) {
-        discountHtml = `<div class="discount-tag">${producto.descuento}% OFF</div>`;
-      }
-      
-      // Construir HTML de nuevo si es destacado
-      let newHtml = '';
-      if (producto.es_nuevo || producto.es_destacado) {
-        newHtml = `<div class="new-tag">NEW</div>`;
-      }
-      
-      carruselItem.innerHTML = `
-        ${discountHtml}
-        ${newHtml}
-        <div class="product-images">
-          <img src="${producto.imagen_url || '../assets/images/placeholder.png'}" alt="${producto.nombre}" class="main-image">
-          <img src="${producto.imagen_hover || producto.imagen_url || '../assets/images/placeholder.png'}" alt="${producto.nombre} Hover" class="hover-image">
-        </div>
-        <h3>${producto.nombre}</h3>
-        <p class="precio">$${(producto.precio || 0).toLocaleString('es-AR')} ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      `;
-      
-      // Hacer el elemento clickeable (excepto el botón)
-      carruselItem.addEventListener('click', (e) => {
-        if (!e.target.classList.contains('add-to-cart-btn')) {
-          // Registrar visita en el historial si el usuario está logueado
-          if (window.userMenuManager && window.userMenuManager.isLoggedIn) {
-            window.userMenuManager.trackProductVisit(producto);
-          }
-          // Aquí puedes agregar navegación al producto específico si tienes esas páginas
-          console.log('Producto clickeado:', producto.nombre);
-        }
-      });
-      
-      carruselContainer.appendChild(carruselItem);
-    });
-    
-    // Re-aplicar event listeners para los nuevos elementos
-    aplicarEventListenersCarrusel();
-    
-    // Re-aplicar animaciones de scroll
-    setupScrollAnimation();
-    
-    console.log(`✅ ${productosDestacados.length} productos destacados cargados dinámicamente`);
-    
-  } catch (error) {
-    console.error('Error al cargar productos destacados:', error);
-    // Mantener carrusel estático si hay error
-  }
-}
-
-function aplicarEventListenersCarrusel() {
-  // Event listeners para botones de agregar al carrito
-  const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-  addToCartButtons.forEach((button, index) => {
-    button.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      
-      const productCard = button.closest('.carrusel-item');
-      const nombre = productCard.querySelector('h3').textContent;
-      const precioTexto = productCard.querySelector('.precio').textContent;
-      const precio = parseFloat(precioTexto.replace(/[^\d]/g, ''));
-      const imagen = productCard.querySelector('.main-image').src;
-      
-      const producto = {
-        id: `prod_${Date.now()}_${index}`,
-        nombre,
-        precio,
-        imagen,
-        categoria: 'Destacado'
-      };
-      
-      agregarAlCarrito(producto);
-    });
-  });
-
-  // Event listeners para hacer clickeables las cards del carrusel
-  const productCards = document.querySelectorAll('.carrusel-item[data-product-name]');
-  productCards.forEach(card => {
-    card.addEventListener('click', (e) => {
-      if (e.target.classList.contains('add-to-cart-btn') || 
-          e.target.closest('.add-to-cart-btn')) {
-        return;
-      }
-      
-      const productName = card.getAttribute('data-product-name');
-      const productSlug = productName
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/\s+/g, '-');
-      
-      let productPath = '';
-      const lowerName = productName.toLowerCase();
-      
-      if (lowerName.includes('campera')) {
-        productPath = `../productos/hombre/camperas/${productSlug}.html`;
-      } else if (lowerName.includes('top')) {
-        productPath = `../productos/mujer/remeras-tops/${productSlug}.html`;
-      } else if (lowerName.includes('pollera')) {
-        productPath = `../productos/mujer/polleras-shorts/${productSlug}.html`;
-      } else if (lowerName.includes('vestido')) {
-        productPath = `../productos/mujer/vestidos-monos/${productSlug}.html`;
-      } else if (lowerName.includes('remera')) {
-        productPath = `../productos/hombre/remeras/${productSlug}.html`;
-      } else if (lowerName.includes('camisa')) {
-        productPath = `../productos/hombre/camisas/${productSlug}.html`;
-      }
-      
-      if (productPath) {
-        window.location.href = productPath;
-      }
-    });
-    
-    card.style.cursor = 'pointer';
-  });
-}
-
-// ============================================
 // FUNCIONES DEL CARRITO (copiadas de utils.js para compatibilidad)
 // ============================================
 
@@ -532,25 +275,9 @@ function mostrarNotificacion(mensaje) {
   }
 
   setupScrollAnimation();
+  // La lógica de expansión/contracción de las categorías se maneja desde
+  // `assets/pages.js` para evitar duplicación y posibles conflictos entre
+  // manejadores. No registramos listeners adicionales aquí.
+
 });
-
-// --- Lógica para el menú lateral anidado (Categorías) ---
-  const categoryHeaders = document.querySelectorAll('.sidebar-category-header');
-
-  categoryHeaders.forEach(header => {
-    header.addEventListener('click', () => {
-      const parentCategory = header.closest('.sidebar-category');
-      
-      // Cerrar todos los demás submenús
-      document.querySelectorAll('.sidebar-category').forEach(cat => {
-        if (cat !== parentCategory) {
-          cat.classList.remove('active');
-        }
-      });
-      
-      // Abrir o cerrar el submenú actual
-      parentCategory.classList.toggle('active');
-    });
-  });
-
   

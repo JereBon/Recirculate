@@ -79,6 +79,30 @@
 </div>
 
 </div>
+
+<!-- Sidebar de Búsqueda (se abre desde el ícono de búsqueda) -->
+<div id="sidebar-search" class="sidebar search-sidebar">
+  <div class="search-top">
+    <div class="search-top-left">
+      <button id="search-btn-icon" class="header-icon search-icon" aria-label="Buscar"><i class="fas fa-search"></i></button>
+      <input id="search-sidebar-input" type="text" class="search-top-input" placeholder="¿Qué busca?">
+    </div>
+    <button id="search-close-btn" class="close-btn" aria-label="Cerrar búsqueda">&times;</button>
+  </div>
+
+  <hr class="search-divider">
+
+  <div class="sidebar-search-content">
+    <div id="search-results" class="search-results">
+      <!-- Resultados de búsqueda se insertan aquí -->
+    </div>
+
+    <div id="search-suggestions" class="search-suggestions">
+      <!-- Sugerencias / productos pequeños (rellenados por JS) -->
+    </div>
+  </div>
+</div>
+
   <div class="overlay"></div>
 
   <section class="animated-hero-section">
@@ -149,8 +173,37 @@
     </section>
 
     <section class="featured-products-section">
-      <div class="product-grid" id="productos-destacados">
-        <!-- Los productos destacados se cargan dinámicamente desde la API -->
+      <div class="product-grid">
+        <div class="product-card" data-product-name="Campera Ecocuero">
+          <div class="new-tag">NEW</div>
+          <div class="product-images">
+            <img src="../assets/images/pages/camperas/Campera Ecocuero 1.png" alt="Campera Ecocuero" class="main-image">
+            <img src="../assets/images/pages/camperas/Campera Ecocuero 2.png" alt="Campera Ecocuero" class="hover-image">
+          </div>
+          <h3>Campera Ecocuero</h3>
+          <p class="precio">$70.000 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
+        <div class="product-card" data-product-name="Top Pegaso Bordo">
+          <div class="new-tag">NEW</div>
+          <div class="product-images">
+            <img src="../assets/images/pages/Mremeras/4 Top Pegaso Bordo a.png" alt="Top Pegaso Bordo" class="main-image">
+            <img src="../assets/images/pages/Mremeras/4 Top Pegaso Bordo b.png" alt="Top Pegaso Bordo" class="hover-image">
+          </div>
+          <h3>Top Pegaso Bordo</h3>
+          <p class="precio">$105.000 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
+        <div class="product-card" data-product-name="Pollera Samer">
+          <div class="new-tag">NEW</div>
+          <div class="product-images">
+            <img src="../assets/images/pages/Mpolleras/1 Pollera Samer a.png" alt="Pollera Samer" class="main-image">
+            <img src="../assets/images/pages/Mpolleras/1 Pollera Samer b.png" alt="Pollera Samer" class="hover-image">
+          </div>
+          <h3>Pollera Samer</h3>
+          <p class="precio">$65.000 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
       </div>
     </section>
 
@@ -159,8 +212,37 @@
     </section>
 
     <section class="featured-products-section">
-      <div class="product-grid" id="productos-descuentos">
-        <!-- Los productos con descuento se cargan dinámicamente desde la API -->
+      <div class="product-grid">
+        <div class="product-card" data-product-name="Vestido Italo">
+          <div class="discount-tag">22% OFF</div>
+          <div class="product-images">
+            <img src="../assets/images/pages/Mvestidos/6 Vestido Italo a.png" alt="Vestido Italo" class="main-image">
+            <img src="../assets/images/pages/Mvestidos/6 Vestido Italo b.png" alt="Vestido Italo" class="hover-image">
+          </div>
+          <h3>Vestido Italo</h3>
+          <p class="precio">$138.000 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
+        <div class="product-card" data-product-name="Remera Básica Negra">
+          <div class="discount-tag">23% OFF</div>
+          <div class="product-images">
+            <img src="../assets/images/pages/remeras/Remera_gris_1.png" alt="Remera Básica Negra" class="main-image">
+            <img src="../assets/images/pages/remeras/Remera_gris_2.png" alt="Remera Básica Negra" class="hover-image">
+          </div>
+          <h3>Remera Básica Negra</h3>
+          <p class="precio">$29.990 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
+        <div class="product-card" data-product-name="Camisa Kalf Negra">
+          <div class="discount-tag">32% OFF</div>
+          <div class="product-images">
+            <img src="../assets/images/pages/camisas/Camisa Kalf Negra 1.png" alt="Camisa Kalf Negra" class="main-image">
+            <img src="../assets/images/pages/camisas/Camisa Kalf Negra 2.png" alt="Camisa Kalf Negra" class="hover-image">
+          </div>
+          <h3>Camisa Kalf Negra</h3>
+          <p class="precio">$37.000 ARS</p>
+          <button class="add-to-cart-btn">Añadir al carrito</button>
+        </div>
       </div>
     </section>
   </main>
@@ -206,29 +288,8 @@
     </div>
   </footer>
 
-<div class="chatbot-container">
-  <button id="chatbot-toggle" class="chatbot-bubble">
-    <i class="fas fa-comment-dots"></i>
-  </button>
-
-  <div id="chatbot-window" class="chatbot-window">
-    <div class="chatbot-header">
-      <span>Asistente Virtual</span>
-      <button id="chatbot-close" class="chatbot-close-btn">&times;</button>
-    </div>
-    <div class="chatbot-body">
-      <div class="chat-message bot">
-        Hola 👋 ¿En qué puedo ayudarte hoy?
-      </div>
-      </div>
-    <div class="chatbot-footer">
-      <input type="text" placeholder="Escribe tu mensaje...">
-      <button><i class="fas fa-paper-plane"></i></button>
-    </div>
-  </div>
-</div>
-
-  <script type="module" src="../assets/user-menu.js"></script>
+  <script src="../assets/pages.js"></script>
   <script type="module" src="home.js"></script>
+  <script src='https://cdn.jotfor.ms/agent/embedjs/019a2cafb84e7b99aae78f82f10fd7c58f53/embed.js'></script>
 </body>
 </html>

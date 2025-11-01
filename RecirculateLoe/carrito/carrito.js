@@ -147,25 +147,43 @@ crearItemHTML(item, index) {
       });
     });
 
-    // Funcionalidad del buscador
+    // Funcionalidad del buscador: delegar al buscador unificado en assets/pages.js
+    // Si la API global está presente (window.openSearchSidebar / window.performSidebarSearch)
+    // la usamos; en caso contrario, conservamos el comportamiento antiguo como fallback.
     const searchBtn = document.getElementById('search-btn');
     const searchContainer = document.getElementById('search-container');
     const searchInput = document.getElementById('search-input');
 
-    if (searchBtn && searchContainer && searchInput) {
-      searchBtn.addEventListener('click', function() {
-        searchContainer.classList.toggle('active');
-        if (searchContainer.classList.contains('active')) {
-          searchInput.focus();
-        }
-      });
+    if (window && typeof window.openSearchSidebar === 'function' && typeof window.performSidebarSearch === 'function') {
+      // Usar el sidebar unificado
+      if (searchBtn) {
+        searchBtn.addEventListener('click', (e) => { e.stopPropagation(); window.openSearchSidebar(); });
+      }
+      if (searchInput) {
+        searchInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter' && searchInput.value.trim() !== '') {
+            window.performSidebarSearch(searchInput.value.trim());
+          }
+        });
+      }
+      // Evitar que clics globales cierren el nuevo sidebar aquí — pages.js ya gestiona eso
+    } else {
+      // Fallback: comportamiento antiguo (toggler inline)
+      if (searchBtn && searchContainer && searchInput) {
+        searchBtn.addEventListener('click', function() {
+          searchContainer.classList.toggle('active');
+          if (searchContainer.classList.contains('active')) {
+            searchInput.focus();
+          }
+        });
 
-      // Cerrar búsqueda al hacer clic fuera
-      document.addEventListener('click', function(e) {
-        if (!searchContainer.contains(e.target)) {
-          searchContainer.classList.remove('active');
-        }
-      });
+        // Cerrar búsqueda al hacer clic fuera
+        document.addEventListener('click', function(e) {
+          if (!searchContainer.contains(e.target)) {
+            searchContainer.classList.remove('active');
+          }
+        });
+      }
     }
   }
 
@@ -257,7 +275,7 @@ crearItemHTML(item, index) {
       const token = localStorage.getItem('recirculate_token');
       if (!token) {
         alert('Debes iniciar sesión para continuar con la compra.');
-        window.location.href = '/auth/login.html';
+        window.location.href = '\auth\login.html';
         return;
       }
 

@@ -78,6 +78,29 @@
     </div>
   </div>
 </div>
+<!-- Sidebar de Búsqueda (se abre desde el ícono de búsqueda) -->
+<div id="sidebar-search" class="sidebar search-sidebar">
+  <div class="search-top">
+    <div class="search-top-left">
+      <button id="search-btn-icon" class="header-icon search-icon" aria-label="Buscar"><i class="fas fa-search"></i></button>
+      <input id="search-sidebar-input" type="text" class="search-top-input" placeholder="¿Qué busca?">
+    </div>
+    <button id="search-close-btn" class="close-btn" aria-label="Cerrar búsqueda">&times;</button>
+  </div>
+
+  <hr class="search-divider">
+
+  <div class="sidebar-search-content">
+    <div id="search-results" class="search-results">
+      <!-- Resultados de búsqueda se insertan aquí -->
+    </div>
+
+    <div id="search-suggestions" class="search-suggestions">
+      <!-- Sugerencias / productos pequeños (rellenados por JS) -->
+    </div>
+  </div>
+</div>
+
 <div class="overlay"></div>
 
 <main class="public-main carrito-main">
@@ -202,6 +225,8 @@
     </div>
 </footer>
 
-<script type="module" src="carrito.js"></script>
+  <script src="../assets/pages.js"></script>
+  <script type="module" src="carrito.js"></script>
+  <script src='https://cdn.jotfor.ms/agent/embedjs/019a2cafb84e7b99aae78f82f10fd7c58f53/embed.js'></script>
 </body>
 </html>

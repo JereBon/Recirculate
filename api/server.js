@@ -123,14 +123,6 @@ app.use('/api/migrate', migrateRoutes);
 const auditRoutes = require('./routes/audit');
 app.use('/api/audit', auditRoutes);
 
-// --- RUTAS DE RECUPERACIÓN DE CONTRASEÑA ---
-const passwordResetRoutes = require('./routes/password-reset');
-app.use('/api/password-reset', passwordResetRoutes);
-
-// --- RUTAS DE PRODUCTOS ---
-const productRoutes = require('./routes/productos');
-app.use('/api/productos', productRoutes);
-
 // --- SOCKET.IO ---
 io.on('connection', (socket) => {
   console.log('Cliente conectado a Socket.IO');
@@ -183,11 +175,11 @@ app.post('/api/productos', verifyToken, verifyAdmin, async (req, res) => {
   try {
     console.log('📦 POST /api/productos - Creando producto...');
     console.log('📦 Datos recibidos:', JSON.stringify(req.body, null, 2));
-    console.log('📦 Usuario:', req.user);
+    console.log('📦 Usuario ID:', req.userId);
     
     const nuevo = await Product.create({
       ...req.body,
-      usuario_id: req.user?.id || null
+      usuario_id: req.userId
     });
     
     console.log('✅ Producto creado exitosamente:', JSON.stringify(nuevo, null, 2));

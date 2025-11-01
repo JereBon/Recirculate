@@ -7,8 +7,6 @@ const config = {
   connectionString: process.env.DATABASE_URL || 'postgresql://localhost:5432/recirculate',
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 };
-const fs = require('fs');
-const path = require('path');
 
 // Cliente de PostgreSQL
 const client = new Client(config);
@@ -25,10 +23,6 @@ const connectDB = async () => {
     await createProductsTable();
     await createSalesTable();
     await createExpensesTable();
-    await createPasswordResetTable();
-    
-    // Crear usuarios administradores autorizados
-    await setupAdminUsers();
     
   } catch (error) {
     if (error.code === '3D000') {
@@ -83,18 +77,6 @@ const createUsersTable = async () => {
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS usuarios (
       id SERIAL PRIMARY KEY,
-
-    // Ejecutar fix_genero_constraint.sql automáticamente
-    try {
-      const sqlPath = path.join(__dirname, 'migrations', 'fix_genero_constraint.sql');
-      if (fs.existsSync(sqlPath)) {
-        const sql = fs.readFileSync(sqlPath, 'utf8');
-        await client.query(sql);
-        console.log('✅ Constraint de género corregido automáticamente');
-      }
-    } catch (err) {
-      console.error('❌ Error ejecutando fix_genero_constraint.sql:', err.message);
-    }
       nombre VARCHAR(255) NOT NULL,
       email VARCHAR(255) UNIQUE NOT NULL,
       password VARCHAR(255) NOT NULL,
@@ -181,7 +163,6 @@ const createProductsTable = async () => {
       stock INTEGER DEFAULT 0,
       estado VARCHAR(50) DEFAULT 'Disponible',
       imagen_url TEXT,
-      imagen_espalda_url TEXT,
       proveedor VARCHAR(255),
       usuario_id INTEGER REFERENCES usuarios(id),
       fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -195,18 +176,6 @@ const createProductsTable = async () => {
     
     // Migración: Agregar columna proveedor si no existe
     await addProveedorColumn();
-    
-    // Migración: Agregar columna género si no existe
-    await addGeneroColumn();
-    
-    // Migración: Agregar columna es_destacado si no existe
-    await addDestacadoColumn();
-    
-    // Migración: Agregar columna descuento si no existe
-    await addDescuentoColumn();
-
-  // Migración: Agregar columna imagen_espalda_url si no existe
-  await addImagenEspaldaColumn();
   } catch (error) {
     console.error('❌ Error creando tabla productos:', error);
   }
@@ -224,68 +193,6 @@ const addProveedorColumn = async () => {
     // Si la columna ya existe, no es un error
     if (error.code !== '42701') {
       console.error('❌ Error agregando columna proveedor:', error.message);
-    }
-  }
-};
-
-// Función para agregar columna género a productos existentes
-const addGeneroColumn = async () => {
-  try {
-    await client.query(`
-      ALTER TABLE productos 
-      ADD COLUMN IF NOT EXISTS genero VARCHAR(20) DEFAULT 'unisex'
-    `);
-    console.log('✅ Columna género agregada/verificada');
-  } catch (error) {
-    // Si la columna ya existe, no es un error
-    if (error.code !== '42701') {
-      console.error('❌ Error agregando columna género:', error.message);
-    }
-  }
-};
-
-// Función para agregar columna es_destacado a productos
-const addDestacadoColumn = async () => {
-  try {
-    await client.query(`
-      ALTER TABLE productos 
-      ADD COLUMN IF NOT EXISTS es_destacado BOOLEAN DEFAULT false
-    `);
-    console.log('✅ Columna es_destacado agregada/verificada');
-  } catch (error) {
-    // Si la columna ya existe, no es un error
-    if (error.code !== '42701') {
-      console.error('❌ Error agregando columna es_destacado:', error.message);
-    }
-  }
-};
-
-// Función para agregar columna descuento a productos
-const addDescuentoColumn = async () => {
-  try {
-    await client.query(`
-      ALTER TABLE productos 
-      ADD COLUMN IF NOT EXISTS descuento INTEGER DEFAULT 0 CHECK (descuento >= 0 AND descuento <= 100)
-    `);
-    console.log('✅ Columna descuento agregada/verificada');
-  } catch (error) {
-    if (error.code !== '42701') {
-      console.error('❌ Error agregando columna descuento:', error.message);
-    }
-  }
-};
-
-// Función para agregar columna imagen_espalda_url a productos
-const addImagenEspaldaColumn = async () => {
-  try {
-    await client.query(`
-      ALTER TABLE productos 
-      ADD COLUMN IF NOT EXISTS imagen_espalda_url TEXT
-    `);
-    console.log('✅ Columna imagen_espalda_url agregada/verificada');
-  } catch (error) {
-    if (error.code !== '42701') {
-      console.error('❌ Error agregando columna imagen_espalda_url:', error.message);
     }
   }
 };
@@ -388,48 +295,6 @@ const createMPPaymentsTable = async () => {
     console.log('✅ Tabla mp_pagos verificada/creada');
   } catch (error) {
     console.error('❌ Error creando tabla mp_pagos:', error);
-  }
-};
-
-// Crear tabla para códigos de recuperación de contraseña
-const createPasswordResetTable = async () => {
-  const createTableQuery = `
-    CREATE TABLE IF NOT EXISTS password_reset_codes (
-      id SERIAL PRIMARY KEY,
-      email VARCHAR(255) NOT NULL,
-      codigo VARCHAR(6) NOT NULL,
-      expira_en TIMESTAMP NOT NULL,
-      usado BOOLEAN DEFAULT FALSE,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-  `;
-
-  // Crear índices por separado para PostgreSQL
-  const createIndexes = [
-    'CREATE INDEX IF NOT EXISTS idx_password_reset_email ON password_reset_codes(email)',
-    'CREATE INDEX IF NOT EXISTS idx_password_reset_codigo ON password_reset_codes(codigo)'
-  ];
-
-  try {
-    await client.query(createTableQuery);
-    
-    for (const indexQuery of createIndexes) {
-      await client.query(indexQuery);
-    }
-    
-    console.log('✅ Tabla password_reset_codes verificada/creada');
-  } catch (error) {
-    console.error('❌ Error creando tabla password_reset_codes:', error);
-  }
-};
-
-// Configurar usuarios administradores autorizados
-const setupAdminUsers = async () => {
-  try {
-    const { createAdminUsers } = require('./setup-admins');
-    await createAdminUsers(client);
-  } catch (error) {
-    console.error('❌ Error configurando usuarios admin:', error);
   }
 };
 
