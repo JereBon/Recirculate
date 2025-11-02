@@ -440,6 +440,53 @@ class UserMenuManager {
     trackProductVisit(product) {
         this.addToVisitHistory(product);
     }
+
+    // ** Actualizar enlaces de autenticación en el sidebar **
+    updateSidebarAuthLinks() {
+        const sidebarAuthGroup = document.getElementById('sidebarAuthGroup');
+        if (!sidebarAuthGroup) return; // Si no existe el grupo, salir
+        
+        const currentPath = window.location.pathname;
+        let loginUrl = '../../auth/login.html';
+        let registerUrl = '../../auth/registro.html';
+        
+        // Ajustar rutas según ubicación
+        if (currentPath.includes('/pages/')) {
+            loginUrl = '../../../auth/login.html';
+            registerUrl = '../../../auth/registro.html';
+        } else if (currentPath.includes('/productos/')) {
+            loginUrl = '../../../../auth/login.html';
+            registerUrl = '../../../../auth/registro.html';
+        }
+        
+        if (this.isLoggedIn) {
+            // Usuario logueado: mostrar solo "Cerrar Sesión"
+            sidebarAuthGroup.innerHTML = `
+                <a href="javascript:void(0);" class="sidebar-main-link" id="sidebarLogoutLink">
+                    <i class="fas fa-sign-out-alt"></i> CERRAR SESIÓN
+                </a>
+            `;
+            
+            // Agregar evento de click para cerrar sesión
+            const logoutLink = document.getElementById('sidebarLogoutLink');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.logout();
+                });
+            }
+        } else {
+            // Usuario NO logueado: mostrar "Iniciar Sesión" y "Registrarse"
+            sidebarAuthGroup.innerHTML = `
+                <a href="${loginUrl}" class="sidebar-main-link" id="sidebarLoginLink">
+                    <i class="fas fa-sign-in-alt"></i> INICIAR SESIÓN
+                </a>
+                <a href="${registerUrl}" class="sidebar-main-link" id="sidebarRegisterLink">
+                    <i class="fas fa-user-plus"></i> REGISTRARSE
+                </a>
+            `;
+        }
+    }
 }
 
 // Inicializar el manager cuando el DOM esté listo

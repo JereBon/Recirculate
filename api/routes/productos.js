@@ -2,28 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
-const jwt = require('jsonwebtoken');
-
-// Middleware para verificar autenticación (opcional para algunas rutas)
-const verifyToken = (req, res, next) => {
-  // Si el usuario ya está autenticado y es admin, permitir sin token
-  if (req.session && req.session.user && req.session.user.rol === 'admin') {
-    req.user = req.session.user;
-    return next();
-  }
-  // Si no hay sesión, usar token como antes
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) {
-    return res.status(401).json({ message: 'Token de acceso requerido' });
-  }
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'recirculate_secret_key_2024');
-    req.user = decoded;
-    next();
-  } catch (error) {
-    return res.status(403).json({ message: 'Token inválido' });
-  }
-};
+const { verifyToken, verifyAdmin } = require('../middleware/auth');
 
 // Ruta para obtener todos los productos
 router.get('/', async (req, res) => {
@@ -85,8 +64,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Ruta para crear un producto (requiere autenticación)
-router.post('/', verifyToken, async (req, res) => {
+// Ruta para crear un producto (requiere autenticación y rol admin)
+router.post('/', verifyToken, verifyAdmin, async (req, res) => {
   try {
     const productData = {
       ...req.body,
@@ -136,8 +115,8 @@ router.post('/', verifyToken, async (req, res) => {
   }
 });
 
-// Ruta para actualizar un producto (requiere autenticación)
-router.put('/:id', verifyToken, async (req, res) => {
+// Ruta para actualizar un producto (requiere autenticación y rol admin)
+router.put('/:id', verifyToken, verifyAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const productData = req.body;
@@ -173,8 +152,8 @@ router.put('/:id', verifyToken, async (req, res) => {
   }
 });
 
-// Ruta para actualizar solo el stock
-router.patch('/:id/stock', verifyToken, async (req, res) => {
+// Ruta para actualizar solo el stock (requiere autenticación y rol admin)
+router.patch('/:id/stock', verifyToken, verifyAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const { stock } = req.body;
@@ -199,8 +178,8 @@ router.patch('/:id/stock', verifyToken, async (req, res) => {
   }
 });
 
-// Ruta para eliminar un producto (requiere autenticación)
-router.delete('/:id', verifyToken, async (req, res) => {
+// Ruta para eliminar un producto (requiere autenticación y rol admin)
+router.delete('/:id', verifyToken, verifyAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const productoEliminado = await Product.delete(id);

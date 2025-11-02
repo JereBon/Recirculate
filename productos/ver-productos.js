@@ -148,8 +148,30 @@ document.addEventListener('DOMContentLoaded', async () => {
       const id = parseInt(e.target.dataset.delete); // Convertir a número
       if (confirm('¿Seguro que deseas eliminar este producto?')) {
         try {
-          const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-          if (!response.ok) throw new Error('Error al eliminar producto');
+          // Obtener token de autenticación
+          const token = localStorage.getItem('authToken');
+          if (!token) {
+            alert('No estás autenticado. Por favor inicia sesión.');
+            window.location.href = '../auth/login.html';
+            return;
+          }
+
+          const response = await fetch(`${API_URL}/${id}`, { 
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          if (!response.ok) {
+            if (response.status === 401) {
+              alert('Sesión expirada. Por favor inicia sesión nuevamente.');
+              window.location.href = '../auth/login.html';
+              return;
+            }
+            throw new Error('Error al eliminar producto');
+          }
+          
           allProductos = allProductos.filter(p => p.id !== id); // Actualiza cache
           cargarProductos(); // Refresca tabla
           alert('Producto eliminado correctamente');
