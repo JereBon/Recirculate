@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Definir categorías por género
   const categoriasPorGenero = {
     hombre: ['Remeras', 'Buzos', 'Camperas', 'Pantalones', 'Camisas'],
-    mujer: ['Remeras', 'Tops', 'Vestidos', 'Monos', 'Polleras', 'Shorts', 'Skorts'],
+    mujer: ['Remeras/Tops', 'Vestidos/Monos', 'Polleras/Shorts/Skorts'],
     unisex: ['Remeras', 'Camperas', 'Pantalones', 'Buzos']
   };
 

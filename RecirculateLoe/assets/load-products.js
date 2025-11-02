@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (currentPath.includes('/remeras/')) {
         categoria = 'remeras';
     } else if (currentPath.includes('/Mremeras/')) {
-        categoria = 'remeras';
+        categoria = 'remeras/tops';
         genero = 'mujer';
     } else if (currentPath.includes('/buzos/')) {
         categoria = 'buzos';
@@ -39,10 +39,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else if (currentPath.includes('/camisas/')) {
         categoria = 'camisas';
     } else if (currentPath.includes('/Mvestidos/')) {
-        categoria = 'vestidos';
+        categoria = 'vestidos/monos';
         genero = 'mujer';
     } else if (currentPath.includes('/Mpolleras/')) {
-        categoria = 'polleras';
+        categoria = 'polleras/shorts/skorts';
         genero = 'mujer';
     } else if (currentPath.includes('/ingresos/')) {
         // Página de nuevos ingresos - mostrar productos recientes
@@ -82,11 +82,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             // Filtrar por género
             if (genero) {
+                console.log('🔍 ANTES del filtro por género:', productosFiltrados.length, 'productos');
                 productosFiltrados = productosFiltrados.filter(p => {
-                    if (!p.genero) return false;
+                    if (!p.genero) {
+                        console.warn('❌ Producto sin género:', p.nombre);
+                        return false;
+                    }
                     
                     const generoProducto = p.genero.toLowerCase().trim();
                     const generoPagina = genero.toLowerCase().trim();
+                    
+                    console.log(`Producto: "${p.nombre}" | Género: "${generoProducto}" | Página: "${generoPagina}"`);
                     
                     // Si la página es "unisex", mostrar SOLO productos unisex
                     if (generoPagina === 'unisex') {
@@ -94,8 +100,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                     
                     // Si la página es "hombre" o "mujer", mostrar productos de ese género + unisex
-                    return generoProducto === generoPagina || generoProducto === 'unisex';
+                    const pasa = generoProducto === generoPagina || generoProducto === 'unisex';
+                    console.log(`   → ${pasa ? '✅ PASA' : '❌ NO PASA'} el filtro`);
+                    return pasa;
                 });
+                console.log('🔍 DESPUÉS del filtro por género:', productosFiltrados.length, 'productos');
             }
 
             // Filtrar por categoría
@@ -105,11 +114,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const catProducto = p.categoria.toLowerCase().trim();
                     const catBuscada = categoria.toLowerCase().trim();
                     
-                    // Mapeo de categorías alternativas
-                    if (catBuscada === 'remeras' && (catProducto === 'tops' || catProducto === 'remeras')) return true;
-                    if (catBuscada === 'vestidos' && (catProducto === 'vestidos' || catProducto === 'monos')) return true;
-                    if (catBuscada === 'polleras' && (catProducto === 'polleras' || catProducto === 'shorts' || catProducto === 'skorts')) return true;
-                    
+                    // Comparación exacta - ya no hay categorías alternativas porque usamos nombres únicos
                     return catProducto === catBuscada;
                 });
             }
@@ -194,9 +199,9 @@ function createProductCard(producto) {
         else if (categoria === 'camisas') productPath = `../../productos/hombre/camisas/${slug}.html`;
         else productPath = `../../productos/hombre/remeras/${slug}.html`;
     } else if (genero === 'mujer') {
-        if (categoria === 'remeras' || categoria === 'tops') productPath = `../../productos/mujer/remeras-tops/${slug}.html`;
-        else if (categoria === 'vestidos' || categoria === 'monos') productPath = `../../productos/mujer/vestidos-monos/${slug}.html`;
-        else if (categoria === 'polleras' || categoria === 'shorts' || categoria === 'skorts') productPath = `../../productos/mujer/polleras-shorts/${slug}.html`;
+        if (categoria === 'remeras/tops') productPath = `../../productos/mujer/remeras-tops/${slug}.html`;
+        else if (categoria === 'vestidos/monos') productPath = `../../productos/mujer/vestidos-monos/${slug}.html`;
+        else if (categoria === 'polleras/shorts/skorts') productPath = `../../productos/mujer/polleras-shorts/${slug}.html`;
         else productPath = `../../productos/mujer/remeras-tops/${slug}.html`;
     } else {
         productPath = `../../productos/unisex/${slug}.html`;
@@ -206,12 +211,9 @@ function createProductCard(producto) {
     const imagenPrincipal = producto.imagen_frente_url || producto.imagen_url || '../../assets/images/placeholder.png';
     const imagenHover = producto.imagen_espalda_url || producto.imagen_hover || imagenPrincipal;
 
-    console.log('Creando tarjeta para:', producto.nombre, {
-        imagenPrincipal,
-        imagenHover,
-        precio: producto.precio,
-        descripcion: producto.descripcion
-    });
+    console.log('Creando tarjeta para:', producto.nombre);
+    console.log('Género del producto:', producto.genero, '| Categoría:', producto.categoria);
+    console.log('Producto completo:', producto);
 
     // Construir HTML de la tarjeta - Escapar caracteres especiales
     const escaparHTML = (texto) => {
