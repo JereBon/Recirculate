@@ -8,30 +8,46 @@
   <link rel="stylesheet" href="../../assets/catalogo-styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    // ** Lógica de verificación de usuario para el ícono de la cabecera (copiada de home.html) **
+    document.addEventListener('DOMContentLoaded', () => {
+      const authToken = localStorage.getItem('authToken');
+      const userData = localStorage.getItem('userData');
+      
+      const userIcon = document.querySelector('.user-icon');
+      
+      if (authToken && userData && userIcon) {
+        const user = JSON.parse(userData);
+        userIcon.setAttribute('data-tooltip', user.nombre.toUpperCase());
+        userIcon.setAttribute('href', 'javascript:void(0);');
+        userIcon.innerHTML = '<i class="fas fa-user-check"></i>';
+      }
+    });
+</script>
 </head>
 <body>
 
-  <header class="public-header fixed-header">
+<header class="public-header fixed-header">
     <nav class="header-nav">
-      <div class="header-left">
+    <div class="header-left">
         <button id="menu-btn" class="header-icon menu-icon"><i class="fas fa-bars"></i></button>
         <div id="search-container" class="search-container">
-          <button id="search-btn" class="header-icon search-icon"><i class="fas fa-search"></i></button>
-          <input type="text" id="search-input" class="search-input" placeholder="Buscar...">
+        <button id="search-btn" class="header-icon search-icon"><i class="fas fa-search"></i></button>
+        <input type="text" id="search-input" class="search-input" placeholder="Buscar...">
         </div>
-      </div>
-      <a href="../../home/home.html" class="header-logo">
+    </div>
+    <a href="../../home/home.html" class="header-logo">
         <img src="../../assets/images/Recirculate-logo.png" alt="Recirculate Logo" class="logo-image">
-      </a>
-      <div class="header-right">
-        <a href="/auth/login.html" class="header-icon user-icon" data-tooltip="INICIAR SESIÓN"><i class="fas fa-user"></i></a>
+    </a>
+    <div class="header-right">
+        <a href="../../../auth/login.html" class="header-icon user-icon" data-tooltip="INICIAR SESIÓN"><i class="fas fa-user"></i></a>
         <a href="../../carrito/carrito.html" class="header-icon cart-icon">
-          <i class="fas fa-shopping-cart"></i>
-          <span id="cart-counter" class="cart-counter">0</span>
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cart-counter" class="cart-counter">0</span>
         </a>
-      </div>
+    </div>
     </nav>
-  </header>
+</header>
 
 <!--SIDEBAR MENU-->  
 <div id="sidebar-menu" class="sidebar">
@@ -70,9 +86,9 @@
 
     <hr class="sidebar-divider">
 
-    <div class="sidebar-auth-group">
-        <a href="../../auth/login.html" class="sidebar-main-link">INICIAR SESIÓN</a>
-        <a href="../../auth/registro.html" class="sidebar-main-link">REGISTRARSE</a>
+    <div class="sidebar-auth-group" id="sidebarAuthGroup">
+        <a href="../../../auth/login.html" class="sidebar-main-link" id="sidebarLoginLink">INICIAR SESIÓN</a>
+        <a href="../../../auth/registro.html" class="sidebar-main-link" id="sidebarRegisterLink">REGISTRARSE</a>
     </div>
   </div>
 </div>
@@ -149,64 +165,7 @@
         </div>
     </div>
 
-    <section class="product-grid category-grid">
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/camisas/Camisa Mist Negra 1.png" alt="Camisa 1" class="main-image">
-          <img src="../../assets/images/pages/camisas/Camisa Mist Negra 2.png" alt="Camisa 1 Hover" class="hover-image">
-        </div>
-        <h3>Camisa Mist Negra</h3>
-        <p class="precio">$35.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="new-tag">NEW</div>
-        <div class="product-images">
-          <img src="../../assets/images/pages/camisas/Camisa Crochet Steam 1.png" alt="Camisa 2" class="main-image">
-          <img src="../../assets/images/pages/camisas/Camisa Crochet Steam 2.png" alt="Camisa 2 Hover" class="hover-image">
-        </div>
-        <h3>Camisa Crochet Steam</h3>
-        <p class="precio">$38.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/camisas/Camisa Kalf Blanca 1.png" alt="Camisa 3" class="main-image">
-          <img src="../../assets/images/pages/camisas/Camisa Kalf Blanca 2.png" alt="Camisa 3 Hover" class="hover-image">
-        </div>
-        <h3>Camisa Kalf Blanca</h3>
-        <p class="precio">$42.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/camisas/Camisa Mist Beige 1.png" alt="Camisa 4" class="main-image">
-          <img src="../../assets/images/pages/camisas/Camisa Mist Beige 2.png" alt="Camisa 4 Hover" class="hover-image">
-        </div>
-        <h3>Camisa Mist Beige</h3>
-        <p class="precio">$40.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/camisas/Camisa Tejida Mist 1.png" alt="Camisa 5" class="main-image">
-          <img src="../../assets/images/pages/camisas/Camisa Tejida Mist 2.png" alt="Camisa 5 Hover" class="hover-image">
-        </div>
-        <h3>Camisa Tejida Mist</h3>
-        <p class="precio">$45.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="discount-tag">32% OFF</div>
-        <div class="product-images">
-          <img src="../../assets/images/pages/camisas/Camisa Kalf Negra 1.png" alt="Camisa 6" class="main-image">
-          <img src="../../assets/images/pages/camisas/Camisa Kalf Negra 2.png" alt="Camisa 6 Hover" class="hover-image">
-        </div>
-        <h3>Camisa Kalf Negra</h3>
-        <p class="precio">$37.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-    </section>
+    <section class="product-grid category-grid"></section>
   </main>
 
   <footer class="public-footer">
@@ -250,6 +209,7 @@
     </div>
   </footer>
   
+  <script src="../../assets/user-menu.js"></script>
   <script src="../../assets/pages.js"></script>
   <script src='https://cdn.jotfor.ms/agent/embedjs/019a2cafb84e7b99aae78f82f10fd7c58f53/embed.js'></script>
 </body>

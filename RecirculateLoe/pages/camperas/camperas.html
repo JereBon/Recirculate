@@ -8,6 +8,22 @@
   <link rel="stylesheet" href="../../assets/catalogo-styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    // ** Lógica de verificación de usuario para el ícono de la cabecera (copiada de home.html) **
+    document.addEventListener('DOMContentLoaded', () => {
+      const authToken = localStorage.getItem('authToken');
+      const userData = localStorage.getItem('userData');
+      
+      const userIcon = document.querySelector('.user-icon');
+      
+      if (authToken && userData && userIcon) {
+        const user = JSON.parse(userData);
+        userIcon.setAttribute('data-tooltip', user.nombre.toUpperCase());
+        userIcon.setAttribute('href', 'javascript:void(0);');
+        userIcon.innerHTML = '<i class="fas fa-user-check"></i>';
+      }
+    });
+</script>
 </head>
 <body>
 
@@ -70,9 +86,9 @@
 
     <hr class="sidebar-divider">
 
-    <div class="sidebar-auth-group">
-        <a href="../../auth/login.html" class="sidebar-main-link">INICIAR SESIÓN</a>
-        <a href="../../auth/registro.html" class="sidebar-main-link">REGISTRARSE</a>
+    <div class="sidebar-auth-group" id="sidebarAuthGroup">
+        <a href="../../../auth/login.html" class="sidebar-main-link" id="sidebarLoginLink">INICIAR SESIÓN</a>
+        <a href="../../../auth/registro.html" class="sidebar-main-link" id="sidebarRegisterLink">REGISTRARSE</a>
     </div>
   </div>
 </div>
@@ -149,64 +165,7 @@
         </div>
     </div>
 
-    <section class="product-grid category-grid">
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/camperas/Campera Corderoy Beige 1.png" alt="Campera 1" class="main-image">
-          <img src="../../assets/images/pages/camperas/Campera Corderoy Beige 2.png" alt="Campera 1 Hover" class="hover-image">
-        </div>
-        <h3>Campera Corderoy Beige</h3>
-        <p class="precio">$65.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/camperas/Campera Deportiva Negra 1.png" alt="Campera 2" class="main-image">
-          <img src="../../assets/images/pages/camperas/Campera Deportiva Negra 2.png" alt="Campera 2 Hover" class="hover-image">
-        </div>
-        <h3>Campera Deportiva Negra</h3>
-        <p class="precio">$72.500 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/camperas/Campera Pilotin Negro 1.png" alt="Campera 3" class="main-image">
-          <img src="../../assets/images/pages/camperas/Campera Pilotin Negro 2.png" alt="Campera 3 Hover" class="hover-image">
-        </div>
-        <h3>Campera Pilotin Negro</h3>
-        <p class="precio">$68.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="new-tag">NEW</div>
-        <div class="product-images">
-          <img src="../../assets/images/pages/camperas/Campera Ecocuero 1.png" alt="Campera 4" class="main-image">
-          <img src="../../assets/images/pages/camperas/Campera Ecocuero 2.png" alt="Campera 4 Hover" class="hover-image">
-        </div>
-        <h3>Campera Ecocuero</h3>
-        <p class="precio">$70.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/camperas/Campera Puffer Verde 1.png" alt="Campera 5" class="main-image">
-          <img src="../../assets/images/pages/camperas/Campera Puffer Verde 2.png" alt="Campera 5 Hover" class="hover-image">
-        </div>
-        <h3>Campera Puffer Verde</h3>
-        <p class="precio">$75.900 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="discount-tag">18% OFF</div>
-        <div class="product-images">
-          <img src="../../assets/images/pages/camperas/Campera Casual Negra 1.png" alt="Campera 6" class="main-image">
-          <img src="../../assets/images/pages/camperas/Campera Casual Negra 2.png" alt="Campera 6 Hover" class="hover-image">
-        </div>
-        <h3>Campera Casual Negra</h3>
-        <p class="precio">$69.500 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-    </section>
+    <section class="product-grid category-grid"></section>
   </main>
 
   <footer class="public-footer">
@@ -250,6 +209,7 @@
     </div>
   </footer>
   
+  <script src="../../assets/user-menu.js"></script>
   <script src="../../assets/pages.js"></script>
   <script src='https://cdn.jotfor.ms/agent/embedjs/019a2cafb84e7b99aae78f82f10fd7c58f53/embed.js'></script>
 </body>

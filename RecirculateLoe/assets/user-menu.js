@@ -28,6 +28,9 @@ class UserMenuManager {
             this.removeExistingMenu();
         }
         
+        // ** Actualizar los enlaces del sidebar según el estado de autenticación **
+        this.updateSidebarAuthLinks();
+
         // Solo configurar el listener una vez
         if (!this.storageListenerSetup) {
             this.setupStorageListener();
@@ -112,18 +115,23 @@ class UserMenuManager {
         const currentPath = window.location.pathname;
         let homeUrl, adminUrl;
         
+        // Lógica de rutas dentro de RecirculateLoe
         if (currentPath.includes('/home/')) {
             homeUrl = './home.html';
+            // /RecirculateLoe/home/home.html -> ../../index.html (Sube 2, va al index principal)
             adminUrl = '../../index.html';
         } else if (currentPath.includes('/pages/')) {
             homeUrl = '../home/home.html';
+             // /RecirculateLoe/pages/buzos/buzos.html -> ../../../index.html (Sube 3, va al index principal)
             adminUrl = '../../../index.html';
         } else if (currentPath.includes('/productos/')) {
             homeUrl = '../../../home/home.html';
-            adminUrl = '../../../../../index.html';
+             // /RecirculateLoe/pages/buzos/productos/item.html -> ../../../../../index.html (Sube 5, va al index principal)
+            adminUrl = '../../../../../index.html'; 
         } else if (currentPath.includes('/carrito/')) {
             homeUrl = '../home/home.html';
-            adminUrl = '../../../index.html';
+            // /RecirculateLoe/carrito/carrito.html -> ../../index.html (Sube 2, va al index principal)
+            adminUrl = '../../index.html';
         } else {
             // Fallback
             homeUrl = 'RecirculateLoe/home/home.html';
@@ -183,7 +191,18 @@ class UserMenuManager {
         if (!this.isLoggedIn) {
             const userIcon = document.querySelector('.user-icon');
             if (userIcon) {
-                userIcon.href = '../../auth/login.html';
+                // ** LÓGICA DE RUTA CORREGIDA: Asume /auth/ está FUERA de RecirculateLoe **
+                const currentPath = window.location.pathname;
+                let loginUrl = '../../auth/login.html'; // Default para /home/ y /carrito/
+                
+                if (currentPath.includes('/pages/')) {
+                    loginUrl = '../../../auth/login.html';
+                } else if (currentPath.includes('/productos/')) {
+                    loginUrl = '../../../../auth/login.html';
+                }
+                // *******************************************************************
+                
+                userIcon.href = loginUrl;
                 userIcon.setAttribute('data-tooltip', 'INICIAR SESIÓN');
             }
         }
@@ -198,7 +217,19 @@ class UserMenuManager {
                 if (!this.isLoggedIn) {
                     userIcon.addEventListener('click', (e) => {
                         e.preventDefault();
-                        window.location.href = '../../auth/login.html';
+                        
+                        // ** LÓGICA DE RUTA CORREGIDA: Asume /auth/ está FUERA de RecirculateLoe **
+                        const currentPath = window.location.pathname;
+                        let loginUrl = '../../auth/login.html'; 
+                        
+                        if (currentPath.includes('/pages/')) {
+                            loginUrl = '../../../auth/login.html';
+                        } else if (currentPath.includes('/productos/')) {
+                            loginUrl = '../../../../auth/login.html';
+                        }
+                        // *******************************************************************
+                        
+                        window.location.href = loginUrl;
                     });
                 } else {
                     // Toggle del menú al hacer click en el ícono
@@ -263,21 +294,27 @@ class UserMenuManager {
             // Mostrar mensaje de confirmación
             alert('Has cerrado sesión exitosamente');
             
-            // Determinar ruta al login según ubicación actual
+            // ** LÓGICA DE RUTA CORREGIDA: Asume /auth/ está FUERA de RecirculateLoe **
             const currentPath = window.location.pathname;
             let loginUrl;
             
             if (currentPath.includes('/home/')) {
-                loginUrl = '../../auth/login.html';
+                // /RecirculateLoe/home/home.html -> ../../auth/login.html
+                loginUrl = '../../auth/login.html'; 
             } else if (currentPath.includes('/pages/')) {
-                loginUrl = '../../../auth/login.html';
+                // /RecirculateLoe/pages/buzos/buzos.html -> ../../../auth/login.html
+                loginUrl = '../../../auth/login.html'; 
             } else if (currentPath.includes('/productos/')) {
-                loginUrl = '../../../../../auth/login.html';
+                // /RecirculateLoe/pages/buzos/productos/item.html -> ../../../../auth/login.html
+                loginUrl = '../../../../auth/login.html'; 
             } else if (currentPath.includes('/carrito/')) {
-                loginUrl = '../../../auth/login.html';
+                // /RecirculateLoe/carrito/carrito.html -> ../../auth/login.html
+                loginUrl = '../../auth/login.html';
             } else {
-                loginUrl = 'auth/login.html';
+                // Fallback para raíz o ruta inesperada (debería ser ../auth/login.html)
+                loginUrl = '../auth/login.html';
             }
+            // *******************************************************************
             
             // Redirigir al login
             window.location.href = loginUrl;

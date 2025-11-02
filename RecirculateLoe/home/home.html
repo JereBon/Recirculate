@@ -19,7 +19,7 @@
         const user = JSON.parse(userData);
         // Cambiar el tooltip y el link si está logueado
         userIcon.setAttribute('data-tooltip', user.nombre.toUpperCase());
-        userIcon.setAttribute('href', '#'); // Mantener en la tienda
+        userIcon.setAttribute('href', 'javascript:void(0);'); // Cambiado para el toggle del menú
         
         // Opcional: Cambiar el ícono para indicar que está logueado
         userIcon.innerHTML = '<i class="fas fa-user-check"></i>';
@@ -91,16 +91,15 @@
 
     <hr class="sidebar-divider">
 
-    <div class="sidebar-auth-group">
-        <a href="../../auth/login.html" class="sidebar-main-link">INICIAR SESIÓN</a>
-        <a href="../../auth/registro.html" class="sidebar-main-link">REGISTRARSE</a>
+    <div class="sidebar-auth-group" id="sidebarAuthGroup">
+        <a href="../../auth/login.html" class="sidebar-main-link" id="sidebarLoginLink">INICIAR SESIÓN</a>
+        <a href="../../auth/registro.html" class="sidebar-main-link" id="sidebarRegisterLink">REGISTRARSE</a>
     </div>
   </div>
 </div>
 
 </div>
 
-<!-- Sidebar de Búsqueda (se abre desde el ícono de búsqueda) -->
 <div id="sidebar-search" class="sidebar search-sidebar">
   <div class="search-top">
     <div class="search-top-left">
@@ -114,12 +113,10 @@
 
   <div class="sidebar-search-content">
     <div id="search-results" class="search-results">
-      <!-- Resultados de búsqueda se insertan aquí -->
-    </div>
+      </div>
 
     <div id="search-suggestions" class="search-suggestions">
-      <!-- Sugerencias / productos pequeños (rellenados por JS) -->
-    </div>
+      </div>
   </div>
 </div>
 
@@ -192,79 +189,13 @@
       <h2>Ingresos</h2>
     </section>
 
-    <section class="featured-products-section">
-      <div class="product-grid">
-        <div class="product-card" data-product-name="Campera Ecocuero">
-          <div class="new-tag">NEW</div>
-          <div class="product-images">
-            <img src="../assets/images/pages/camperas/Campera Ecocuero 1.png" alt="Campera Ecocuero" class="main-image">
-            <img src="../assets/images/pages/camperas/Campera Ecocuero 2.png" alt="Campera Ecocuero" class="hover-image">
-          </div>
-          <h3>Campera Ecocuero</h3>
-          <p class="precio">$70.000 ARS</p>
-          <button class="add-to-cart-btn">Añadir al carrito</button>
-        </div>
-        <div class="product-card" data-product-name="Top Pegaso Bordo">
-          <div class="new-tag">NEW</div>
-          <div class="product-images">
-            <img src="../assets/images/pages/Mremeras/4 Top Pegaso Bordo a.png" alt="Top Pegaso Bordo" class="main-image">
-            <img src="../assets/images/pages/Mremeras/4 Top Pegaso Bordo b.png" alt="Top Pegaso Bordo" class="hover-image">
-          </div>
-          <h3>Top Pegaso Bordo</h3>
-          <p class="precio">$105.000 ARS</p>
-          <button class="add-to-cart-btn">Añadir al carrito</button>
-        </div>
-        <div class="product-card" data-product-name="Pollera Samer">
-          <div class="new-tag">NEW</div>
-          <div class="product-images">
-            <img src="../assets/images/pages/Mpolleras/1 Pollera Samer a.png" alt="Pollera Samer" class="main-image">
-            <img src="../assets/images/pages/Mpolleras/1 Pollera Samer b.png" alt="Pollera Samer" class="hover-image">
-          </div>
-          <h3>Pollera Samer</h3>
-          <p class="precio">$65.000 ARS</p>
-          <button class="add-to-cart-btn">Añadir al carrito</button>
-        </div>
-      </div>
-    </section>
+    <section class="featured-products-section"></section>
 
     <section class="discount-section">
       <h2>Descuentos</h2>
     </section>
 
-    <section class="featured-products-section">
-      <div class="product-grid">
-        <div class="product-card" data-product-name="Vestido Italo">
-          <div class="discount-tag">22% OFF</div>
-          <div class="product-images">
-            <img src="../assets/images/pages/Mvestidos/6 Vestido Italo a.png" alt="Vestido Italo" class="main-image">
-            <img src="../assets/images/pages/Mvestidos/6 Vestido Italo b.png" alt="Vestido Italo" class="hover-image">
-          </div>
-          <h3>Vestido Italo</h3>
-          <p class="precio">$138.000 ARS</p>
-          <button class="add-to-cart-btn">Añadir al carrito</button>
-        </div>
-        <div class="product-card" data-product-name="Remera Básica Negra">
-          <div class="discount-tag">23% OFF</div>
-          <div class="product-images">
-            <img src="../assets/images/pages/remeras/Remera_gris_1.png" alt="Remera Básica Negra" class="main-image">
-            <img src="../assets/images/pages/remeras/Remera_gris_2.png" alt="Remera Básica Negra" class="hover-image">
-          </div>
-          <h3>Remera Básica Negra</h3>
-          <p class="precio">$29.990 ARS</p>
-          <button class="add-to-cart-btn">Añadir al carrito</button>
-        </div>
-        <div class="product-card" data-product-name="Camisa Kalf Negra">
-          <div class="discount-tag">32% OFF</div>
-          <div class="product-images">
-            <img src="../assets/images/pages/camisas/Camisa Kalf Negra 1.png" alt="Camisa Kalf Negra" class="main-image">
-            <img src="../assets/images/pages/camisas/Camisa Kalf Negra 2.png" alt="Camisa Kalf Negra" class="hover-image">
-          </div>
-          <h3>Camisa Kalf Negra</h3>
-          <p class="precio">$37.000 ARS</p>
-          <button class="add-to-cart-btn">Añadir al carrito</button>
-        </div>
-      </div>
-    </section>
+    <section class="featured-products-section"></section>
   </main>
 
   <footer class="public-footer">
@@ -300,7 +231,6 @@
       </div>
     </div>
     
-    <!-- Línea divisoria -->
     <div class="footer-divider"></div>
     
     <div class="footer-bottom">

@@ -8,6 +8,22 @@
 <link rel="stylesheet" href="../../assets/catalogo-styles.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    // ** Lógica de verificación de usuario para el ícono de la cabecera (copiada de home.html) **
+    document.addEventListener('DOMContentLoaded', () => {
+      const authToken = localStorage.getItem('authToken');
+      const userData = localStorage.getItem('userData');
+      
+      const userIcon = document.querySelector('.user-icon');
+      
+      if (authToken && userData && userIcon) {
+        const user = JSON.parse(userData);
+        userIcon.setAttribute('data-tooltip', user.nombre.toUpperCase());
+        userIcon.setAttribute('href', 'javascript:void(0);');
+        userIcon.innerHTML = '<i class="fas fa-user-check"></i>';
+      }
+    });
+</script>
 </head>
 <body>
 
@@ -72,9 +88,9 @@
 
     <hr class="sidebar-divider">
 
-    <div class="sidebar-auth-group">
-        <a href="../../auth/login.html" class="sidebar-main-link">INICIAR SESIÓN</a>
-        <a href="../../auth/registro.html" class="sidebar-main-link">REGISTRARSE</a>
+    <div class="sidebar-auth-group" id="sidebarAuthGroup">
+        <a href="../../../auth/login.html" class="sidebar-main-link" id="sidebarLoginLink">INICIAR SESIÓN</a>
+        <a href="../../../auth/registro.html" class="sidebar-main-link" id="sidebarRegisterLink">REGISTRARSE</a>
     </div>
   </div>
 </div>
@@ -151,64 +167,7 @@
         </div>
     </div>
 
-    <section class="product-grid category-grid">
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mremeras/1 Remera Call Me a.png" alt="Remera 1" class="main-image">
-          <img src="../../assets/images/pages/Mremeras/1 Remera Call Me b.png" alt="Remera 1 Hover" class="hover-image">
-        </div>
-        <h3>Remera Call Me</h3>
-        <p class="precio">$95.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="discount-tag">12% OFF</div>
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mremeras/2 Top Aline Negro a.png" alt="Remera 2" class="main-image">
-          <img src="../../assets/images/pages/Mremeras/2 Top Aline Negro b.png" alt="Remera 2 Hover" class="hover-image">
-        </div>
-        <h3>Top Aline Negro</h3>
-        <p class="precio">$88.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mremeras/3 Remera Marina a.png" alt="Remera 3" class="main-image">
-          <img src="../../assets/images/pages/Mremeras/3 Remera Marina b.png" alt="Remera 3 Hover" class="hover-image">
-        </div>
-        <h3>Remera Marina</h3>
-        <p class="precio">$92.500 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="new-tag">NEW</div>
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mremeras/4 Top Pegaso Bordo a.png" alt="Remera 4" class="main-image">
-          <img src="../../assets/images/pages/Mremeras/4 Top Pegaso Bordo b.png" alt="Remera 4 Hover" class="hover-image">
-        </div>
-        <h3>Top Pegaso Bordo</h3>
-        <p class="precio">$105.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mremeras/5 Remera Milena a.png" alt="Remera 5" class="main-image">
-          <img src="../../assets/images/pages/Mremeras/5 Remera Milena b.png" alt="Remera 5 Hover" class="hover-image">
-        </div>
-        <h3>Remera Milena</h3>
-        <p class="precio">$98.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mremeras/6 Top Shifa a.png" alt="Remera 6" class="main-image">
-          <img src="../../assets/images/pages/Mremeras/6 Top Shifa b.png" alt="Remera 6 Hover" class="hover-image">
-        </div>
-        <h3>Top Shifa</h3>
-        <p class="precio">$110.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-    </section>
+    <section class="product-grid category-grid"></section>
   </main>
 
   <footer class="public-footer">
@@ -252,6 +211,7 @@
     </div>
   </footer>
   
+  <script src="../../assets/user-menu.js"></script>
   <script src="../../assets/pages.js"></script>
   <script src='https://cdn.jotfor.ms/agent/embedjs/019a2cafb84e7b99aae78f82f10fd7c58f53/embed.js'></script>
 </body>

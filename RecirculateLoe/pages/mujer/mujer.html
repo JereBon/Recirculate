@@ -8,6 +8,22 @@
   <link rel="stylesheet" href="../../assets/catalogo-styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+    // ** Lógica de verificación de usuario para el ícono de la cabecera (copiada de home.html) **
+    document.addEventListener('DOMContentLoaded', () => {
+      const authToken = localStorage.getItem('authToken');
+      const userData = localStorage.getItem('userData');
+      
+      const userIcon = document.querySelector('.user-icon');
+      
+      if (authToken && userData && userIcon) {
+        const user = JSON.parse(userData);
+        userIcon.setAttribute('data-tooltip', user.nombre.toUpperCase());
+        userIcon.setAttribute('href', 'javascript:void(0);');
+        userIcon.innerHTML = '<i class="fas fa-user-check"></i>';
+      }
+    });
+</script>
 </head>
 <body>
 
@@ -73,9 +89,9 @@
 
     <hr class="sidebar-divider">
 
-    <div class="sidebar-auth-group">
-        <a href="../../auth/login.html" class="sidebar-main-link">INICIAR SESIÓN</a>
-        <a href="../../auth/registro.html" class="sidebar-main-link">REGISTRARSE</a>
+    <div class="sidebar-auth-group" id="sidebarAuthGroup">
+        <a href="../../../auth/login.html" class="sidebar-main-link" id="sidebarLoginLink">INICIAR SESIÓN</a>
+        <a href="../../../auth/registro.html" class="sidebar-main-link" id="sidebarRegisterLink">REGISTRARSE</a>
     </div>
   </div>
 </div>
@@ -154,237 +170,7 @@
         </div>
     </div>
 
-    <section class="product-grid category-grid">
-      <!-- REMERAS/TOPS -->
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mremeras/1 Remera Call Me a.png" alt="Remera 1" class="main-image">
-          <img src="../../assets/images/pages/Mremeras/1 Remera Call Me b.png" alt="Remera 1 Hover" class="hover-image">
-        </div>
-        <h3>Remera Call Me</h3>
-        <p class="precio">$95.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="discount-tag">12% OFF</div>
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mremeras/2 Top Aline Negro a.png" alt="Remera 2" class="main-image">
-          <img src="../../assets/images/pages/Mremeras/2 Top Aline Negro b.png" alt="Remera 2 Hover" class="hover-image">
-        </div>
-        <h3>Top Aline Negro</h3>
-        <p class="precio">$88.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mremeras/3 Remera Marina a.png" alt="Remera 3" class="main-image">
-          <img src="../../assets/images/pages/Mremeras/3 Remera Marina b.png" alt="Remera 3 Hover" class="hover-image">
-        </div>
-        <h3>Remera Marina</h3>
-        <p class="precio">$92.500 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="new-tag">NEW</div>
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mremeras/4 Top Pegaso Bordo a.png" alt="Remera 4" class="main-image">
-          <img src="../../assets/images/pages/Mremeras/4 Top Pegaso Bordo b.png" alt="Remera 4 Hover" class="hover-image">
-        </div>
-        <h3>Top Pegaso Bordo</h3>
-        <p class="precio">$105.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mremeras/5 Remera Milena a.png" alt="Remera 5" class="main-image">
-          <img src="../../assets/images/pages/Mremeras/5 Remera Milena b.png" alt="Remera 5 Hover" class="hover-image">
-        </div>
-        <h3>Remera Milena</h3>
-        <p class="precio">$98.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mremeras/6 Top Shifa a.png" alt="Remera 6" class="main-image">
-          <img src="../../assets/images/pages/Mremeras/6 Top Shifa b.png" alt="Remera 6 Hover" class="hover-image">
-        </div>
-        <h3>Top Shifa</h3>
-        <p class="precio">$110.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-
-      <!-- VESTIDOS/MONOS -->
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mvestidos/1 Vestido Koki a.png" alt="Vestido 1" class="main-image">
-          <img src="../../assets/images/pages/Mvestidos/1 Vestido Koki b.png" alt="Vestido 1 Hover" class="hover-image">
-        </div>
-        <h3>Vestido Koki</h3>
-        <p class="precio">$125.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mvestidos/2 Vestido Dalia a.png" alt="Vestido 2" class="main-image">
-          <img src="../../assets/images/pages/Mvestidos/2 Vestido Dalia b.png" alt="Vestido 2 Hover" class="hover-image">
-        </div>
-        <h3>Vestido Dalia</h3>
-        <p class="precio">$118.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="new-tag">NEW</div>
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mvestidos/3 Mono Danilo a.png" alt="Mono 1" class="main-image">
-          <img src="../../assets/images/pages/Mvestidos/3 Mono Danilo b.png" alt="Mono 1 Hover" class="hover-image">
-        </div>
-        <h3>Mono Danilo</h3>
-        <p class="precio">$135.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mvestidos/4 Mono Matcha a.png" alt="Mono 2" class="main-image">
-          <img src="../../assets/images/pages/Mvestidos/4 Mono Matcha b.png" alt="Mono 2 Hover" class="hover-image">
-        </div>
-        <h3>Mono Matcha</h3>
-        <p class="precio">$145.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mvestidos/5 Mono Volans a.png" alt="Mono 3" class="main-image">
-          <img src="../../assets/images/pages/Mvestidos/5 Mono Volans b.png" alt="Mono 3 Hover" class="hover-image">
-        </div>
-        <h3>Mono Volans</h3>
-        <p class="precio">$152.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="discount-tag">22% OFF</div>
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mvestidos/6 Vestido Italo a.png" alt="Vestido 3" class="main-image">
-          <img src="../../assets/images/pages/Mvestidos/6 Vestido Italo b.png" alt="Vestido 3 Hover" class="hover-image">
-        </div>
-        <h3>Vestido Italo</h3>
-        <p class="precio">$138.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-
-      <!-- Polleras/Shorts/Skorts -->
-      <div class="product-card">
-        <div class="new-tag">NEW</div>
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mpolleras/1 Pollera Samer a.png" alt="Pollera 1" class="main-image">
-          <img src="../../assets/images/pages/Mpolleras/1 Pollera Samer b.png" alt="Pollera 1 Hover" class="hover-image">
-        </div>
-        <h3>Pollera Samer</h3>
-        <p class="precio">$65.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="discount-tag">30% OFF</div>
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mpolleras/2 Short Pascal a.png" alt="Short 1" class="main-image">
-          <img src="../../assets/images/pages/Mpolleras/2 Short Pascal b.png" alt="Short 1 Hover" class="hover-image">
-        </div>
-        <h3>Short Pascal</h3>
-        <p class="precio">$52.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mpolleras/3 Skort Corvus a.png" alt="Skort 1" class="main-image">
-          <img src="../../assets/images/pages/Mpolleras/3 Skort Corvus b.png" alt="Skort 1 Hover" class="hover-image">
-        </div>
-        <h3>Skort Corvus</h3>
-        <p class="precio">$72.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mpolleras/4 Skort Pixis a.png" alt="Skort 2" class="main-image">
-          <img src="../../assets/images/pages/Mpolleras/4 Skort Pixis b.png" alt="Skort 2 Hover" class="hover-image">
-        </div>
-        <h3>Skort Pixis</h3>
-        <p class="precio">$68.500 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mpolleras/5 Short Prana a.png" alt="Short 2" class="main-image">
-          <img src="../../assets/images/pages/Mpolleras/5 Short Prana b.png" alt="Short 2 Hover" class="hover-image">
-        </div>
-        <h3>Short Prana</h3>
-        <p class="precio">$58.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/Mpolleras/6 Pollera Monique a.png" alt="Pollera 2" class="main-image">
-          <img src="../../assets/images/pages/Mpolleras/6 Pollera Monique b.png" alt="Pollera 2 Hover" class="hover-image">
-        </div>
-        <h3>Pollera Monique</h3>
-        <p class="precio">$75.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-
-      <!-- UNISEX (BUZOS) -->
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/buzos/Buzo Basico Blanco 1.png" alt="Buzo 1" class="main-image">
-          <img src="../../assets/images/pages/buzos/Buzo Basico Blanco 2.png" alt="Buzo 1 Hover" class="hover-image">
-        </div>
-        <h3>Buzo Básico Blanco</h3>
-        <p class="precio">$35.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/buzos/Buzo Canguro Over Jem 1.png" alt="Buzo 2" class="main-image">
-          <img src="../../assets/images/pages/buzos/Buzo Canguro Over Jem 2.png" alt="Buzo 2 Hover" class="hover-image">
-        </div>
-        <h3>Buzo Canguro Over Jem</h3>
-        <p class="precio">$38.500 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/buzos/Buzo Nova Ideas 1.png" alt="Buzo 3" class="main-image">
-          <img src="../../assets/images/pages/buzos/Buzo Nova Ideas 2.png" alt="Buzo 3 Hover" class="hover-image">
-        </div>
-        <h3>Buzo Nova Ideas</h3>
-        <p class="precio">$42.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/buzos/Buzo Roux Negro 1.png" alt="Buzo 4" class="main-image">
-          <img src="../../assets/images/pages/buzos/Buzo Roux Negro 2.png" alt="Buzo 4 Hover" class="hover-image">
-        </div>
-        <h3>Buzo Roux Negro</h3>
-        <p class="precio">$40.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/buzos/Buzo Ethereal Oxido 1.png" alt="Buzo 5" class="main-image">
-          <img src="../../assets/images/pages/buzos/Buzo Ethereal Oxido 2.png" alt="Buzo 5 Hover" class="hover-image">
-        </div>
-        <h3>Buzo Ethereal Oxido</h3>
-        <p class="precio">$36.900 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/buzos/Buzo OC Negro 1.png" alt="Buzo 6" class="main-image">
-          <img src="../../assets/images/pages/buzos/Buzo OC Negro 2.png" alt="Buzo 6 Hover" class="hover-image">
-        </div>
-        <h3>Buzo OC Negro</h3>
-        <p class="precio">$39.500 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-    </section>
+    <section class="product-grid category-grid"></section>
   </main>
 
   <footer class="public-footer">
@@ -425,6 +211,7 @@
     </div>
   </footer>
 
+  <script src="../../assets/user-menu.js"></script>
   <script src="../../assets/utils.js"></script>
   <script src="../../assets/pages.js"></script>
   <script src='https://cdn.jotfor.ms/agent/embedjs/019a2cafb84e7b99aae78f82f10fd7c58f53/embed.js'></script>

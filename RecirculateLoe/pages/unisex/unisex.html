@@ -8,6 +8,22 @@
 <link rel="stylesheet" href="../../assets/catalogo-styles.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    // ** Lógica de verificación de usuario para el ícono de la cabecera (copiada de home.html) **
+    document.addEventListener('DOMContentLoaded', () => {
+      const authToken = localStorage.getItem('authToken');
+      const userData = localStorage.getItem('userData');
+      
+      const userIcon = document.querySelector('.user-icon');
+      
+      if (authToken && userData && userIcon) {
+        const user = JSON.parse(userData);
+        userIcon.setAttribute('data-tooltip', user.nombre.toUpperCase());
+        userIcon.setAttribute('href', 'javascript:void(0);');
+        userIcon.innerHTML = '<i class="fas fa-user-check"></i>';
+      }
+    });
+</script>
 </head>
 <body>
 
@@ -72,9 +88,9 @@
 
     <hr class="sidebar-divider">
 
-    <div class="sidebar-auth-group">
-        <a href="../../auth/login.html" class="sidebar-main-link">INICIAR SESIÓN</a>
-        <a href="../../auth/registro.html" class="sidebar-main-link">REGISTRARSE</a>
+    <div class="sidebar-auth-group" id="sidebarAuthGroup">
+        <a href="../../../auth/login.html" class="sidebar-main-link" id="sidebarLoginLink">INICIAR SESIÓN</a>
+        <a href="../../../auth/registro.html" class="sidebar-main-link" id="sidebarRegisterLink">REGISTRARSE</a>
     </div>
   </div>
 </div>
@@ -150,62 +166,7 @@
         </div>
     </div>
 
-    <section class="product-grid category-grid">
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/buzos/Buzo Basico Blanco 1.png" alt="Buzo 1" class="main-image">
-          <img src="../../assets/images/pages/buzos/Buzo Basico Blanco 2.png" alt="Buzo 1 Hover" class="hover-image">
-        </div>
-        <h3>Buzo Básico Blanco</h3>
-        <p class="precio">$35.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/buzos/Buzo Canguro Over Jem 1.png" alt="Buzo 2" class="main-image">
-          <img src="../../assets/images/pages/buzos/Buzo Canguro Over Jem 2.png" alt="Buzo 2 Hover" class="hover-image">
-        </div>
-        <h3>Buzo Canguro Over Jem</h3>
-        <p class="precio">$38.500 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/buzos/Buzo Nova Ideas 1.png" alt="Buzo 3" class="main-image">
-          <img src="../../assets/images/pages/buzos/Buzo Nova Ideas 2.png" alt="Buzo 3 Hover" class="hover-image">
-        </div>
-        <h3>Buzo Nova Ideas</h3>
-        <p class="precio">$42.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/buzos/Buzo Roux Negro 1.png" alt="Buzo 4" class="main-image">
-          <img src="../../assets/images/pages/buzos/Buzo Roux Negro 2.png" alt="Buzo 4 Hover" class="hover-image">
-        </div>
-        <h3>Buzo Roux Negro</h3>
-        <p class="precio">$40.000 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/buzos/Buzo Ethereal Oxido 1.png" alt="Buzo 5" class="main-image">
-          <img src="../../assets/images/pages/buzos/Buzo Ethereal Oxido 2.png" alt="Buzo 5 Hover" class="hover-image">
-        </div>
-        <h3>Buzo Ethereal Oxido</h3>
-        <p class="precio">$36.900 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-      <div class="product-card">
-        <div class="product-images">
-          <img src="../../assets/images/pages/buzos/Buzo OC Negro 1.png" alt="Buzo 6" class="main-image">
-          <img src="../../assets/images/pages/buzos/Buzo OC Negro 2.png" alt="Buzo 6 Hover" class="hover-image">
-        </div>
-        <h3>Buzo OC Negro</h3>
-        <p class="precio">$39.500 ARS</p>
-        <button class="add-to-cart-btn">Añadir al carrito</button>
-      </div>
-    </section>
+    <section class="product-grid category-grid"></section>
   </main>
 
   <footer class="public-footer">
@@ -249,6 +210,7 @@
     </div>
   </footer>
   
+  <script src="../../assets/user-menu.js"></script>
   <script src="../../assets/pages.js"></script>
   <script src='https://cdn.jotfor.ms/agent/embedjs/019a2cafb84e7b99aae78f82f10fd7c58f53/embed.js'></script>
 </body>
