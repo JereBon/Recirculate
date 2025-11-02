@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const imagenEspaldaInput = document.getElementById('imagen-espalda-file');
   const previewFrente = document.getElementById('preview-frente');
   const previewEspalda = document.getElementById('preview-espalda');
-  const statusFrente = document.getElementById('status-frente');
-  const statusEspalda = document.getElementById('status-espalda');
+  const statusFrente = document.getElementById('imagen-frente-status');
+  const statusEspalda = document.getElementById('imagen-espalda-status');
 
   // Función para subir imagen a Cloudinary
   async function uploadImageToCloudinary(file, tipo) {
