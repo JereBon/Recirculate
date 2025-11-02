@@ -1,0 +1,1475 @@
+/* assets/public-styles.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+/* --- Reset Box-Sizing Global --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* --- Estilos Generales y Tipografía --- */
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+body, html {
+  height: 100%;
+  margin: 0;
+  background: #fafafa;
+  color: #222;
+  font-family: "Poppins", sans-serif;
+  overflow-x: hidden;
+}
+
+:root {
+  /* Variable que define la altura del header; se ajusta por media queries más abajo */
+  --site-header-height: 100px;
+  /* Search sidebar customizations */
+  --search-divider-height: 1px; /* puedes ajustar el grosor de la linea */
+  --search-input-opacity: 0.9; /* opacidad del background del input (1 = opaco) */
+  --search-input-bg: rgba(255,255,255,var(--search-input-opacity));
+  --search-input-placeholder-color: rgba(0,0,0,0.45);
+  /* Ancho configurable del sidebar de búsqueda (ajusta este valor para "subir" o "bajar" la búsqueda) */
+  --search-sidebar-width: 350px; /* ancho por defecto en escritorio */
+  --search-sidebar-max-width: 420px; /* máximo disponible si se desea usar */
+}
+.search-top {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 14px 18px 10px 18px;
+}
+.search-top-left {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex:1;
+}
+.search-top-input {
+  flex:1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  background: var(--search-input-bg);
+  outline: none;
+  font-size: 0.95rem;
+  color: #222;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+.search-top-input::placeholder { color: var(--search-input-placeholder-color); }
+.search-top .header-icon.search-icon { color: rgba(0,0,0,0.6); font-size:1rem; background:none; border:none; }
+.search-top .close-btn { font-size:20px; background:none; border:none; color:#222; }
+
+.search-divider {
+  height: var(--search-divider-height);
+  border: none;
+  background: #e6e6e6;
+  margin: 0;
+}
+
+/* Ensure the sidebar content area has padding and minimal look */
+.sidebar-search-content { padding: 14px 18px; }
+
+/* By default results/suggestions are hidden; JS will add .visible */
+.search-results { display:none; }
+.search-results.visible { display:flex; flex-direction:column; gap:10px; }
+.search-suggestions { display:none; }
+.search-suggestions.visible { display:flex; gap:10px; flex-wrap:wrap; }
+
+/* Tweak input appearance on focus */
+.search-top-input:focus { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+
+@media (max-width: 768px) {
+  .search-top { padding: 12px; }
+  .search-top-input { padding: 12px; font-size: 1rem; }
+}
+
+/* --- Estilos del Header --- */
+
+.public-header.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* Evitar tapar la scrollbar en desktop usando calc; en móviles se usará 100% via media query */
+  width: calc(100% - 17px); /* 17px scrollbar típico en Windows */
+  max-width: 100%;
+  box-sizing: border-box;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #ffd84d;
+  /* Usar variable en lugar de valor fijo para que el contenido pueda respetar el espacio del header */
+  height: var(--site-header-height);
+  padding: 0;
+}
+
+/* Ajustar el grid del header para mejor distribución */
+.header-nav {
+  display: grid;
+  grid-template-columns: 250px 1fr 250px; /* Columnas fijas para los laterales */
+  align-items: center;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  /* Mantener altura relativa al header para que el logo se centre verticalmente */
+  max-height: calc(100% - 12px); /* espacio de respiración respecto al header */
+}
+
+/* Centrar el logo en la columna del medio */
+.header-nav > .header-logo {
+  justify-self: center; /* Centra el elemento en su columna del grid */
+  grid-column: 2;
+  text-align: center;
+  min-width: 0; 
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: flex-start;
+  padding-left: 1rem;
+  grid-column: 1;
+  min-width: 0; /* Permite que el contenedor se encoja si es necesario */
+  flex-shrink: 1; /* permitir que se encoja en pantallas/zoom altos */
+  white-space: nowrap; /* Mantiene los elementos en una línea */
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding-right: 1rem;
+  grid-column: 3;
+  min-width: 0;
+  flex-shrink: 1;
+  white-space: nowrap;
+}
+
+.header-logo {
+  display: inline-flex; /* Cambiado de flex a inline-flex */
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: auto; /* Solo el tamaño del contenido */
+  height: auto; /* Solo el tamaño del contenido */
+}
+
+.logo-image {
+  /* Mantener un tamaño máximo consistente para evitar que el logo cambie de tamaño inesperadamente */
+  max-height: 64px; /* menor que la altura del header para asegurar centrado vertical */
+  height: auto;
+  width: auto;
+  max-width: 350px;
+  object-fit: contain;
+  transition: transform 0.2s;
+  display: block;
+  margin: 0 auto;
+}
+
+.logo-image:hover {
+  transform: scale(1.05);
+}
+
+/* --- Fix: forzar centrado vertical absoluto del header (icons + logo) --- */
+/* Usamos selectores con mayor especificidad y algunos !important para evitar overrides dispersos */
+.public-header.fixed-header .header-nav {
+  align-items: center; /* grid centering */
+  height: 100%;
+}
+
+.public-header.fixed-header .header-left,
+.public-header.fixed-header .header-right,
+.public-header.fixed-header .header-logo {
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start;
+}
+
+.public-header.fixed-header .header-right { justify-content: flex-end !important; }
+
+/* Forzar que los iconos y logo se alineen al centro de su contenedor */
+.public-header.fixed-header .header-icon,
+.public-header.fixed-header .logo-image {
+  align-self: center !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  vertical-align: middle !important;
+}
+
+/* Asegurar que el buscador (absoluto) se centre en el contenedor */
+.public-header.fixed-header .search-container { align-items: center !important; }
+.public-header.fixed-header .search-input { top: 50% !important; transform: translateY(-50%) !important; }
+
+/* Evitar que paddings o line-heights heredados empujen hacia arriba */
+.public-header.fixed-header, .public-header.fixed-header * {
+  line-height: normal !important;
+}
+
+.header-icon {
+  position: relative;
+  font-size: 1rem;
+  color: #222;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "Poppins", sans-serif;
+  text-decoration: none;
+  flex-shrink: 0; /* Evita que los íconos se encojan */
+  white-space: nowrap; /* Mantiene el texto en una línea */
+  min-width: max-content; /* Asegura que mantenga su tamaño mínimo */
+}
+
+.header-icon i {
+    font-size: 1.2rem;
+}
+
+.header-icon:hover {
+  color: #555;
+}
+
+/* --- Tooltip --- */
+.user-icon[data-tooltip]::after, .user-icon[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  z-index: 1000;
+}
+.user-icon[data-tooltip]:hover::after, .user-icon[data-tooltip]:hover::before {
+  opacity: 1;
+}
+.user-icon[data-tooltip]::after {
+  bottom: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #222;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+.user-icon[data-tooltip]::before {
+  content: '';
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: #222;
+}
+
+/* --- Buscador Integrado --- */
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0; /* Evita que se encoja */
+}
+
+.search-input {
+  position: absolute;
+  left: 45px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  padding: 0;
+  border: none;
+  border-bottom: 2px solid #222;
+  outline: none;
+  background-color: #ffd84d;
+  transition: width 0.4s ease-in-out, padding 0.4s ease-in-out;
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  z-index: 100;
+}
+
+.search-container.active .search-input {
+  width: 250px;
+  padding: 5px 10px;
+}
+
+/* --- Contador del Carrito --- */
+.cart-counter {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ff4d4d;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* --- Menú Desplegable de Usuario --- */
+.user-menu-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  width: 320px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 10000;
+}
+
+.user-menu-dropdown.active {
+  max-height: 600px;
+  opacity: 1;
+  transform: translateY(0);
+  overflow-y: auto;
+}
+
+.user-menu-header {
+  padding: 20px;
+  background: linear-gradient(135deg, #ffd84d 0%, #ffcd1a 100%);
+  border-radius: 12px 12px 0 0;
+  text-align: center;
+}
+
+.user-menu-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.user-menu-options {
+  padding: 12px 0;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.user-menu-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  color: #222;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background 0.2s;
+  border: none;
+  background: none;
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+  font-family: "Poppins", sans-serif;
+}
+
+.user-menu-option:hover {
+  background: #f8f8f8;
+}
+
+.user-menu-option i {
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+  color: #666;
+}
+
+.user-menu-option.admin-option {
+  color: #5cb85c;
+}
+
+.user-menu-option.admin-option i {
+  color: #5cb85c;
+}
+
+.user-history-section {
+  padding: 16px;
+}
+
+.user-history-title {
+  margin: 0 0 12px 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.history-carousel {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: #ddd transparent;
+}
+
+.history-carousel::-webkit-scrollbar {
+  height: 6px;
+}
+
+.history-carousel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.history-carousel::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 3px;
+}
+
+.history-carousel::-webkit-scrollbar-thumb:hover {
+  background: #bbb;
+}
+
+.history-item {
+  flex: 0 0 auto;
+  width: 90px;
+  text-decoration: none;
+  color: #222;
+  transition: transform 0.2s;
+}
+
+.history-item:hover {
+  transform: translateY(-4px);
+}
+
+.history-item-image {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #e6e6e6;
+  margin-bottom: 6px;
+}
+
+.history-item-name {
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.history-item-price {
+  font-size: 0.75rem;
+  color: #666;
+  font-weight: 600;
+}
+
+.history-empty {
+  text-align: center;
+  padding: 20px;
+  color: #999;
+  font-size: 0.9rem;
+}
+
+/* Responsivo para móvil */
+@media (max-width: 768px) {
+  .user-menu-dropdown {
+    width: calc(100vw - 40px);
+    right: 20px;
+  }
+  
+  .history-item {
+    width: 80px;
+  }
+  
+  .history-item-image {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+/* --- Menú Lateral (Sidebar) --- */
+
+
+/* assets/public-styles.css */
+
+/* --- Estilos del Menú Lateral (Sidebar) --- */
+
+/* Contenedor de la lista de enlaces */
+
+/* --- Estilos para la línea divisoria --- */
+.sidebar-divider {
+    border: none;
+    border-top: 1px solid #e0e0e0; /* Color gris claro */
+    margin: 15px 0; /* Espacio vertical alrededor del separador */
+    width: 100%; /* Ancho que ocupa la línea */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* El grupo de autenticación es opcional, pero le da estructura al final del menú */
+.sidebar-auth-group a {
+    font-size: 1.1rem; /* Un poco más pequeño que las categorías principales */
+    font-weight: normal;
+}
+
+.sidebar-menu-list {
+    padding: 10px 0;
+    width: 100%;
+}
+
+/* Enlaces principales y generales */
+.sidebar a {
+    padding: 12px 32px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    color: #222;
+    display: block;
+    transition: background-color 0.3s;
+}
+
+.sidebar-main-link {
+    font-weight: bold;
+    padding: 15px 32px; /* Un poco más de espacio para enlaces principales */
+}
+
+/* Contenedor de la categoría con submenú (Hombre/Mujer) */
+.sidebar-category {
+    border-bottom: 1px solid #eee;
+    user-select: none; /* Evita selección de texto al hacer click */
+}
+
+/* Título de la categoría (donde se hace click) */
+.sidebar-category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 32px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: background-color 0.2s;
+    color: #222;
+}
+
+.sidebar-category-header:hover {
+    background-color: #f1f1f1;
+}
+
+/* Ícono de flecha (toggle) */
+.sidebar-category-header .toggle-icon {
+    transition: transform 0.3s ease-out;
+}
+
+/* Clase activa: rotar flecha hacia abajo */
+.sidebar-category.active .toggle-icon {
+    transform: rotate(90deg);
+}
+
+/* Contenedor del submenú */
+.sidebar-submenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
+    background-color: #f8f8f8; /* Fondo sutil para el submenú */
+}
+
+/* Estilo para los enlaces dentro del submenú */
+.sidebar-submenu a {
+    font-size: 1.1rem;
+    padding: 10px 32px 10px 50px; /* Indentación para diferenciar */
+    color: #444;
+}
+
+.sidebar-submenu a:hover {
+    background-color: #eee;
+}
+
+/* Clase activa: muestra el submenú */
+.sidebar-category.active .sidebar-submenu {
+    max-height: 500px !important; /* Valor grande para asegurar que se muestre todo el contenido */
+}
+
+.sidebar {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1001;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 90px;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+.sidebar.open {
+  width: 350px;
+}
+.sidebar a {
+  padding: 12px 32px;
+  text-decoration: none;
+  font-size: 1.2rem;
+  color: #222;
+  display: block;
+  transition: 0.3s;
+}
+.sidebar a:hover {
+  background-color: #f1f1f1;
+}
+.sidebar .close-btn {
+  position: absolute;
+  top: 30px;
+  right: 20px; /* Cambiado de left a right con el mismo margen que los enlaces */
+  font-size: 30px;
+  color: #222;
+  border: none;
+  background: none;
+  cursor: pointer;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.menu-icon {
+  font-size: 1.5rem;
+  padding: 10px;
+}
+
+/* --- Estilos de Secciones Principales --- */
+.public-main {
+  max-width: 1400px; /* Añadimos un max-width */
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem; /* Reducimos significativamente el padding */
+  /* Usar la variable del header para reservar espacio en la parte superior */
+  padding-top: calc(var(--site-header-height) + 45px);
+  transition: opacity 0.5s;
+}
+
+/* FORZAR que TODO dentro de public-main respete los límites */
+.public-main > * {
+  max-width: 100%;
+}
+
+/* --- Overlay --- */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: none;
+  transition: background-color 0.5s;
+}
+body.sidebar-active .public-main, body.sidebar-active .public-footer {
+  opacity: 0.7;
+  
+}
+body.sidebar-active .overlay {
+  display: block;
+}
+
+/* --- Hero Section --- */
+/* Ajustar el hero section para asegurar que tenga su espacio */
+.animated-hero-section {
+  text-align: center;
+  padding: 8rem 2rem 8rem 2rem; /* Aumentamos el padding inferior */
+  margin-top: 8.5rem;
+  margin-bottom: 2rem; /* Añadimos margen inferior */
+  background-image: url(./images/Banner.jpeg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #353434;
+  position: relative; /* Aseguramos que tenga posición relativa */
+  z-index: 3; /* Forzar hero por delante del carrusel */
+}
+
+.animated-title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: #222121;
+  margin-bottom: 30px;
+}
+
+.word-wrapper {
+  display: inline-block;
+  position: relative;
+  width: 250px;
+  text-align: left;
+  height: 50px;
+}
+
+.word {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+}
+
+.word.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Sección Beneficios --- */
+.benefits-section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  text-align: center;
+  margin: 60px 0;
+  padding: 0;
+  width: 100%;
+}
+.benefit-item { padding: 20px 0; }
+.benefit-icon { font-size: 2.5rem; color: #222; margin-bottom: 10px; }
+.benefit-item h4 { font-size: 1rem; font-weight: bold; margin: 0 0 5px 0; }
+.benefit-item p { font-size: 0.9rem; color: #555; margin: 0; }
+
+/* --- Carrusel --- */
+.carrusel-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  height: 700px;
+  min-height: 400px;
+  margin: -9rem auto 30px auto;
+  gap: 8px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1; /* dejar por debajo del hero */
+}
+
+.carrusel-item {
+  position: relative;
+  flex: 1 1 0;
+  cursor: pointer;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: flex-grow 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carrusel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease-in-out;
+}
+
+.carrusel-item .carrusel-text {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  color: white;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+.carrusel-item:hover { flex-grow: 3; }
+.carrusel-item:hover img { transform: scale(1.05); }
+.carrusel-item:hover .carrusel-text { opacity: 1; }
+
+/* --- Grilla de Productos y Animación --- */
+.featured-products-section { text-align: center; margin: 60px 0; padding: 0; }
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3rem;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+.product-card {
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem; /* SOLUCIÓN: Añadimos un padding interno */
+  text-align: center;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(20px);
+  filter: blur(5px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out, filter 0.6s ease-out;
+}
+.product-card.animate-visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+.product-images {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+.product-images img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.4s ease-in-out, filter 0.4s ease-in-out;
+}
+.product-images .hover-image { opacity: 0; filter: brightness(0.8); }
+.product-card:hover .product-images .main-image { opacity: 0; filter: brightness(0.6); }
+.product-card:hover .product-images .hover-image { opacity: 1; filter: brightness(1.2); }
+.product-card h3 { margin: 0.5rem 0; font-size: 1.15rem; }
+.product-card p { font-size: 1rem; font-weight: bold; color: #444; margin-bottom: 1rem; }
+.product-card .precio { color: #ff0000; }
+.add-to-cart-btn {
+  background-color: #ffd84d;
+  color: #000;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin: auto 0 0 0;
+}
+.add-to-cart-btn:hover { background-color: #ffe98a; }
+
+/* --- Sección Ingresos --- */
+.ingresos-section {
+  text-align: center;
+  margin: 60px 0;
+  padding: 0;
+}
+
+/* --- Sección Descuentos --- */
+.discount-section { text-align: center; margin: 60px 0; padding: 0; }
+.discount-btn {
+  background-color: #ffd84d;
+  color: #222;
+  border: none;
+  padding: 1rem 2.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.discount-btn:hover { background-color: #ffe98a; }
+.discount-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #28a745;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  z-index: 10;
+}
+
+/* --- NUEVOS ESTILOS: SECCIÓN CATEGORÍA GÉNERO --- */
+.gender-category-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin: 60px 0;
+}
+
+.gender-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  display: block;
+  text-decoration: none;
+}
+
+.gender-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease-out;
+}
+
+.gender-card:hover img {
+  transform: scale(1.05);
+}
+
+.gender-card h2 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 2.5rem;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  margin: 0;
+}
+
+/* assets/public-styles.css */
+
+/* ... (cerca de .discount-tag) ... */
+
+.new-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #ffd84d; /* Color amarillo */
+  color: #222; /* Texto oscuro */
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  z-index: 10;
+  font-size: 0.8rem; /* Un poco más pequeño */
+}
+
+/* Animación de entrada de la ventana */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Footer --- */
+.public-footer { 
+  background-color: #222; 
+  color: #fff; 
+  padding: 40px 20px;
+  width: 100%;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 3rem 30px;
+  gap: 2rem;
+}
+
+.footer-divider {
+  width: 100%;
+  max-width: 1100px;
+  height: 1px;
+  background-color: #444;
+  margin: 0 auto 20px;
+}
+
+.footer-column { 
+  flex: 1 1 200px; 
+  margin-bottom: 20px;
+  min-width: 200px;
+}
+
+.footer-column h4 { 
+  font-size: 1.2rem; 
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.footer-column p, .footer-column ul, .footer-column li { 
+  margin: 0; 
+  padding: 0; 
+  list-style: none;
+  line-height: 1.8;
+}
+
+.footer-column a { 
+  color: #fff; 
+  text-decoration: none; 
+  transition: color 0.2s;
+  display: inline-block;
+  margin: 5px 0;
+}
+
+.footer-column a:hover { 
+  color: #ffd84d;
+  transform: translateX(3px);
+}
+
+.social-icons { 
+  display: flex; 
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.social-icons a { 
+  font-size: 1.5rem;
+  transition: transform 0.2s;
+}
+
+.social-icons a:hover {
+  transform: scale(1.2);
+}
+
+.footer-bottom { 
+  text-align: center; 
+  padding-top: 20px;
+
+/* --- Estilos para el Sidebar de Búsqueda --- */
+.search-sidebar .sidebar-search-content {
+  padding: 20px 24px;
+}
+
+.search-sidebar h3 { margin-top: 0; font-size: 1.25rem; }
+
+.search-sidebar-input {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0 18px 0;
+}
+
+.search-sidebar-input input[type="text"] {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+}
+
+.search-sidebar-input .btn {
+  background: #ffd84d;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.search-results { display: none; flex-direction: column; gap: 10px; }
+.search-results.visible { display: flex; }
+.search-result-card { display: flex; gap: 12px; align-items: center; padding: 8px; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
+.search-result-card:hover { background: #f5f5f5; }
+.search-thumb { width: 64px; height: 64px; object-fit: cover; border-radius: 6px; }
+.search-info { display:flex; flex-direction: column; }
+.search-name { font-size: 0.95rem; }
+.search-price { font-size: 0.85rem; color: #666; }
+.no-results { color:#666; padding: 8px 0; }
+
+.search-suggestions { display:none; gap:10px; flex-wrap:wrap; margin-top:10px; }
+.search-suggestions.visible { display:flex; }
+.search-suggest-item { display:flex; gap:8px; align-items:center; cursor:pointer; padding:6px 8px; border-radius:6px; transition:background 0.12s; }
+.search-suggest-item:hover { background:#f5f5f5; }
+.suggest-thumb { width:48px; height:48px; object-fit:cover; border-radius:6px; }
+.suggest-name { font-size:0.85rem; }
+
+/* Ajustes responsivos para sidebar */
+@media (max-width: 768px) {
+  .sidebar.open { width: 100%; }
+}
+
+/* Specific styles for search sidebar (overrides and improvements) */
+.sidebar.search-sidebar {
+  left: 0;
+  right: auto;
+  width: 0;
+  max-width: 420px; /* slightly larger if space allows */
+  transition: width 0.35s ease, transform 0.35s ease;
+  background: #fff;
+  z-index: 99999 !important; /* ensure search sidebar is above overlay/other elements */
+  padding-top: 90px;
+}
+.sidebar.search-sidebar.open {
+  width: var(--search-sidebar-width);
+}
+
+/* Ensure content inside search sidebar scrolls if needed */
+.sidebar.search-sidebar .sidebar-search-content {
+  height: calc(100vh - 120px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Make sure overlay shows consistently using body.sidebar-active */
+body.sidebar-active .overlay { display: block; }
+
+/* Visual tweaks */
+.sidebar.search-sidebar .close-btn { right: 18px; }
+.search-sidebar .sidebar-search-content h4 { margin-top: 18px; }
+
+@media (max-width: 768px) {
+  .sidebar.search-sidebar.open { width: 100%; padding-top: 80px; }
+  .search-sidebar .sidebar-search-content { padding: 14px; }
+  .search-thumb { width: 56px; height: 56px; }
+}
+  max-width: 1000px;
+  margin: 0 auto;
+  font-size: 0.9rem;
+  color: #999;
+}
+
+/* --- Media Queries --- */
+@media (max-width: 900px) {
+  .product-grid, .benefits-section { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .header-nav { grid-template-columns: 1fr; gap: 1rem; padding: 1rem; }
+  .header-left, .header-right { width: 100%; justify-content: space-between; }
+  .sidebar.open { width: 70%; }
+  .footer-container { flex-direction: column; align-items: center; text-align: center; }
+  /* Centrar iconos sociales en móvil */
+  .social-icons {
+    justify-content: center;
+    margin: 1rem auto;
+    width: 100%;
+  }
+}
+@media (max-width: 600px) {
+  .product-grid, .benefits-section { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .animated-title { font-size: 2rem; }
+  .hero-subtitle { font-size: 1rem; }
+  .sidebar.open { width: 90%; }
+}
+
+@media (max-width: 1200px) {
+  .header-nav {
+    padding: 0 1.5rem;
+  }
+  .public-main {
+    padding: 0 1.5rem;
+  }
+  .carrusel-container {
+    min-height: 350px;
+  }
+  .carrusel-item {
+    min-height: 350px;
+  }
+}
+
+/* Ajustes responsivos para la variable --site-header-height (para reservar espacio del header) */
+@media (max-width: 992px) {
+  :root { --site-header-height: 80px; }
+}
+@media (max-width: 600px) {
+  :root { --site-header-height: 68px; }
+}
+@media (max-width: 420px) {
+  :root { --site-header-height: 72px; }
+}
+
+@media (max-width: 992px) {
+  .header-nav {
+    grid-template-columns: 150px 1fr 150px;
+    padding: 0 1rem;
+  }
+  .carrusel-container {
+    flex-wrap: wrap;
+    height: auto;
+    margin-top: 1rem;
+  }
+  .carrusel-item {
+    flex: 1 1 calc(50% - 8px);
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .public-header.fixed-header {
+    height: auto;
+    min-height: 80px;
+    width: 100%; /* asegurar full width en móviles */
+  }
+  .header-nav {
+    grid-template-columns: 1fr;
+    padding: 0.5rem;
+  }
+  .header-left, .header-right {
+    padding: 0.5rem;
+  }
+  .carrusel-item {
+    flex: 1 1 100%;
+    min-height: 250px;
+  }
+  .search-container.active .search-input {
+    width: 200px;
+  }
+}
+
+/* Mobile-specific tweaks: aumentar logo y forzar centrado vertical sin afectar escritorio */
+@media (max-width: 600px) {
+  .public-header.fixed-header {
+    min-height: 68px;
+    padding: 6px 10px;
+  }
+
+  .public-header.fixed-header .header-nav {
+    padding: 0 0.75rem;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+  }
+
+  .public-header.fixed-header .logo-image {
+    max-height: 52px; /* más grande en móvil para mejor visibilidad */
+    width: auto;
+  }
+
+  .public-header.fixed-header .header-left,
+  .public-header.fixed-header .header-right,
+  .public-header.fixed-header .header-logo {
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .public-header.fixed-header .header-left { justify-content: flex-start !important; }
+  .public-header.fixed-header .header-right { justify-content: flex-end !important; }
+
+  .public-header.fixed-header .header-icon {
+    font-size: 1rem;
+  }
+
+  .public-header.fixed-header .search-input {
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+  }
+}
+
+/* Small devices (iPhone 12 / similar) tweaks */
+/* Estilos para breadcrumbs y filtros */
+.breadcrumb-container {
+  padding: 1rem;
+  margin: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.breadcrumb-item {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.page-title {
+  padding: 1rem;
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.filter-sort-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1rem;
+  align-items: center;
+}
+
+.filter-button,
+.sort-button {
+  padding: 0.5rem 1rem;
+  white-space: nowrap;
+  min-width: auto;
+  flex: 0 1 auto;
+}
+
+@media (max-width: 420px) {
+  /* Empujar elementos importantes por debajo del header fijo en móviles */
+  .breadcrumb-container,
+  .page-title,
+  .filter-sort-container {
+    /* Aseguramos espacio suficiente para que no queden tapados por el header fijo */
+    margin-top: calc(var(--site-header-height) + 0.5rem);
+    z-index: 1; /* mantener apilamiento normal (no sobreponer al header) */
+  }
+
+  /* Header sizing + logo */
+  .public-header.fixed-header {
+    min-height: 72px;
+    padding: 8px 10px;
+  }
+
+  /* Ajustes para breadcrumbs y filtros en móvil */
+  .breadcrumb-container {
+    padding: 0.75rem;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-title {
+    padding: 0.75rem;
+    font-size: 1.25rem;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .filter-sort-container {
+    padding: 0.75rem;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .filter-button,
+  .sort-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    flex: 1 1 auto;
+    text-align: center;
+    max-width: calc(50% - 0.25rem);
+  }
+
+  .public-header.fixed-header .header-nav {
+    grid-template-columns: auto 1fr auto;
+    padding: 0 0.6rem;
+    height: 100%;
+    align-items: center;
+  }
+
+  .public-header.fixed-header .header-left,
+  .public-header.fixed-header .header-right,
+  .public-header.fixed-header .header-logo {
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .public-header.fixed-header .header-left { justify-content: flex-start !important; }
+  .public-header.fixed-header .header-right { justify-content: flex-end !important; }
+
+  .public-header.fixed-header .logo-image {
+    max-height: 56px; /* aumentar tamaño en móvil */
+    width: auto;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .public-header.fixed-header .header-icon {
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  /* Animated hero: mantener separación consistente con header/carousel */
+  .animated-hero-section {
+    padding: 2rem 1rem 2rem 1rem;
+    /* colocar el hero justo debajo del header con un pequeño gap */
+    margin-top: calc(0.5rem + 7rem); /* header min-height + gap */
+    text-align: center;
+  }
+
+  .hero-subtitle {
+    margin-top: 3rem; /* Añadir más espacio arriba del subtítulo en móvil */
+  }
+
+  /* Centrar la palabra animada dentro del hero */
+  .word-wrapper {
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+    height: auto !important;
+  }
+
+  /* Ajustar posicionamiento absoluto de cada palabra para que se centren */
+  .word {
+    left: 50% !important;
+    transform: translate(-50%, 20px) !important;
+    opacity: 0;
+    top: 0;
+  }
+  .word.active {
+    opacity: 1 !important;
+    transform: translate(-50%, 0) !important;
+  }
+
+  /* Asegurar que el carrusel respete espacio en móvil */
+  .carrusel-container {
+    margin: -6rem auto 30px auto; /* reducir overlap ligeramente en móvil */
+    min-height: 300px;
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .public-main {
+    padding: 0 1rem;
+    padding-top: 1rem;
+  }
+  .carrusel-container {
+    margin-top: 0;
+  }
+  .carrusel-item {
+    min-height: 200px;
+  }
+  .product-images {
+    height: 300px;
+  }
+}
+
+@media screen and (min-resolution: 192dpi) {
+  .header-nav {
+    grid-template-columns: 250px 1fr 250px; /* Mantenemos las columnas fijas */
+  }
+  
+  .header-left {
+    grid-column: 1;
+    justify-content: flex-start;
+  }
+  
+  .header-nav > .header-logo {
+    grid-column: 2;
+    justify-self: center;
+  }
+  
+  .header-right {
+    grid-column: 3;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 992px) {
+  .header-nav {
+    grid-template-columns: 200px 1fr 200px; /* Reducimos un poco el ancho de las columnas laterales */
+    padding: 0 1rem;
+  }
+  
+  .logo-image {
+    height: 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-nav {
+    grid-template-columns: 150px 1fr 150px; /* Aún más pequeñas para móviles */
+  }
+  
+  .logo-image {
+    height: 40px;
+  }
+}

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hombre - Recirculate</title>
+  <link rel="stylesheet" href="../../assets/public-styles.css">
+  <link rel="stylesheet" href="../../assets/catalogo-styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+    // ** Lógica de verificación de usuario para el ícono de la cabecera (copiada de home.html) **
+    document.addEventListener('DOMContentLoaded', () => {
+      const authToken = localStorage.getItem('authToken');
+      const userData = localStorage.getItem('userData');
+      
+      const userIcon = document.querySelector('.user-icon');
+      
+      if (authToken && userData && userIcon) {
+        const user = JSON.parse(userData);
+        userIcon.setAttribute('data-tooltip', user.nombre.toUpperCase());
+        userIcon.setAttribute('href', 'javascript:void(0);');
+        userIcon.innerHTML = '<i class="fas fa-user-check"></i>';
+      }
+    });
+</script>
+</head>
+<body>
+
+  <header class="public-header fixed-header">
+    <nav class="header-nav">
+      <div class="header-left">
+        <button id="menu-btn" class="header-icon menu-icon"><i class="fas fa-bars"></i></button>
+        <div id="search-container" class="search-container">
+          <button id="search-btn" class="header-icon search-icon"><i class="fas fa-search"></i></button>
+          <input type="text" id="search-input" class="search-input" placeholder="Buscar...">
+        </div>
+      </div>
+      <a href="../../home/home.html" class="header-logo">
+        <img src="../../assets/images/Recirculate-logo.png" alt="Recirculate Logo" class="logo-image">
+      </a>
+      <div class="header-right">
+        <a href="/auth/login.html" class="header-icon user-icon" data-tooltip="INICIAR SESIÓN"><i class="fas fa-user"></i></a>
+        <a href="../../carrito/carrito.html" class="header-icon cart-icon">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cart-counter" class="cart-counter">0</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+
+<!--SIDEBAR MENU-->  
+<div id="sidebar-menu" class="sidebar">
+  <button id="close-btn" class="close-btn">&times;</button>
+  
+  <div class="sidebar-menu-list">
+    <div class="sidebar-category" data-category="hombre">
+      <div class="sidebar-category-header">
+        <span>HOMBRE</span>
+        <i class="fas fa-chevron-right toggle-icon"></i>
+      </div>
+      <div class="sidebar-submenu">
+        <a href="hombre.html"><strong>Ver Todo Hombre</strong></a>
+        <a href="../remeras/remeras.html">Remeras</a>
+        <a href="../buzos/buzos.html">Buzos</a>
+        <a href="../camperas/camperas.html">Camperas</a>
+        <a href="../pantalones/pantalones.html">Pantalones</a>
+        <a href="../camisas/camisas.html">Camisas</a>
+      </div>
+    </div>
+
+    <div class="sidebar-category" data-category="mujer">
+      <div class="sidebar-category-header">
+        <span>MUJER</span>
+        <i class="fas fa-chevron-right toggle-icon"></i>
+      </div>
+      <div class="sidebar-submenu">
+        <a href="../mujer/mujer.html"><strong>Ver Todo Mujer</strong></a>
+        <a href="../Mremeras/Mremeras.html">Remeras/Tops</a>
+        <a href="../Mvestidos/Mvestidos.html">Vestidos/Monos</a>
+        <a href="../Mpolleras/Mpolleras.html">Polleras/Shorts/Skorts</a>
+      </div>
+    </div>
+
+    <a href="../unisex/unisex.html" class="sidebar-main-link">UNISEX</a>
+    <a href="../ingresos/ingresos.html" class="sidebar-main-link">INGRESOS</a>
+    <a href="../descuentos/descuentos.html" class="sidebar-main-link">DESCUENTOS</a>
+
+    <hr class="sidebar-divider">
+
+    <div class="sidebar-auth-group" id="sidebarAuthGroup">
+        <a href="../../../auth/login.html" class="sidebar-main-link" id="sidebarLoginLink">INICIAR SESIÓN</a>
+        <a href="../../../auth/registro.html" class="sidebar-main-link" id="sidebarRegisterLink">REGISTRARSE</a>
+    </div>
+  </div>
+</div>
+
+  <div class="overlay"></div>
+
+<!--FILTROS SIDEBAR-->
+<div id="filter-sidebar" class="filter-sidebar">
+  <div class="filter-sidebar-header">
+    <h2>Filtros</h2>
+    <button id="close-filter-btn" class="close-btn">&times;</button>
+  </div>
+  <div class="filter-sidebar-content">
+    
+    <div class="filter-section">
+      <h4>Precio</h4>
+      <div class="price-range-slider">
+        <div class="price-inputs">
+          <input type="number" id="min-price" value="30000" placeholder="Mín">
+          <span>-</span>
+          <input type="number" id="max-price" value="50000" placeholder="Máx">
+        </div>
+        <input type="range" class="price-slider" disabled> 
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <h4>Color</h4>
+      <div class="filter-options color-options">
+        <button class="filter-option" data-color="negro" style="background-color: black;"></button>
+        <button class="filter-option" data-color="blanco" style="background-color: white; border: 1px solid #ccc;"></button>
+        <button class="filter-option" data-color="gris" style="background-color: grey;"></button>
+        <button class="filter-option" data-color="azul" style="background-color: blue;"></button>
+        <button class="filter-option" data-color="rojo" style="background-color: red;"></button>
+        </div>
+    </div>
+
+    <div class="filter-section">
+      <h4>Talle</h4>
+      <div class="filter-options size-options">
+        <button class="filter-option" data-size="S">S</button>
+        <button class="filter-option" data-size="M">M</button>
+        <button class="filter-option" data-size="L">L</button>
+        <button class="filter-option" data-size="XL">XL</button>
+        </div>
+    </div>
+  </div>
+
+  <div class="filter-sidebar-footer">
+    <button id="apply-filters-btn" class="apply-filters-btn">Añadir filtro</button>
+  </div>
+</div>
+  </div>
+</div>
+
+  <main class="public-main">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumbs">
+        <li class="breadcrumb-item"><a href="../../home/home.html">Inicio</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Hombre</li>
+      </ol>
+    </nav>
+
+    <div class="category-header">
+        <h1>Hombre</h1>
+        <div class="filter-toolbar">
+          <select name="ordenar" id="ordenar">
+            <option value="default">Destacados</option>
+            <option value="precio-asc">Precio: Menor a Mayor</option>
+            <option value="precio-desc">Precio: Mayor a Menor</option>
+            <option value="descuento-asc">Descuento: Menor a Mayor</option>
+            <option value="descuento-desc">Descuento: Mayor a Menor</option>
+            <option value="nuevos">Más Nuevos</option>
+          </select>
+          <button class="filter-btn">Filtrar</button>
+        </div>
+    </div>
+
+    <section class="product-grid category-grid"></section>
+  </main>
+
+  <footer class="public-footer">
+    <div class="footer-container">
+      <div class="footer-column">
+        <h4>Recirculate</h4>
+        <p>Moda circular para un futuro sostenible.</p>
+      </div>
+      <div class="footer-column">
+        <h4>Navegación</h4>
+        <ul>
+          <li><a href="../../home/home.html">Inicio</a></li>
+          <li><a href="../remeras/remeras.html">Remeras</a></li>
+          <li><a href="../pantalones/pantalones.html">Pantalones</a></li>
+          <li><a href="../buzos/buzos.html">Buzos</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Contacto</h4>
+        <p>info@recirculate.com</p>
+        <p>+54 261 5095558</p>
+        <p>Alpatacal 1434 - Quinta Sección</p>
+      </div>
+      <div class="footer-column">
+        <h4>Síguenos</h4>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-divider"></div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2025 Recirculate. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="../../assets/user-menu.js"></script>
+  <script src="../../assets/utils.js"></script>
+  <script src="../../assets/pages.js"></script>
+  <script src='https://cdn.jotfor.ms/agent/embedjs/019a2cafb84e7b99aae78f82f10fd7c58f53/embed.js'></script>
+</body>
+</html>

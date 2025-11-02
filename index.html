@@ -1,0 +1,61 @@
+<!--
+  index.html - Panel principal de la aplicación.
+  Permite navegar a los módulos de Ventas y Gastos.
+  Cumple con accesibilidad y responsividad.
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Panel de Administración</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script>
+    // Protección: Verificar que el usuario sea admin
+    document.addEventListener('DOMContentLoaded', () => {
+      const userData = localStorage.getItem('userData');
+      const authToken = localStorage.getItem('authToken');
+      
+      // Si no hay token, redirigir al login
+      if (!authToken) {
+        window.location.href = 'auth/login.html';
+        return;
+      }
+      
+      // Si hay token, verificar que sea admin
+      if (userData) {
+        const user = JSON.parse(userData);
+        if (user.rol !== 'admin') {
+          // Si no es admin, redirigir a la tienda
+          alert('⚠️ No tienes permisos para acceder al panel de administración');
+          window.location.href = 'RecirculateLoe/home/home.html';
+          return;
+        }
+      } else {
+        // Si no hay datos de usuario, redirigir al login
+        window.location.href = 'auth/login.html';
+      }
+    });
+  </script>
+</head>
+<body>
+  <header>
+    <h1>Panel de Administración</h1>
+    <p>Elegí qué formulario querés gestionar</p>
+  </header>
+  <main class="main" style="display: flex; flex-direction: column; align-items: center; gap: 20px; position: relative; min-height: 70vh;">
+    <!-- Tienda Pública arriba, separado -->
+    <a href="RecirculateLoe/home/home.html" class="home-btn" style="width:280px; height:80px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; background:#5cb85c; border-radius:12px; text-decoration:none; color:white; font-weight:bold; margin-bottom: 30px;">🛒 Tienda Pública</a>
+    
+    <!-- Grupo de botones principales (Ver Productos, Gastos, Ventas) -->
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+      <a href="productos/ver-productos.html" class="home-btn" style="width:280px; height:70px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; background:#ffd84d; border-radius:12px; text-decoration:none; color:#222; font-weight:bold;">Ver Productos</a>
+      <a href="gastos/gastos.html" class="home-btn" style="width:280px; height:70px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; background:#ffd84d; border-radius:12px; text-decoration:none; color:#222; font-weight:bold;">Gastos</a>
+      <a href="ventas/ventas.html" class="home-btn" style="width:280px; height:70px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; background:#ffd84d; border-radius:12px; text-decoration:none; color:#222; font-weight:bold;">Ventas</a>
+    </div>
+    
+    <!-- Botón de Auditoría chiquito en la esquina inferior derecha -->
+    <a href="audit.html" class="home-btn" style="position: fixed; bottom: 20px; right: 20px; width:130px; height:50px; display:flex; align-items:center; justify-content:center; font-size:0.9rem; background:#5cb85c; border-radius:10px; text-decoration:none; color:white; font-weight:bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">� Auditoría</a>
+  </main>
+</body>
+</html>

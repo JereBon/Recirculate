@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista Producto - Recirculate</title>
+    <link rel="stylesheet" href="../../../assets/public-styles.css">
+    <link rel="stylesheet" href="../../../assets/producto-detalle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="public-header fixed-header">
+    <!-- ...igual al ejemplo... -->
+</header>
+
+<main class="public-main">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumbs">
+            <li class="breadcrumb-item"><a href="../../../home/home.html">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="../../../pages/hombre/hombre.html">Hombre</a></li>
+            <li class="breadcrumb-item"><a href="../../../pages/camisas/camisas.html">Camisas</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Ejemplo Producto</li>
+        </ol>
+    </nav>
+
+    <div class="producto-detalle-container">
+        <div class="producto-galeria">
+            <div class="imagen-principal">
+                <img src="../../../assets/images/pages/camisas/Camisa Kalf Negra 1.png" alt="Ejemplo Producto">
+            </div>
+            <div class="miniaturas">
+                <div class="miniatura activa">
+                    <img src="../../../assets/images/pages/camisas/Camisa Kalf Negra 1.png" alt="Vista 1">
+                </div>
+                <div class="miniatura">
+                    <img src="../../../assets/images/pages/camisas/Camisa Kalf Negra 2.png" alt="Vista 2">
+                </div>
+            </div>
+        </div>
+
+        <div class="producto-info">
+            <h1>Ejemplo Producto</h1>
+            <p class="producto-precio">$00.000 ARS</p>
+            <div class="producto-talle">
+                <h3>Talle: <span id="talle-actual">Selecciona un talle</span></h3>
+                <div class="talle-opciones">
+                    <button class="talle-btn" data-talle="S">S</button>
+                    <button class="talle-btn" data-talle="M">M</button>
+                    <button class="talle-btn" data-talle="L">L</button>
+                    <button class="talle-btn" data-talle="XL">XL</button>
+                </div>
+            </div>
+            <div class="producto-cantidad">
+                <h3>Cantidad:</h3>
+                <div class="cantidad-selector">
+                    <button id="btn-menos" class="cantidad-btn">-</button>
+                    <input type="number" id="cantidad-input" class="cantidad-input" value="1" min="1">
+                    <button id="btn-mas" class="cantidad-btn">+</button>
+                </div>
+            </div>
+            <div class="producto-acciones">
+                <button class="btn-agregar-carrito">
+                    <i class="fas fa-shopping-cart"></i> Agregar al Carrito
+                </button>
+                <button class="btn-comprar-ahora">
+                    <i class="fas fa-bolt"></i> Comprar Ahora
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Descripción completa debajo del producto -->
+    <div class="producto-descripcion-completa">
+        <div class="producto-descripcion">
+            <h2>Descripción <span id="edit-desc" class="edit-icon" style="display:none;"><i class="fas fa-pencil-alt"></i></span></h2>
+            <p>
+                Ejemplo de descripción del producto. Aquí va el texto editable por el admin.
+            </p>
+        </div>
+        <div class="producto-especificaciones">
+            <h2>Especificaciones <span id="edit-spec" class="edit-icon" style="display:none;"><i class="fas fa-pencil-alt"></i></span></h2>
+            <ul>
+                <li><strong>Material:</strong> Algodón</li>
+                <li><strong>Fit:</strong> Classic Fit</li>
+                <li><strong>Detalles:</strong> Ejemplo detalles</li>
+                <li><strong>Cuidado:</strong> Ejemplo cuidado</li>
+            </ul>
+        </div>
+    </div>
+</main>
+
+<footer class="public-footer">
+    <!-- ...igual al ejemplo... -->
+</footer>
+
+<script>
+// Simulación de rol admin (reemplazar por lógica real)
+const isAdmin = localStorage.getItem('userRole') === 'admin';
+if (isAdmin) {
+    document.getElementById('edit-desc').style.display = 'inline-block';
+    document.getElementById('edit-spec').style.display = 'inline-block';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!-- productos.html - Administración de productos y stock -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Administrar Productos</title>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<header>
+  <h1>Administración de Productos</h1>
+  <div style="margin-bottom: 18px;">
+    <a href="../index.html"><button class="primary">Volver al panel</button></a>
+    <a href="ver-productos.html"><button style="margin-left:12px;">Volver a lista</button></a>
+  </div>
+</header>
+  <main class="main">
+    <section id="form-section">
+      <h2>Agregar/Editar Producto</h2>
+      <form id="producto-form" novalidate>
+        <input type="hidden" id="producto-id" />
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" required aria-required="true" placeholder="Ej: Remera, Pantalón" />
+          <small class="error-msg" id="e-nombre"></small>
+        </div>
+        <div class="form-group">
+          <label for="descripcion">Descripción</label>
+          <textarea id="descripcion" placeholder="Ej: Remera de algodón, poco uso" rows="2" style="font-family: inherit; font-size: 1rem; padding: 8px; border-radius: 8px; border: 1px solid #bbb;"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="genero">Género</label>
+          <select id="genero" required aria-required="true">
+            <option value="">Seleccionar género...</option>
+            <option value="hombre">Hombre</option>
+            <option value="mujer">Mujer</option>
+            <option value="unisex">Unisex</option>
+          </select>
+          <small class="error-msg" id="e-genero"></small>
+        </div>
+        <div class="form-group">
+          <label for="categoria">Categoría</label>
+          <select id="categoria">
+            <option value="">Seleccionar categoría...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="talle">Talle</label>
+          <input type="text" id="talle" placeholder="Ej: M, 38, 10" />
+        </div>
+        <div class="form-group">
+          <label for="color">Color</label>
+          <input type="text" id="color" placeholder="Ej: Azul, Negro" />
+        </div>
+        <div class="form-group">
+          <label for="marca">Marca</label>
+          <input type="text" id="marca" placeholder="Ej: Nike, Adidas" />
+        </div>
+        <div class="form-group">
+          <label for="estado">Estado</label>
+          <input type="text" id="estado" placeholder="Ej: Usado - Muy bueno" />
+        </div>
+        <div class="form-group">
+          <label for="precio">Precio</label>
+          <input type="number" id="precio" min="0" step="0.01" required aria-required="true" placeholder="Ej: 2500" />
+          <small class="error-msg" id="e-precio"></small>
+        </div>
+        <div class="form-group">
+          <label for="moneda">Moneda</label>
+          <select id="moneda">
+            <option value="ARS">ARS</option>
+            <option value="USD">USD</option>
+            <option value="BTC">BTC</option>
+            <option value="ETH">ETH</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="imagen-frente">Imagen Frente (Principal)</label>
+          <div class="image-upload-container" id="drop-zone-frente">
+            <div class="upload-area">
+              <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: #999; margin-bottom: 10px;"></i>
+              <p>Arrastra y suelta la imagen aquí</p>
+              <p style="font-size: 0.9rem; color: #666;">o</p>
+              <button type="button" class="btn-select-file" onclick="document.getElementById('imagen-frente-file').click()">
+                Seleccionar desde PC
+              </button>
+              <input type="file" id="imagen-frente-file" accept="image/*" style="display: none;" />
+            </div>
+            <div class="image-preview" id="preview-frente" style="display: none;">
+              <img src="" alt="Vista previa frente" />
+              <button type="button" class="btn-remove-image" onclick="removeImage('frente')">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <small id="imagen-frente-status" class="upload-status"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="imagen-espalda">Imagen Espalda (Hover)</label>
+          <div class="image-upload-container" id="drop-zone-espalda">
+            <div class="upload-area">
+              <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: #999; margin-bottom: 10px;"></i>
+              <p>Arrastra y suelta la imagen aquí</p>
+              <p style="font-size: 0.9rem; color: #666;">o</p>
+              <button type="button" class="btn-select-file" onclick="document.getElementById('imagen-espalda-file').click()">
+                Seleccionar desde PC
+              </button>
+              <input type="file" id="imagen-espalda-file" accept="image/*" style="display: none;" />
+            </div>
+            <div class="image-preview" id="preview-espalda" style="display: none;">
+              <img src="" alt="Vista previa espalda" />
+              <button type="button" class="btn-remove-image" onclick="removeImage('espalda')">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <small id="imagen-espalda-status" class="upload-status"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="proveedor-nombre">Proveedor</label>
+          <input type="text" id="proveedor-nombre" placeholder="Nombre del proveedor" />
+        </div>
+        <div class="form-group">
+          <label for="stock">Stock</label>
+          <input type="number" id="stock" min="0" step="1" required aria-required="true" placeholder="Ej: 10" />
+          <small class="error-msg" id="e-stock"></small>
+        </div>
+        <div class="form-group">
+          <label for="activo">
+            <input type="checkbox" id="activo" checked /> Activo
+          </label>
+        </div>
+        <div class="form-group" style="flex-direction: row; gap: 12px;">
+          <button type="submit" class="primary">Guardar</button>
+          <button type="button" id="cancelar-edicion" style="display:none;">Cancelar</button>
+        </div>
+      </form>
+    </section>
+  </main>
+  <style>
+    .producto-num-mobile {
+      background: #ffe066;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+    .producto-num-mobile-td {
+      padding: 12px 16px;
+      text-align: center;
+    }
+
+    /* Estilos para Drag & Drop de imágenes */
+    .image-upload-container {
+      position: relative;
+      width: 100%;
+      min-height: 200px;
+      border: 2px dashed #ddd;
+      border-radius: 12px;
+      background: #f9f9f9;
+      transition: all 0.3s ease;
+    }
+
+    .image-upload-container.dragover {
+      border-color: #ffd84d;
+      background: #fffbf0;
+      transform: scale(1.02);
+    }
+
+    .upload-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      text-align: center;
+      color: #666;
+    }
+
+    .upload-area p {
+      margin: 5px 0;
+    }
+
+    .btn-select-file {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #ffd84d;
+      border: none;
+      border-radius: 8px;
+      color: #222;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-select-file:hover {
+      background: #ffcd1a;
+    }
+
+    .image-preview {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    .image-preview img {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+
+    .btn-remove-image {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 30px;
+      height: 30px;
+      background: #ff4444;
+      border: none;
+      border-radius: 50%;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: background 0.3s;
+    }
+
+    .btn-remove-image:hover {
+      background: #cc0000;
+    }
+
+    .upload-status {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .upload-status.uploading {
+      color: #ffd84d;
+    }
+
+    .upload-status.success {
+      color: #4CAF50;
+    }
+
+    .upload-status.error {
+      color: #ff4444;
+    }
+  </style>
+  <script src="productos.js"></script>
+</body>
+</html>
