@@ -145,14 +145,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       window.location.href = `productos.html?id=${id}`;
     } else if (e.target.dataset.delete !== undefined) {
       // Confirma y elimina producto, luego recarga tabla
-      const id = e.target.dataset.delete;
+      const id = parseInt(e.target.dataset.delete); // Convertir a número
       if (confirm('¿Seguro que deseas eliminar este producto?')) {
         try {
-          await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+          const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+          if (!response.ok) throw new Error('Error al eliminar producto');
           allProductos = allProductos.filter(p => p.id !== id); // Actualiza cache
           cargarProductos(); // Refresca tabla
+          alert('Producto eliminado correctamente');
         } catch (err) {
-          alert('Error al eliminar producto');
+          console.error('Error al eliminar:', err);
+          alert('Error al eliminar producto: ' + err.message);
         }
       }
     }
