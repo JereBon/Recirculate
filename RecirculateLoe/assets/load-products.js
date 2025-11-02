@@ -203,8 +203,18 @@ function createProductCard(producto) {
     });
 
     // Construir HTML de la tarjeta - Escapar caracteres especiales
-    const nombreEscapado = (producto.nombre || 'Sin nombre').replace(/"/g, '&quot;');
-    const descripcionEscapada = (producto.descripcion || '').replace(/"/g, '&quot;');
+    const escaparHTML = (texto) => {
+        if (!texto) return '';
+        return texto
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    };
+    
+    const nombreEscapado = escaparHTML(producto.nombre || 'Sin nombre');
+    const descripcionEscapada = escaparHTML(producto.descripcion || '');
     
     try {
         card.innerHTML = `
@@ -255,6 +265,11 @@ function createProductCard(producto) {
     });
 
     card.style.cursor = 'pointer';
+
+    // Agregar clase de animación después de un breve delay
+    setTimeout(() => {
+        card.classList.add('animate-visible');
+    }, 50);
 
     return card;
 }
