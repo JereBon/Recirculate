@@ -195,23 +195,38 @@ function createProductCard(producto) {
     const imagenPrincipal = producto.imagen_frente_url || producto.imagen_url || '../../assets/images/placeholder.png';
     const imagenHover = producto.imagen_espalda_url || producto.imagen_hover || imagenPrincipal;
 
-    // Construir HTML de la tarjeta
-    card.innerHTML = `
-        <div class="product-images">
-            <img src="${imagenPrincipal}" alt="${producto.nombre}" class="main-image" loading="lazy">
-            <img src="${imagenHover}" alt="${producto.nombre} - Vista trasera" class="hover-image" loading="lazy">
-            ${esNuevo ? '<span class="new-tag">NEW</span>' : ''}
-            ${producto.descuento && producto.descuento > 0 ? `<span class="discount-tag">${Math.round(producto.descuento)}% OFF</span>` : ''}
-        </div>
-        <div class="product-info">
-            <h3>${producto.nombre}</h3>
-            <p class="descripcion">${producto.descripcion || ''}</p>
-            <p class="precio">$${producto.precio ? producto.precio.toLocaleString('es-AR') : '0'} ARS</p>
-            <button class="add-to-cart-btn" onclick="event.stopPropagation();">
-                <i class="fas fa-shopping-cart"></i> Agregar al Carrito
-            </button>
-        </div>
-    `;
+    console.log('Creando tarjeta para:', producto.nombre, {
+        imagenPrincipal,
+        imagenHover,
+        precio: producto.precio,
+        descripcion: producto.descripcion
+    });
+
+    // Construir HTML de la tarjeta - Escapar caracteres especiales
+    const nombreEscapado = (producto.nombre || 'Sin nombre').replace(/"/g, '&quot;');
+    const descripcionEscapada = (producto.descripcion || '').replace(/"/g, '&quot;');
+    
+    try {
+        card.innerHTML = `
+            <div class="product-images">
+                <img src="${imagenPrincipal}" alt="${nombreEscapado}" class="main-image" loading="lazy">
+                <img src="${imagenHover}" alt="${nombreEscapado} - Vista trasera" class="hover-image" loading="lazy">
+                ${esNuevo ? '<span class="new-tag">NEW</span>' : ''}
+                ${producto.descuento && producto.descuento > 0 ? `<span class="discount-tag">${Math.round(producto.descuento)}% OFF</span>` : ''}
+            </div>
+            <div class="product-info">
+                <h3>${nombreEscapado}</h3>
+                <p class="descripcion">${descripcionEscapada}</p>
+                <p class="precio">$${producto.precio ? producto.precio.toLocaleString('es-AR') : '0'} ARS</p>
+                <button class="add-to-cart-btn" onclick="event.stopPropagation();">
+                    <i class="fas fa-shopping-cart"></i> Agregar al Carrito
+                </button>
+            </div>
+        `;
+    } catch (error) {
+        console.error('Error al crear innerHTML para producto:', producto.nombre, error);
+        card.innerHTML = `<div style="padding: 1rem; color: red;">Error al cargar producto</div>`;
+    }
 
     // Event listener para agregar al carrito
     const addToCartBtn = card.querySelector('.add-to-cart-btn');
