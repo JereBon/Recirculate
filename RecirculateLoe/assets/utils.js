@@ -1,7 +1,7 @@
 // utils.js - Funciones utilitarias compartidas para RecirculateV1
 
 // Guardar datos en localStorage de forma segura
-export function guardarDatos(key, value) {
+function guardarDatos(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch (error) {
@@ -10,7 +10,7 @@ export function guardarDatos(key, value) {
 }
 
 // Leer datos de localStorage
-export function leerDatos(key) {
+function leerDatos(key) {
   try {
     const data = localStorage.getItem(key);
     return data ? JSON.parse(data) : [];
@@ -20,7 +20,7 @@ export function leerDatos(key) {
 }
 
 // Conversión cripto → fiat usando API real (CoinGecko), con fallback a última tasa
-export async function convertirCriptoAFiat(montoCripto, cripto = 'bitcoin') {
+async function convertirCriptoAFiat(montoCripto, cripto = 'bitcoin') {
   const fiat = 'ars';
   try {
     const resp = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${cripto}&vs_currencies=${fiat}`);
@@ -41,7 +41,7 @@ export async function convertirCriptoAFiat(montoCripto, cripto = 'bitcoin') {
 }
 
 // Conversión fiat -> cripto usando la misma lógica (CoinGecko) con fallback a la última tasa
-export async function convertirFiatACripto(montoFiat, cripto = 'bitcoin') {
+async function convertirFiatACripto(montoFiat, cripto = 'bitcoin') {
   const fiat = 'ars';
   try {
     const resp = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${cripto}&vs_currencies=${fiat}`);
@@ -67,7 +67,7 @@ export async function convertirFiatACripto(montoFiat, cripto = 'bitcoin') {
 // ============================================
 
 // Función para agregar producto al carrito
-export function agregarAlCarrito(producto) {
+function agregarAlCarrito(producto) {
   // Obtener carrito actual
   let carrito = JSON.parse(localStorage.getItem('recirculate_carrito') || '[]');
   
@@ -96,7 +96,7 @@ export function agregarAlCarrito(producto) {
 }
 
 // Función para actualizar el contador del carrito
-export function actualizarContadorCarrito() {
+function actualizarContadorCarrito() {
   const carrito = JSON.parse(localStorage.getItem('recirculate_carrito') || '[]');
   const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
   
@@ -107,7 +107,7 @@ export function actualizarContadorCarrito() {
 }
 
 // Función para mostrar notificaciones
-export function mostrarNotificacion(mensaje, tipo = 'success') {
+function mostrarNotificacion(mensaje, tipo = 'success') {
   // Crear elemento de notificación
   const notificacion = document.createElement('div');
   notificacion.className = `notificacion notificacion-${tipo}`;
@@ -145,12 +145,12 @@ export function mostrarNotificacion(mensaje, tipo = 'success') {
 }
 
 // Función para obtener productos del carrito
-export function obtenerCarrito() {
+function obtenerCarrito() {
   return JSON.parse(localStorage.getItem('recirculate_carrito') || '[]');
 }
 
 // Función para vaciar el carrito
-export function vaciarCarrito() {
+function vaciarCarrito() {
   localStorage.removeItem('recirculate_carrito');
   actualizarContadorCarrito();
 }
