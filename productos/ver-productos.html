@@ -15,22 +15,30 @@
       white-space: pre-line;
     }
     .gastos-table th:first-child, .gastos-table td:first-child {
-      min-width: 140px;
-      max-width: 180px;
+      min-width: 100px;
+      max-width: 100px;
     }
     .gastos-table {
       table-layout: fixed;
     }
     .producto-img {
-      width: 120px;
-      height: 120px;
-      border-radius: 12px;
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
       object-fit: cover;
-      border: 2px solid #bbb;
+      border: 2px solid #e0e0e0;
       background: #f8f8f8;
       display: block;
       margin: 0 auto;
-      box-shadow: 0 2px 8px #0001;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+      cursor: pointer;
+    }
+    .producto-img:hover {
+      transform: scale(2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 999;
+      position: relative;
     }
     .gastos-table th, .gastos-table td {
       text-align: center;

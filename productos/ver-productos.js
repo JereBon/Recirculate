@@ -109,9 +109,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       const tr = document.createElement('tr');
       // Formatear género con primera letra mayúscula
       const generoFormateado = prod.genero ? prod.genero.charAt(0).toUpperCase() + prod.genero.slice(1) : '';
+      // Usar imagen_frente_url o imagen_url como fallback
+      const imagenUrl = prod.imagen_frente_url || prod.imagen_url || '';
       tr.innerHTML = `
         <td data-label="Imagen">
-          ${prod.imagen_url ? `<img src="${prod.imagen_url}" class="producto-img" alt="Imagen producto" />` : ''}
+          ${imagenUrl ? `<img src="${imagenUrl}" class="producto-img" alt="Imagen producto" />` : '<span style="color:#999;">Sin imagen</span>'}
         </td>
         <td data-label="Nombre">${prod.nombre || ''}</td>
         <td data-label="Descripción">${prod.descripcion || ''}</td>
