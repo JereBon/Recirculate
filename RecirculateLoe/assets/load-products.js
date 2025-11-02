@@ -82,9 +82,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             // Filtrar por género
             if (genero) {
-                productosFiltrados = productosFiltrados.filter(p => 
-                    p.genero && p.genero.toLowerCase().trim() === genero.toLowerCase().trim()
-                );
+                productosFiltrados = productosFiltrados.filter(p => {
+                    if (!p.genero) return false;
+                    
+                    const generoProducto = p.genero.toLowerCase().trim();
+                    const generoPagina = genero.toLowerCase().trim();
+                    
+                    // Si la página es "unisex", mostrar SOLO productos unisex
+                    if (generoPagina === 'unisex') {
+                        return generoProducto === 'unisex';
+                    }
+                    
+                    // Si la página es "hombre" o "mujer", mostrar productos de ese género + unisex
+                    return generoProducto === generoPagina || generoProducto === 'unisex';
+                });
             }
 
             // Filtrar por categoría
