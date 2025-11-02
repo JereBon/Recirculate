@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Filtrar por género
             if (genero) {
                 productosFiltrados = productosFiltrados.filter(p => 
-                    p.genero && p.genero.toLowerCase() === genero.toLowerCase()
+                    p.genero && p.genero.toLowerCase().trim() === genero.toLowerCase().trim()
                 );
             }
 
@@ -91,8 +91,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (categoria) {
                 productosFiltrados = productosFiltrados.filter(p => {
                     if (!p.categoria) return false;
-                    const catProducto = p.categoria.toLowerCase();
-                    const catBuscada = categoria.toLowerCase();
+                    const catProducto = p.categoria.toLowerCase().trim();
+                    const catBuscada = categoria.toLowerCase().trim();
                     
                     // Mapeo de categorías alternativas
                     if (catBuscada === 'remeras' && (catProducto === 'tops' || catProducto === 'remeras')) return true;

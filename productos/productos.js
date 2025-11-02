@@ -178,42 +178,6 @@ document.addEventListener('DOMContentLoaded', () => {
     removeImage('espalda');
   }
 
-  /* TABLA DE PRODUCTOS REMOVIDA - La lista de productos ahora se gestiona desde ver-productos.html
-  // Función para renderizar tabla de productos: obtiene datos, crea filas con nombre, precio, stock y botones editar/borrar
-  async function renderTabla() {
-    const productos = await obtenerProductos();
-    tabla.innerHTML = '';
-    if (productos.length === 0) {
-      const tr = document.createElement('tr');
-      tr.innerHTML = '<td colspan="4" style="text-align:center; color:#888;">No hay productos cargados</td>';
-      tabla.appendChild(tr);
-      return;
-    }
-    // Detecta si es mobile para layout diferente
-    const isMobile = window.matchMedia('(max-width: 600px)').matches;
-    productos.forEach((prod, idx) => {
-      const idVisual = idx + 1;
-      if (isMobile) {
-        // Agrega fila extra para mobile con número de producto
-        const trProd = document.createElement('tr');
-        trProd.className = 'producto-num-mobile';
-        trProd.innerHTML = `<td colspan="4" class="producto-num-mobile-td">Producto #${idVisual}</td>`;
-        tabla.appendChild(trProd);
-      }
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td data-label="Nombre">${prod.nombre}</td>
-        <td data-label="Precio">$${parseFloat(prod.precio).toFixed(2)}</td>
-        <td data-label="Stock">${prod.stock}</td>
-        <td data-label="Acciones">
-          <button data-edit="${prod.id}" class="primary">Editar</button>
-          <button data-borrar="${prod.id}" style="background:#e74c3c; color:#fff;">Borrar</button>
-        </td>
-      `;
-      tabla.appendChild(tr);
-    });
-  }
-  */
 
   // Función para validar campos obligatorios del formulario: nombre, género, precio >=0, stock >=0
   function validarFormulario() {
@@ -265,8 +229,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const nuevo = {
       nombre: form.nombre.value.trim(),
       descripcion: form.descripcion.value.trim(),
-      genero: form.genero.value.trim(),
-      categoria: form.categoria.value.trim(),
+      genero: form.genero.value.trim().toLowerCase(),
+      categoria: form.categoria.value.trim().toLowerCase(),
       talle: form.talle.value.trim(),
       color: form.color.value.trim(),
       marca: form.marca.value.trim(),
@@ -322,63 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
     limpiarFormulario();
   });
 
-  /* EVENTOS DE TABLA REMOVIDOS - La edición y eliminación ahora se gestiona desde ver-productos.html
-  // Evento click en tabla: maneja botones editar y borrar
-  tabla.addEventListener('click', async (e) => {
-    if (e.target.dataset.edit !== undefined) {
-      // Si click en editar, carga datos del producto en formulario
-      const id = e.target.dataset.edit;
-      const prod = productosCache.find(p => p.id === id);
-      if (prod) {
-        form.nombre.value = prod.nombre || '';
-        form.descripcion.value = prod.descripcion || '';
-        form.genero.value = prod.genero || '';
-        actualizarCategorias(); // Actualizar categorías según género
-        form.categoria.value = prod.categoria || '';
-        form.talle.value = prod.talle || '';
-        form.color.value = prod.color || '';
-        form.marca.value = prod.marca || '';
-        form.estado.value = prod.estado || '';
-        form.precio.value = prod.precio || '';
-        form.stock.value = prod.stock || '';
-        // Cargar imágenes frente y espalda
-        if (prod.imagen_frente_url) {
-          imagenFrenteUrl = prod.imagen_frente_url;
-          const imgFrente = previewFrente.querySelector('img');
-          imgFrente.src = prod.imagen_frente_url;
-          previewFrente.style.display = 'flex';
-          previewFrente.previousElementSibling.style.display = 'none';
-          statusFrente.textContent = '✓ Imagen cargada';
-          statusFrente.className = 'upload-status success';
-        }
-        if (prod.imagen_espalda_url) {
-          imagenEspaldaUrl = prod.imagen_espalda_url;
-          const imgEspalda = previewEspalda.querySelector('img');
-          imgEspalda.src = prod.imagen_espalda_url;
-          previewEspalda.style.display = 'flex';
-          previewEspalda.previousElementSibling.style.display = 'none';
-          statusEspalda.textContent = '✓ Imagen cargada';
-          statusEspalda.className = 'upload-status success';
-        }
-        editandoId = id;
-        cancelarBtn.style.display = ''; // Muestra botón cancelar
-      }
-    } else if (e.target.dataset.borrar !== undefined) {
-      // Si click en borrar, confirma y elimina producto
-      const id = e.target.dataset.borrar;
-      if (confirm('¿Seguro que deseas borrar este producto?')) {
-        const token = localStorage.getItem('authToken');
-        await fetch(`${API_URL}/productos/${id}`, { 
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        limpiarFormulario();
-      }
-    }
-  });
-  */
 
   // Evento click en botón cancelar: resetea formulario
   cancelarBtn.addEventListener('click', limpiarFormulario);
