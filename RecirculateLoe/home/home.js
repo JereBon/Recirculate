@@ -279,5 +279,200 @@ function mostrarNotificacion(mensaje) {
   // `assets/pages.js` para evitar duplicación y posibles conflictos entre
   // manejadores. No registramos listeners adicionales aquí.
 
+  // --- CARGAR PRODUCTOS DESTACADOS: INGRESOS Y DESCUENTOS ---
+  cargarProductosDestacados();
+
 });
+
+// ============================================
+// CARGAR PRODUCTOS EN HOME (INGRESOS Y DESCUENTOS)
+// ============================================
+
+async function cargarProductosDestacados() {
+  const API_URL = 'https://recirculate-api.onrender.com/api/productos';
+  
+  try {
+    // Hacer petición a la API
+    const response = await fetch(API_URL);
+    if (!response.ok) throw new Error('Error al cargar productos');
+    
+    const productos = await response.json();
+    console.log('📦 Productos cargados para home:', productos.length);
+
+    // ===== SECCIÓN INGRESOS: Últimos 20 productos =====
+    const productosIngresos = productos
+      .sort((a, b) => {
+        if (a.fecha_creacion && b.fecha_creacion) {
+          return new Date(b.fecha_creacion) - new Date(a.fecha_creacion);
+        }
+        return (b.id || 0) - (a.id || 0);
+      })
+      .slice(0, 20);
+
+    const ingresosSection = document.querySelector('.ingresos-section');
+    const ingresosContainer = ingresosSection.nextElementSibling; // La primera .featured-products-section
+    
+    if (ingresosContainer && ingresosContainer.classList.contains('featured-products-section')) {
+      ingresosContainer.innerHTML = ''; // Limpiar
+      
+      if (productosIngresos.length > 0) {
+        productosIngresos.forEach(producto => {
+          const card = crearTarjetaProductoHome(producto);
+          ingresosContainer.appendChild(card);
+        });
+      } else {
+        ingresosContainer.innerHTML = '<p style="text-align: center; color: #666;">No hay ingresos recientes</p>';
+      }
+    }
+
+    // ===== SECCIÓN DESCUENTOS: Productos con descuento > 0 (máximo 8) =====
+    const productosDescuentos = productos
+      .filter(p => {
+        const descuento = parseFloat(p.descuento);
+        return !isNaN(descuento) && descuento > 0;
+      })
+      .slice(0, 8);
+
+    const discountSection = document.querySelector('.discount-section');
+    const discountContainer = discountSection.nextElementSibling; // La segunda .featured-products-section
+    
+    if (discountContainer && discountContainer.classList.contains('featured-products-section')) {
+      discountContainer.innerHTML = ''; // Limpiar
+      
+      if (productosDescuentos.length > 0) {
+        productosDescuentos.forEach(producto => {
+          const card = crearTarjetaProductoHome(producto);
+          discountContainer.appendChild(card);
+        });
+      } else {
+        discountContainer.innerHTML = '<p style="text-align: center; color: #666;">No hay productos con descuento</p>';
+      }
+    }
+
+    console.log('✅ Productos destacados cargados en home');
+
+  } catch (error) {
+    console.error('❌ Error al cargar productos destacados:', error);
+  }
+}
+
+// Función para crear tarjeta de producto en el home
+function crearTarjetaProductoHome(producto) {
+  const card = document.createElement('div');
+  card.className = 'product-card';
+  
+  // Generar slug para URL del producto
+  const slug = (producto.nombre || 'producto')
+    .replace(/B&N/gi, 'BN')
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+  // Determinar ruta del producto según género y categoría
+  let productPath = '';
+  const genero = (producto.genero || '').toLowerCase();
+  const categoria = (producto.categoria || '').toLowerCase();
+
+  if (genero === 'hombre') {
+    if (categoria === 'remeras') productPath = `../productos/hombre/remeras/${slug}.html`;
+    else if (categoria === 'buzos') productPath = `../productos/hombre/buzos/${slug}.html`;
+    else if (categoria === 'pantalones') productPath = `../productos/hombre/pantalones/${slug}.html`;
+    else if (categoria === 'camperas') productPath = `../productos/hombre/camperas/${slug}.html`;
+    else if (categoria === 'camisas') productPath = `../productos/hombre/camisas/${slug}.html`;
+    else productPath = `../productos/hombre/remeras/${slug}.html`;
+  } else if (genero === 'mujer') {
+    if (categoria === 'remeras/tops') productPath = `../productos/mujer/remeras-tops/${slug}.html`;
+    else if (categoria === 'vestidos/monos') productPath = `../productos/mujer/vestidos-monos/${slug}.html`;
+    else if (categoria === 'polleras/shorts/skorts') productPath = `../productos/mujer/polleras-shorts/${slug}.html`;
+    else productPath = `../productos/mujer/remeras-tops/${slug}.html`;
+  } else {
+    productPath = `../productos/unisex/${slug}.html`;
+  }
+
+  // Usar imagen_frente_url o imagen_url como imagen principal
+  const imagenPrincipal = producto.imagen_frente_url || producto.imagen_url || '../assets/images/placeholder.png';
+  const imagenHover = producto.imagen_espalda_url || producto.imagen_hover || imagenPrincipal;
+
+  // Determinar si es nuevo (últimos 30 días)
+  const esNuevo = producto.fecha_creacion && 
+    (new Date() - new Date(producto.fecha_creacion)) / (1000 * 60 * 60 * 24) <= 30;
+
+  // Escapar caracteres especiales
+  const escaparHTML = (texto) => {
+    if (!texto) return '';
+    return texto
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  };
+  
+  const nombreEscapado = escaparHTML(producto.nombre || 'Sin nombre');
+  const descripcionEscapada = escaparHTML(producto.descripcion || '');
+  
+  // Calcular precio con descuento SOLO si tiene descuento > 0
+  const descuentoNumerico = parseFloat(producto.descuento);
+  const tieneDescuento = !isNaN(descuentoNumerico) && descuentoNumerico > 0;
+  const precioOriginal = producto.precio || 0;
+  
+  let precioConDescuento = precioOriginal;
+  if (tieneDescuento) {
+    precioConDescuento = Math.round(precioOriginal * (1 - descuentoNumerico / 100));
+  }
+  
+  card.innerHTML = `
+    <div class="product-images">
+      <img src="${imagenPrincipal}" alt="${nombreEscapado}" class="main-image" loading="lazy">
+      <img src="${imagenHover}" alt="${nombreEscapado} - Vista trasera" class="hover-image" loading="lazy">
+      ${esNuevo ? '<span class="new-tag">NEW</span>' : ''}
+      ${tieneDescuento ? `<span class="discount-tag">${Math.round(descuentoNumerico)}% OFF</span>` : ''}
+    </div>
+    <div class="product-info">
+      <h3>${nombreEscapado}</h3>
+      <p class="descripcion">${descripcionEscapada}</p>
+      <p class="precio">
+        ${tieneDescuento ? `
+          <span style="text-decoration: line-through; color: #999; font-size: 0.9rem; margin-right: 8px;">
+            $${precioOriginal.toLocaleString('es-AR')}
+          </span>
+          <span style="color: #27ae60; font-weight: bold;">
+            $${precioConDescuento.toLocaleString('es-AR')} ARS
+          </span>
+        ` : `<span style="color: #666;">$${precioOriginal.toLocaleString('es-AR')} ARS</span>`}
+      </p>
+      <button class="add-to-cart-btn" onclick="event.stopPropagation();">
+        <i class="fas fa-shopping-cart"></i> Agregar al Carrito
+      </button>
+    </div>
+  `;
+
+  // Event listener para agregar al carrito
+  const addToCartBtn = card.querySelector('.add-to-cart-btn');
+  addToCartBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const productoCarrito = {
+      id: producto.id,
+      nombre: producto.nombre,
+      precio: tieneDescuento ? precioConDescuento : producto.precio,
+      imagen: imagenPrincipal,
+      categoria: producto.categoria
+    };
+    
+    agregarAlCarrito(productoCarrito);
+  });
+
+  // Hacer clickeable toda la tarjeta
+  card.addEventListener('click', () => {
+    window.location.href = productPath;
+  });
+
+  card.style.cursor = 'pointer';
+
+  return card;
+}
   
