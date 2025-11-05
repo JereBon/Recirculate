@@ -72,10 +72,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Páginas especiales
         if (currentPath.includes('/ingresos/')) {
-            // Mostrar los últimos 20 productos agregados
+            // Mostrar los últimos 20 productos agregados (ordenar por ID descendente)
             productosFiltrados = productos
-                .sort((a, b) => new Date(b.fecha_creacion) - new Date(a.fecha_creacion))
+                .sort((a, b) => {
+                    // Intentar ordenar por fecha_creacion si existe
+                    if (a.fecha_creacion && b.fecha_creacion) {
+                        return new Date(b.fecha_creacion) - new Date(a.fecha_creacion);
+                    }
+                    // Si no hay fecha_creacion, ordenar por ID (los IDs más altos son más recientes)
+                    return (b.id || 0) - (a.id || 0);
+                })
                 .slice(0, 20);
+            console.log('📦 Mostrando últimos 20 ingresos:', productosFiltrados.map(p => p.nombre));
         } else if (currentPath.includes('/descuentos/')) {
             // Mostrar solo productos con descuento > 0
             productosFiltrados = productos.filter(p => p.descuento && p.descuento > 0);

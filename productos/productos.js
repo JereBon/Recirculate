@@ -236,6 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
       marca: form.marca.value.trim(),
       estado: form.estado.value.trim() || 'Disponible',
       precio: parseFloat(form.precio.value),
+      descuento: form.descuento.value ? parseFloat(form.descuento.value) : 0, // Campo descuento
       stock: parseInt(form.stock.value, 10),
       proveedor: form['proveedor-nombre'].value.trim(), // Agregar campo proveedor
       imagen_frente_url: imagenFrenteUrl, // Imagen frontal
@@ -309,6 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
           form.marca.value = prod.marca || '';
           form.estado.value = prod.estado || '';
           form.precio.value = prod.precio || '';
+          form.descuento.value = prod.descuento || ''; // Cargar descuento
           form['proveedor-nombre'].value = prod.proveedor || ''; // Cargar proveedor
           form.stock.value = prod.stock || '';
           // Cargar imágenes frente y espalda
