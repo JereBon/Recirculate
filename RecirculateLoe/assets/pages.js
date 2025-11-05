@@ -500,7 +500,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Funciones para mostrar/ocultar y realizar búsquedas en el sidebar
-    function openSearchSidebar() {
+    function openSearchSidebar(keepValue = false) {
         // Cerrar otros sidebars primero
         closeAnyOpenSidebar();
         if (sidebarSearch) {
@@ -509,14 +509,19 @@ document.addEventListener("DOMContentLoaded", function() {
             if (searchResultsContainer) { searchResultsContainer.innerHTML = ''; searchResultsContainer.classList.remove('visible'); }
             if (searchSuggestionsContainer) { searchSuggestionsContainer.innerHTML = ''; searchSuggestionsContainer.classList.remove('visible'); }
             
-            // Mostrar hint inicial
+            // Mostrar hint inicial solo si no hay valor
             const searchHint = document.getElementById('search-hint');
-            if (searchHint) {
+            if (searchHint && !keepValue) {
                 searchHint.style.display = 'flex';
+            } else if (searchHint && keepValue) {
+                searchHint.style.display = 'none';
             }
             
             if (searchSidebarInput) { 
-                searchSidebarInput.value = ''; 
+                // Solo limpiar si keepValue es false
+                if (!keepValue) {
+                    searchSidebarInput.value = ''; 
+                }
                 setTimeout(() => searchSidebarInput.focus(), 50); 
             }
             // avoid changing overlay z-index here
@@ -697,10 +702,14 @@ document.addEventListener("DOMContentLoaded", function() {
             const query = e.target.value.trim();
             
             if (query.length === 0) {
-                // Si el campo está vacío, limpiar resultados
+                // Si el campo está vacío, limpiar resultados y mostrar hint
                 if (searchResultsContainer) {
                     searchResultsContainer.innerHTML = '';
                     searchResultsContainer.classList.remove('visible');
+                }
+                const searchHint = document.getElementById('search-hint');
+                if (searchHint) {
+                    searchHint.style.display = 'flex';
                 }
                 return;
             }
@@ -718,8 +727,20 @@ document.addEventListener("DOMContentLoaded", function() {
             const query = e.target.value.trim();
             
             if (query.length >= 2) {
-                // Abrir sidebar automáticamente
-                openSearchSidebar();
+                // Abrir sidebar solo si no está abierto
+                if (!sidebarSearch.classList.contains('open')) {
+                    // Cerrar otros sidebars primero
+                    closeAnyOpenSidebar();
+                    sidebarSearch.classList.add('open');
+                    body.classList.add('sidebar-active');
+                    
+                    // Ocultar hint inicial
+                    const searchHint = document.getElementById('search-hint');
+                    if (searchHint) {
+                        searchHint.style.display = 'none';
+                    }
+                }
+                
                 // Actualizar el input del sidebar
                 if (searchSidebarInput) {
                     searchSidebarInput.value = query;
