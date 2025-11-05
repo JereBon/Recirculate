@@ -356,13 +356,18 @@ document.addEventListener("DOMContentLoaded", function() {
                     <div class="search-top">
                         <div class="search-top-left">
                             <button id="search-btn-icon" class="header-icon search-icon" aria-label="Buscar"><i class="fas fa-search"></i></button>
-                            <input id="search-sidebar-input" type="text" class="search-top-input" placeholder="¿Qué busca?">
+                            <input id="search-sidebar-input" type="text" class="search-top-input" placeholder="Buscar productos..." autocomplete="off">
                         </div>
                     </div>
                     <hr class="search-divider">
                     <div class="sidebar-search-content">
                         <div id="search-results" class="search-results"></div>
                         <div id="search-suggestions" class="search-suggestions"></div>
+                        <div id="search-hint" class="search-initial-hint">
+                            <i class="fas fa-search" style="font-size: 2rem; color: #ddd; margin-bottom: 10px;"></i>
+                            <p style="color: #888; margin: 0;">Escribe para buscar productos</p>
+                            <p style="color: #aaa; font-size: 0.85rem; margin-top: 5px;">Ej: "buzo", "remera negra", "pantalón"</p>
+                        </div>
                     </div>
                 </div>
                 `;
@@ -377,18 +382,81 @@ document.addEventListener("DOMContentLoaded", function() {
     const searchResultsContainer = document.getElementById('search-results');
     const searchSuggestionsContainer = document.getElementById('search-suggestions');
 
-    // Catálogo hardcodeado y mapa de búsqueda (compartido con home)
-    const catalog = [
-      { name: 'Campera Ecocuero', url: '../productos/hombre/camperas/campera-ecocuero.html', img: '../assets/images/pages/camperas/Campera Ecocuero 1.png', price: '$70.000' },
-      { name: 'Top Pegaso Bordo', url: '../productos/mujer/remeras-tops/top-pegaso-bordo.html', img: '../assets/images/pages/Mremeras/4 Top Pegaso Bordo a.png', price: '$105.000' },
-      { name: 'Pollera Samer', url: '../productos/mujer/polleras-shorts/pollera-samer.html', img: '../assets/images/pages/Mpolleras/1 Pollera Samer a.png', price: '$65.000' },
-      { name: 'Vestido Italo', url: '../productos/mujer/vestidos-monos/vestido-italo.html', img: '../assets/images/pages/Mvestidos/6 Vestido Italo a.png', price: '$138.000' }
-    ];
+    // Función para obtener dinámicamente los productos de la página actual
+    function getProductsFromPage() {
+        const products = [];
+        const productCards = document.querySelectorAll('.product-card');
+        
+        productCards.forEach(card => {
+            const nameElement = card.querySelector('h3');
+            const imgElement = card.querySelector('.main-image');
+            const priceElement = card.querySelector('.precio');
+            
+            if (nameElement && imgElement && priceElement) {
+                const name = nameElement.textContent.trim();
+                const img = imgElement.src;
+                const price = priceElement.textContent.trim();
+                
+                // Generar URL del producto usando la misma lógica de las tarjetas clickeables
+                const normalizedName = name.replace(/B&N/gi, 'BN');
+                const productSlug = normalizedName
+                    .toLowerCase()
+                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+                
+                const currentPath = window.location.pathname;
+                let productPath = '';
+                
+                // Determinar la ruta según la categoría actual
+                if (currentPath.includes('/pantalones/')) {
+                    productPath = `../../productos/hombre/pantalones/${productSlug}.html`;
+                } else if (currentPath.includes('/remeras/')) {
+                    productPath = `../../productos/hombre/remeras/${productSlug}.html`;
+                } else if (currentPath.includes('/buzos/')) {
+                    productPath = `../../productos/hombre/buzos/${productSlug}.html`;
+                } else if (currentPath.includes('/camperas/')) {
+                    productPath = `../../productos/hombre/camperas/${productSlug}.html`;
+                } else if (currentPath.includes('/camisas/')) {
+                    productPath = `../../productos/hombre/camisas/${productSlug}.html`;
+                } else if (currentPath.includes('/Mvestidos/')) {
+                    productPath = `../../productos/mujer/vestidos-monos/${productSlug}.html`;
+                } else if (currentPath.includes('/Mremeras/')) {
+                    productPath = `../../productos/mujer/remeras-tops/${productSlug}.html`;
+                } else if (currentPath.includes('/Mpolleras/')) {
+                    productPath = `../../productos/mujer/polleras-shorts/${productSlug}.html`;
+                } else if (currentPath.includes('/unisex/')) {
+                    productPath = `../../productos/unisex/${productSlug}.html`;
+                } else {
+                    // Detectar por nombre del producto
+                    const lowerName = name.toLowerCase();
+                    if (lowerName.includes('vestido') || lowerName.includes('mono')) {
+                        productPath = `../../productos/mujer/vestidos-monos/${productSlug}.html`;
+                    } else if (lowerName.includes('top')) {
+                        productPath = `../../productos/mujer/remeras-tops/${productSlug}.html`;
+                    } else if (lowerName.includes('pollera') || lowerName.includes('short') || lowerName.includes('skort')) {
+                        productPath = `../../productos/mujer/polleras-shorts/${productSlug}.html`;
+                    } else if (lowerName.includes('pantalon') || lowerName.includes('jean')) {
+                        productPath = `../../productos/hombre/pantalones/${productSlug}.html`;
+                    } else if (lowerName.includes('remera')) {
+                        productPath = `../../productos/hombre/remeras/${productSlug}.html`;
+                    } else if (lowerName.includes('buzo') || lowerName.includes('hoodie')) {
+                        productPath = `../../productos/hombre/buzos/${productSlug}.html`;
+                    } else if (lowerName.includes('campera') || lowerName.includes('jacket')) {
+                        productPath = `../../productos/hombre/camperas/${productSlug}.html`;
+                    } else if (lowerName.includes('camisa')) {
+                        productPath = `../../productos/hombre/camisas/${productSlug}.html`;
+                    }
+                }
+                
+                products.push({ name, url: productPath, img, price });
+            }
+        });
+        
+        return products;
+    }
 
-    // Mapeo lógico a rutas dentro de la carpeta del sitio. Usamos rutas relativas
-    // a la raíz del proyecto (a partir de la carpeta RecirculateLoe) y las
-    // resolvemos dinámicamente en tiempo de ejecución para que funcionen desde
-    // cualquier subdirectorio (home, páginas de categoría, productos, etc.).
+    // Mapeo lógico a rutas dentro de la carpeta del sitio (para búsqueda de categorías)
     const searchMap = {
       'remera': 'pages/remeras/remeras.html', 'remeras': 'pages/remeras/remeras.html',
       'pantalon': 'pages/pantalones/pantalones.html', 'pantalones': 'pages/pantalones/pantalones.html',
@@ -399,7 +467,15 @@ document.addEventListener("DOMContentLoaded", function() {
       'sudadera': 'pages/buzos/buzos.html', 'polo': 'pages/camisas/camisas.html',
       'shirt': 'pages/remeras/remeras.html', 'jean': 'pages/pantalones/pantalones.html',
       'jeans': 'pages/pantalones/pantalones.html', 'jogger': 'pages/pantalones/pantalones.html',
-      'home': 'home/home.html', 'inicio': 'home/home.html'
+      'home': 'home/home.html', 'inicio': 'home/home.html',
+      'mujer': 'pages/mujer/mujer.html', 'hombre': 'pages/hombre/hombre.html',
+      'unisex': 'pages/unisex/unisex.html', 'vestido': 'pages/Mvestidos/Mvestidos.html',
+      'vestidos': 'pages/Mvestidos/Mvestidos.html', 'pollera': 'pages/Mpolleras/Mpolleras.html',
+      'polleras': 'pages/Mpolleras/Mpolleras.html', 'top': 'pages/Mremeras/Mremeras.html',
+      'tops': 'pages/Mremeras/Mremeras.html', 'descuento': 'pages/descuentos/descuentos.html',
+      'descuentos': 'pages/descuentos/descuentos.html', 'ingreso': 'pages/ingresos/ingresos.html',
+      'ingresos': 'pages/ingresos/ingresos.html', 'nuevo': 'pages/ingresos/ingresos.html',
+      'nuevos': 'pages/ingresos/ingresos.html'
     };
 
     // Construye una URL absoluta basada en la carpeta "RecirculateLoe" encontrada
@@ -432,7 +508,17 @@ document.addEventListener("DOMContentLoaded", function() {
             body.classList.add('sidebar-active');
             if (searchResultsContainer) { searchResultsContainer.innerHTML = ''; searchResultsContainer.classList.remove('visible'); }
             if (searchSuggestionsContainer) { searchSuggestionsContainer.innerHTML = ''; searchSuggestionsContainer.classList.remove('visible'); }
-            if (searchSidebarInput) { searchSidebarInput.value = ''; setTimeout(() => searchSidebarInput.focus(), 50); }
+            
+            // Mostrar hint inicial
+            const searchHint = document.getElementById('search-hint');
+            if (searchHint) {
+                searchHint.style.display = 'flex';
+            }
+            
+            if (searchSidebarInput) { 
+                searchSidebarInput.value = ''; 
+                setTimeout(() => searchSidebarInput.focus(), 50); 
+            }
             // avoid changing overlay z-index here
         }
     }
@@ -453,18 +539,29 @@ document.addEventListener("DOMContentLoaded", function() {
             if (searchSuggestionsContainer) searchSuggestionsContainer.classList.remove('visible');
             return;
         }
-        searchResultsContainer.innerHTML = '';
-        results.forEach(item => {
+        
+        // Agregar contador de resultados
+        const resultCount = results.length;
+        const countText = resultCount === 1 ? '1 producto encontrado' : `${resultCount} productos encontrados`;
+        
+        searchResultsContainer.innerHTML = `<div class="search-results-count">${countText}</div>`;
+        
+        results.forEach((item, index) => {
             const card = document.createElement('div');
             card.className = 'search-result-card';
+            card.style.animationDelay = `${index * 0.03}s`; // Animación escalonada
             card.innerHTML = `
-                <img src="${item.img}" alt="${item.name}" class="search-thumb">
+                <img src="${item.img}" alt="${item.name}" class="search-thumb" loading="lazy">
                 <div class="search-info">
                   <strong class="search-name">${item.name}</strong>
                   <span class="search-price">${item.price}</span>
                 </div>
+                <i class="fas fa-chevron-right search-arrow"></i>
             `;
-            card.addEventListener('click', () => { window.location.href = item.url; });
+            card.addEventListener('click', () => { 
+                closeSearchSidebar();
+                window.location.href = item.url; 
+            });
             searchResultsContainer.appendChild(card);
         });
         searchResultsContainer.classList.add('visible');
@@ -472,23 +569,48 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function performSidebarSearch(query) {
-        const searchTerm = query.toLowerCase();
-        const results = catalog.filter(item => item.name.toLowerCase().includes(searchTerm));
+        const searchTerm = query.toLowerCase().trim();
+        
+        // 1. Primero buscar en los productos de la página actual
+        const catalog = getProductsFromPage();
+        const results = catalog.filter(item => {
+            const name = item.name.toLowerCase();
+            const price = item.price.toLowerCase();
+            // Buscar en nombre y precio
+            return name.includes(searchTerm) || 
+                   price.includes(searchTerm) ||
+                   // Buscar por palabras individuales
+                   searchTerm.split(' ').some(word => name.includes(word));
+        });
+        
         if (results.length > 0) {
             renderSearchResults(results);
             openSearchSidebar();
             return;
         }
-        // fallback a mapa de categorías
+        
+        // 2. Si no hay resultados en la página, buscar en categorías
         for (const [key, url] of Object.entries(searchMap)) {
             if (key.includes(searchTerm) || searchTerm.includes(key)) {
                 window.location.href = resolveMappedUrl(url);
                 return;
             }
         }
-        // si no hay nada
+        
+        // 3. Si no hay resultados, mostrar mensaje
         if (searchResultsContainer) {
-            searchResultsContainer.innerHTML = `<p class="no-results">No se encontraron resultados para "${query}".</p>`;
+            searchResultsContainer.innerHTML = `
+                <div class="no-results">
+                    <p>No se encontraron resultados para "<strong>${query}</strong>"</p>
+                    <p class="search-hint">Intenta buscar por:</p>
+                    <ul class="search-hints">
+                        <li>Nombre del producto (ej: "buzo", "remera")</li>
+                        <li>Color (ej: "negro", "blanco")</li>
+                        <li>Marca (ej: "kalf", "nova")</li>
+                        <li>Categoría (ej: "pantalones", "vestidos")</li>
+                    </ul>
+                </div>
+            `;
             searchResultsContainer.classList.add('visible');
             openSearchSidebar();
         } else {
@@ -560,13 +682,105 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // listeners para elementos del sidebar
     if (searchCloseBtn) searchCloseBtn.addEventListener('click', closeSearchSidebar);
-    // No hay botón "Buscar" en el sidebar: la búsqueda se ejecuta al presionar Enter en los inputs
+    
+    // Búsqueda en tiempo real mientras escribes
     if (searchSidebarInput) {
+        // Buscar al presionar Enter
         searchSidebarInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && searchSidebarInput.value.trim() !== '') {
                 performSidebarSearch(searchSidebarInput.value.trim());
             }
         });
+        
+        // Búsqueda en tiempo real mientras escribes (autocompletado)
+        searchSidebarInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            
+            if (query.length === 0) {
+                // Si el campo está vacío, limpiar resultados
+                if (searchResultsContainer) {
+                    searchResultsContainer.innerHTML = '';
+                    searchResultsContainer.classList.remove('visible');
+                }
+                return;
+            }
+            
+            if (query.length >= 2) {
+                // Buscar cuando hay al menos 2 caracteres
+                performLiveSearch(query);
+            }
+        });
+    }
+    
+    // También agregar búsqueda en tiempo real al input del header
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            
+            if (query.length >= 2) {
+                // Abrir sidebar automáticamente
+                openSearchSidebar();
+                // Actualizar el input del sidebar
+                if (searchSidebarInput) {
+                    searchSidebarInput.value = query;
+                }
+                // Realizar búsqueda
+                performLiveSearch(query);
+            }
+        });
+    }
+    
+    // Función de búsqueda en vivo (mientras escribes)
+    function performLiveSearch(query) {
+        const searchTerm = query.toLowerCase().trim();
+        const catalog = getProductsFromPage();
+        
+        // Ocultar hint inicial
+        const searchHint = document.getElementById('search-hint');
+        if (searchHint) {
+            searchHint.style.display = 'none';
+        }
+        
+        // Filtrar productos que coincidan con la búsqueda
+        const results = catalog.filter(item => {
+            const name = item.name.toLowerCase();
+            // Buscar coincidencias en el nombre
+            return name.includes(searchTerm) || 
+                   // Buscar por palabras individuales
+                   searchTerm.split(' ').every(word => name.includes(word));
+        });
+        
+        // Limitar a 8 resultados para no saturar
+        const limitedResults = results.slice(0, 8);
+        
+        if (limitedResults.length > 0) {
+            renderSearchResults(limitedResults);
+            openSearchSidebar();
+        } else {
+            // Mostrar mensaje de "no resultados" solo si hay al menos 3 caracteres
+            if (searchTerm.length >= 3) {
+                if (searchResultsContainer) {
+                    searchResultsContainer.innerHTML = `
+                        <div class="no-results">
+                            <p>No se encontraron productos con "<strong>${query}</strong>"</p>
+                            <p class="search-hint">Sigue escribiendo o intenta con:</p>
+                            <ul class="search-hints">
+                                <li>Otro nombre de producto</li>
+                                <li>Color o marca del producto</li>
+                                <li>Categoría (pantalones, remeras, etc.)</li>
+                            </ul>
+                        </div>
+                    `;
+                    searchResultsContainer.classList.add('visible');
+                }
+            } else {
+                // Si hay menos de 3 caracteres, limpiar resultados
+                if (searchResultsContainer) {
+                    searchResultsContainer.innerHTML = '';
+                    searchResultsContainer.classList.remove('visible');
+                }
+            }
+        }
     }
 
     // --- Lógica de Ordenamiento (Mejorada) ---
