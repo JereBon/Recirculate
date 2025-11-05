@@ -420,7 +420,7 @@ function crearTarjetaProductoHome(producto) {
   
   let precioConDescuento = precioOriginal;
   if (tieneDescuento) {
-    precioConDescuento = Math.round(precioOriginal * (1 - descuentoNumerico / 100));
+    precioConDescuento = precioOriginal * (1 - descuentoNumerico / 100);
   }
   
   card.innerHTML = `
@@ -436,12 +436,12 @@ function crearTarjetaProductoHome(producto) {
       <p class="precio">
         ${tieneDescuento ? `
           <span style="text-decoration: line-through; color: #999; font-size: 0.9rem; margin-right: 8px;">
-            $${precioOriginal.toLocaleString('es-AR')}
+            $${precioOriginal.toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
           </span>
           <span style="color: #27ae60; font-weight: bold;">
-            $${precioConDescuento.toLocaleString('es-AR')} ARS
+            $${precioConDescuento.toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} ARS
           </span>
-        ` : `<span style="color: #666;">$${precioOriginal.toLocaleString('es-AR')} ARS</span>`}
+        ` : `<span style="color: #666;">$${precioOriginal.toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} ARS</span>`}
       </p>
       <button class="add-to-cart-btn" onclick="event.stopPropagation();">
         <i class="fas fa-shopping-cart"></i> Agregar al Carrito

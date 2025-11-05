@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         $${producto.precio.toLocaleString('es-AR')} ARS
                     </span>
                     <span style="color: #27ae60; font-weight: bold;">
-                        $${Math.round(precioConDescuento).toLocaleString('es-AR')} ARS
+                        $${precioConDescuento.toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} ARS
                     </span>
                 `;
             } else {
