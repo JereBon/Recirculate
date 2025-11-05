@@ -86,27 +86,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log('📦 Mostrando últimos 20 ingresos:', productosFiltrados.map(p => p.nombre));
         } else if (currentPath.includes('/descuentos/')) {
             // Mostrar solo productos con descuento > 0
-            console.log('🔍 FILTRANDO DESCUENTOS...');
-            console.log('📦 Total productos antes del filtro:', productos.length);
-            
-            // Depuración: Ver todos los descuentos
-            productos.forEach(p => {
-                console.log(`Producto: "${p.nombre}" | Descuento RAW: "${p.descuento}" | Tipo: ${typeof p.descuento}`);
-            });
-            
             productosFiltrados = productos.filter(p => {
                 const descuento = parseFloat(p.descuento);
-                const tieneDescuento = !isNaN(descuento) && descuento > 0;
-                console.log(`  → "${p.nombre}": descuento=${descuento}, tieneDescuento=${tieneDescuento}`);
-                return tieneDescuento;
+                return !isNaN(descuento) && descuento > 0;
             });
-            
-            console.log('💰 Productos con descuento:', productosFiltrados.length);
-            if (productosFiltrados.length > 0) {
-                console.log('📋 Lista de productos con descuento:', productosFiltrados.map(p => `${p.nombre} (${p.descuento}%)`));
-            } else {
-                console.warn('⚠️ NO SE ENCONTRARON PRODUCTOS CON DESCUENTO');
-            }
+            console.log('💰 Productos con descuento:', productosFiltrados.length, productosFiltrados.map(p => `${p.nombre} (${p.descuento}%)`));
         } else {
             // Filtrar por género
             if (genero) {
