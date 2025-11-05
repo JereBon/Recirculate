@@ -86,11 +86,27 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log('📦 Mostrando últimos 20 ingresos:', productosFiltrados.map(p => p.nombre));
         } else if (currentPath.includes('/descuentos/')) {
             // Mostrar solo productos con descuento > 0
+            console.log('🔍 FILTRANDO DESCUENTOS...');
+            console.log('📦 Total productos antes del filtro:', productos.length);
+            
+            // Depuración: Ver todos los descuentos
+            productos.forEach(p => {
+                console.log(`Producto: "${p.nombre}" | Descuento RAW: "${p.descuento}" | Tipo: ${typeof p.descuento}`);
+            });
+            
             productosFiltrados = productos.filter(p => {
                 const descuento = parseFloat(p.descuento);
-                return !isNaN(descuento) && descuento > 0;
+                const tieneDescuento = !isNaN(descuento) && descuento > 0;
+                console.log(`  → "${p.nombre}": descuento=${descuento}, tieneDescuento=${tieneDescuento}`);
+                return tieneDescuento;
             });
-            console.log('💰 Productos con descuento:', productosFiltrados.length, productosFiltrados.map(p => `${p.nombre} (${p.descuento}%)`));
+            
+            console.log('💰 Productos con descuento:', productosFiltrados.length);
+            if (productosFiltrados.length > 0) {
+                console.log('📋 Lista de productos con descuento:', productosFiltrados.map(p => `${p.nombre} (${p.descuento}%)`));
+            } else {
+                console.warn('⚠️ NO SE ENCONTRARON PRODUCTOS CON DESCUENTO');
+            }
         } else {
             // Filtrar por género
             if (genero) {
@@ -241,18 +257,38 @@ function createProductCard(producto) {
     const nombreEscapado = escaparHTML(producto.nombre || 'Sin nombre');
     const descripcionEscapada = escaparHTML(producto.descripcion || '');
     
+    // Calcular precio con descuento SOLO si tiene descuento > 0
+    const descuentoNumerico = parseFloat(producto.descuento);
+    const tieneDescuento = !isNaN(descuentoNumerico) && descuentoNumerico > 0;
+    const precioOriginal = producto.precio || 0;
+    
+    // Calcular precio con descuento solo si aplica
+    let precioConDescuento = precioOriginal;
+    if (tieneDescuento) {
+        precioConDescuento = Math.round(precioOriginal * (1 - descuentoNumerico / 100));
+    }
+    
     try {
         card.innerHTML = `
             <div class="product-images">
                 <img src="${imagenPrincipal}" alt="${nombreEscapado}" class="main-image" loading="lazy">
                 <img src="${imagenHover}" alt="${nombreEscapado} - Vista trasera" class="hover-image" loading="lazy">
                 ${esNuevo ? '<span class="new-tag">NEW</span>' : ''}
-                ${producto.descuento && producto.descuento > 0 ? `<span class="discount-tag">${Math.round(producto.descuento)}% OFF</span>` : ''}
+                ${tieneDescuento ? `<span class="discount-tag">${Math.round(descuentoNumerico)}% OFF</span>` : ''}
             </div>
             <div class="product-info">
                 <h3>${nombreEscapado}</h3>
                 <p class="descripcion">${descripcionEscapada}</p>
-                <p class="precio">$${producto.precio ? producto.precio.toLocaleString('es-AR') : '0'} ARS</p>
+                <p class="precio">
+                    ${tieneDescuento ? `
+                        <span style="text-decoration: line-through; color: #999; font-size: 0.9rem; margin-right: 8px;">
+                            $${precioOriginal.toLocaleString('es-AR')}
+                        </span>
+                        <span style="color: #27ae60; font-weight: bold;">
+                            $${precioConDescuento.toLocaleString('es-AR')} ARS
+                        </span>
+                    ` : `<span style="color: #666;">$${precioOriginal.toLocaleString('es-AR')} ARS</span>`}
+                </p>
                 <button class="add-to-cart-btn" onclick="event.stopPropagation();">
                     <i class="fas fa-shopping-cart"></i> Agregar al Carrito
                 </button>
