@@ -786,45 +786,48 @@ document.addEventListener("DOMContentLoaded", function() {
                         .replace(/[^a-z0-9]+/g, '-')
                         .replace(/^-+|-+$/g, '');
                     
-                    // Determinar ruta según categoría y género
+                    // Determinar ruta según categoría y género (USAR RUTAS ABSOLUTAS)
                     let productPath = '';
                     const categoria = (producto.categoria || '').toLowerCase();
                     const genero = (producto.genero || '').toLowerCase();
                     
                     if (genero === 'mujer') {
                         if (categoria.includes('vestido') || categoria.includes('mono')) {
-                            productPath = `../../productos/mujer/vestidos-monos/${productSlug}.html`;
+                            productPath = `productos/mujer/vestidos-monos/${productSlug}.html`;
                         } else if (categoria.includes('remera') || categoria.includes('top')) {
-                            productPath = `../../productos/mujer/remeras-tops/${productSlug}.html`;
+                            productPath = `productos/mujer/remeras-tops/${productSlug}.html`;
                         } else if (categoria.includes('pollera') || categoria.includes('short')) {
-                            productPath = `../../productos/mujer/polleras-shorts/${productSlug}.html`;
+                            productPath = `productos/mujer/polleras-shorts/${productSlug}.html`;
                         } else {
-                            productPath = `../../productos/mujer/vestidos-monos/${productSlug}.html`;
+                            productPath = `productos/mujer/vestidos-monos/${productSlug}.html`;
                         }
                     } else if (genero === 'hombre') {
                         if (categoria.includes('pantalon') || categoria.includes('jean')) {
-                            productPath = `../../productos/hombre/pantalones/${productSlug}.html`;
+                            productPath = `productos/hombre/pantalones/${productSlug}.html`;
                         } else if (categoria.includes('remera')) {
-                            productPath = `../../productos/hombre/remeras/${productSlug}.html`;
+                            productPath = `productos/hombre/remeras/${productSlug}.html`;
                         } else if (categoria.includes('buzo') || categoria.includes('hoodie')) {
-                            productPath = `../../productos/hombre/buzos/${productSlug}.html`;
+                            productPath = `productos/hombre/buzos/${productSlug}.html`;
                         } else if (categoria.includes('campera') || categoria.includes('jacket')) {
-                            productPath = `../../productos/hombre/camperas/${productSlug}.html`;
+                            productPath = `productos/hombre/camperas/${productSlug}.html`;
                         } else if (categoria.includes('camisa')) {
-                            productPath = `../../productos/hombre/camisas/${productSlug}.html`;
+                            productPath = `productos/hombre/camisas/${productSlug}.html`;
                         } else {
-                            productPath = `../../productos/hombre/pantalones/${productSlug}.html`;
+                            productPath = `productos/hombre/pantalones/${productSlug}.html`;
                         }
                     } else if (genero === 'unisex') {
-                        productPath = `../../productos/unisex/${productSlug}.html`;
+                        productPath = `productos/unisex/${productSlug}.html`;
                     } else {
-                        productPath = `../../productos/${productSlug}.html`;
+                        productPath = `productos/${productSlug}.html`;
                     }
+                    
+                    // Resolver la ruta usando la función resolveMappedUrl para que funcione desde cualquier página
+                    const resolvedUrl = resolveMappedUrl(productPath);
                     
                     return {
                         name: producto.nombre,
-                        url: productPath,
-                        img: producto.imagen_principal || '',
+                        url: resolvedUrl,
+                        img: producto.imagen_principal || '', // Cloudinary devuelve URL completa, no necesita prefijo
                         price: `$${producto.precio?.toLocaleString('es-AR')} ARS`
                     };
                 });
