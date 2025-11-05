@@ -473,6 +473,11 @@ function crearTarjetaProductoHome(producto) {
 
   card.style.cursor = 'pointer';
 
+  // Agregar clase de animación después de un breve delay para que sea visible
+  setTimeout(() => {
+    card.classList.add('animate-visible');
+  }, 50);
+
   return card;
 }
   
