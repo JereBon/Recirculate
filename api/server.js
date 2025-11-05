@@ -145,14 +145,8 @@ const Expense = require('./models/Expense');
 // Obtener todos los productos
 app.get('/api/productos', async (req, res) => {
   try {
-    console.log('🔍 GET /api/productos - Solicitando productos...');
     const { search } = req.query;
-    console.log('🔍 Parámetro de búsqueda:', search);
-    
     const productos = await Product.findAll(search);
-    console.log(`🔍 Productos encontrados: ${productos.length}`);
-    console.log('🔍 Productos:', JSON.stringify(productos, null, 2));
-    
     res.json(productos);
   } catch (error) {
     console.error('❌ Error obteniendo productos:', error);
@@ -177,16 +171,12 @@ app.get('/api/productos/:id', async (req, res) => {
 // Crear producto (solo admin)
 app.post('/api/productos', verifyToken, verifyAdmin, async (req, res) => {
   try {
-    console.log('📦 POST /api/productos - Creando producto...');
-    console.log('📦 Datos recibidos:', JSON.stringify(req.body, null, 2));
-    console.log('📦 Usuario ID:', req.userId);
-    
     const nuevo = await Product.create({
       ...req.body,
       usuario_id: req.userId
     });
     
-    console.log('✅ Producto creado exitosamente:', JSON.stringify(nuevo, null, 2));
+    console.log('✅ Producto creado:', nuevo.nombre);
     res.status(201).json(nuevo);
   } catch (error) {
     console.error('❌ Error creando producto:', error);
@@ -334,10 +324,6 @@ const mpClient = new MercadoPagoConfig({
 // Endpoint para crear preferencia de pago
 app.post('/api/pagos/preferencia', verifyToken, async (req, res) => {
   try {
-    console.log('📦 POST /api/pagos/preferencia - Creando preferencia de pago...');
-    console.log('📦 Datos recibidos:', JSON.stringify(req.body, null, 2));
-    console.log('📦 Usuario ID:', req.userId);
-
     const { items, external_reference } = req.body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -371,7 +357,7 @@ app.post('/api/pagos/preferencia', verifyToken, async (req, res) => {
       usuario_id: req.userId
     });
 
-    console.log('✅ Preferencia creada exitosamente:', result.id);
+    console.log('✅ Preferencia MP creada:', result.id);
     res.json({ 
       preference_id: result.id,
       sandbox_init_point: result.sandbox_init_point 
@@ -386,18 +372,12 @@ app.post('/api/pagos/preferencia', verifyToken, async (req, res) => {
 // Endpoint para recibir notificaciones de MercadoPago (Webhooks)
 app.post('/api/pagos/notificaciones', async (req, res) => {
   try {
-    console.log('🔔 Notificación de MercadoPago recibida');
-    console.log('Query:', req.query);
-    console.log('Body:', req.body);
-
     const { type, data } = req.body;
 
     if (type === 'payment' && data && data.id) {
       // Obtener información del pago desde MercadoPago
       const payment = new Payment(mpClient);
       const paymentInfo = await payment.get({ id: data.id });
-
-      console.log('💳 Información del pago:', JSON.stringify(paymentInfo, null, 2));
 
       // Guardar/actualizar pago en PostgreSQL
       const existingPayment = await MPPayment.findByPaymentId(data.id);
@@ -419,11 +399,11 @@ app.post('/api/pagos/notificaciones', async (req, res) => {
           fecha_pago: paymentInfo.date_approved ? new Date(paymentInfo.date_approved) : new Date()
         });
 
-        console.log('✅ Nuevo pago guardado en BD');
+        console.log('✅ Pago registrado:', data.id);
       } else {
         // Actualizar pago existente
         await MPPayment.updateStatus(data.id, paymentInfo.status, paymentInfo.status_detail);
-        console.log('✅ Pago actualizado en BD');
+        console.log('✅ Pago actualizado:', data.id);
       }
 
       // Actualizar status de preferencia
@@ -479,9 +459,6 @@ app.get('/api/pagos/usuario/historial', verifyToken, async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`API escuchando en puerto ${PORT} - v4.2 - Con MercadoPago integrado`);
-  console.log(`🌐 Aplicación disponible en: https://recirculate-api.onrender.com`);
-  console.log(`📱 Sistema completo en: https://recirculate-api.onrender.com/app`);
-  console.log(`🔍 Verificar BD en: https://recirculate-api.onrender.com/debug`);
-  console.log(`💳 MercadoPago integrado - Endpoints /api/pagos/*`);
+  console.log(`✅ Recirculate API v4.2 - Puerto ${PORT}`);
+  console.log(`🌐 https://recirculate-api.onrender.com`);
 });

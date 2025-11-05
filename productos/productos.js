@@ -279,18 +279,18 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Generar página HTML del producto automáticamente
         try {
-          const generarResponse = await fetch(API_URL.replace('/productos', '/generar-pagina-producto'), {
+          const generarResponse = await fetch(`${API_URL}/generar-pagina-producto`, {
             method: 'POST',
             headers: { 
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}` 
             },
-            body: JSON.stringify(data.producto || nuevo)
+            body: JSON.stringify(data)
           });
           
           const generarData = await generarResponse.json();
           
-          if (generarResponse.ok) {
+          if (generarResponse.ok && generarData.success) {
             console.log('✅ Página HTML generada:', generarData.ruta);
             alert(`✅ Producto agregado exitosamente\n📄 Página creada en: ${generarData.ruta}`);
           } else {

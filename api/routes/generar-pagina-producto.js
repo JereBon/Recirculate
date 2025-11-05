@@ -262,8 +262,11 @@ router.post('/', async (req, res) => {
     try {
         const producto = req.body;
         
+        console.log('📄 Generando página para:', producto.nombre);
+        
         if (!producto.nombre || !producto.genero || !producto.categoria) {
             return res.status(400).json({ 
+                success: false,
                 error: 'Faltan datos requeridos: nombre, genero, categoria' 
             });
         }
@@ -288,7 +291,7 @@ router.post('/', async (req, res) => {
         // Escribir archivo
         await fs.writeFile(archivoHTML, contenidoHTML, 'utf8');
         
-        console.log(`✅ Página generada: ${archivoHTML}`);
+        console.log(`✅ HTML creado: ${slug}.html`);
         
         res.json({ 
             success: true,
@@ -298,8 +301,9 @@ router.post('/', async (req, res) => {
         });
         
     } catch (error) {
-        console.error('Error al generar página HTML:', error);
+        console.error('❌ Error generando HTML:', error.message);
         res.status(500).json({ 
+            success: false,
             error: 'Error al generar la página HTML',
             details: error.message 
         });
