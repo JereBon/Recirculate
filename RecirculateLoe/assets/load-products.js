@@ -86,7 +86,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log('📦 Mostrando últimos 20 ingresos:', productosFiltrados.map(p => p.nombre));
         } else if (currentPath.includes('/descuentos/')) {
             // Mostrar solo productos con descuento > 0
-            productosFiltrados = productos.filter(p => p.descuento && p.descuento > 0);
+            productosFiltrados = productos.filter(p => {
+                const descuento = parseFloat(p.descuento);
+                return !isNaN(descuento) && descuento > 0;
+            });
+            console.log('💰 Productos con descuento:', productosFiltrados.length, productosFiltrados.map(p => `${p.nombre} (${p.descuento}%)`));
         } else {
             // Filtrar por género
             if (genero) {

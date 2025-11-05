@@ -67,12 +67,43 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // --- Selector de talle ---
+    // --- Selector de talle con validación de disponibilidad ---
     const talleBtns = document.querySelectorAll('.talle-btn');
     let talleSeleccionado = null;
+    let talleDisponible = null; // El talle real del producto
+    let productoData = null; // Datos completos del producto
+
+    // Escuchar evento de carga de datos del producto
+    window.addEventListener('productoDataLoaded', (event) => {
+        talleDisponible = event.detail.talleDisponible;
+        productoData = event.detail.producto;
+        console.log('📦 Datos del producto recibidos:', productoData);
+    });
+
+    // Obtener el talle disponible del producto desde un data attribute
+    const talleActualElement = document.querySelector('[data-talle-disponible]');
+    if (talleActualElement) {
+        talleDisponible = talleActualElement.dataset.talleDisponible;
+    }
 
     talleBtns.forEach(btn => {
+        const talle = btn.dataset.talle;
+        
         btn.addEventListener('click', function() {
+            // Si no hay talle disponible definido, permitir selección libre
+            if (!talleDisponible) {
+                talleBtns.forEach(b => b.classList.remove('seleccionado'));
+                this.classList.add('seleccionado');
+                talleSeleccionado = this.dataset.talle;
+                return;
+            }
+            
+            // Verificar si el talle clickeado está disponible
+            if (talle !== talleDisponible) {
+                mostrarNotificacion('⚠️ Este talle no está disponible');
+                return;
+            }
+            
             // Remover selección de todos los talles
             talleBtns.forEach(b => b.classList.remove('seleccionado'));
             
@@ -80,24 +111,80 @@ document.addEventListener("DOMContentLoaded", function() {
             this.classList.add('seleccionado');
             talleSeleccionado = this.dataset.talle;
         });
+        
+        // Marcar talles no disponibles con estilo opaco
+        if (talleDisponible && talle !== talleDisponible) {
+            btn.classList.add('talle-no-disponible');
+            btn.style.opacity = '0.3';
+            btn.style.cursor = 'not-allowed';
+        }
     });
 
-    // --- Selector de cantidad ---
+    // --- Selector de cantidad con límite de stock ---
     const cantidadInput = document.getElementById('cantidad-input');
     const btnMenos = document.getElementById('btn-menos');
     const btnMas = document.getElementById('btn-mas');
+    
+    // Obtener stock disponible desde data attribute o del evento
+    let stockDisponible = 999;
+    
+    const stockElement = document.querySelector('[data-stock-disponible]');
+    if (stockElement) {
+        stockDisponible = parseInt(stockElement.dataset.stockDisponible);
+    }
+    
+    // Actualizar stock cuando se carguen los datos del producto
+    window.addEventListener('productoDataLoaded', (event) => {
+        stockDisponible = event.detail.stockDisponible || 999;
+        actualizarEstadoBotones();
+        console.log('📦 Stock disponible:', stockDisponible);
+    });
+
+    function actualizarEstadoBotones() {
+        const cantidad = parseInt(cantidadInput.value);
+        
+        // Deshabilitar botón menos si cantidad es 1
+        if (cantidad <= 1) {
+            btnMenos.disabled = true;
+            btnMenos.style.opacity = '0.3';
+            btnMenos.style.cursor = 'not-allowed';
+        } else {
+            btnMenos.disabled = false;
+            btnMenos.style.opacity = '1';
+            btnMenos.style.cursor = 'pointer';
+        }
+        
+        // Deshabilitar botón más si alcanzó el stock
+        if (cantidad >= stockDisponible) {
+            btnMas.disabled = true;
+            btnMas.style.opacity = '0.3';
+            btnMas.style.cursor = 'not-allowed';
+            btnMas.style.backgroundColor = '#ccc';
+        } else {
+            btnMas.disabled = false;
+            btnMas.style.opacity = '1';
+            btnMas.style.cursor = 'pointer';
+            btnMas.style.backgroundColor = '';
+        }
+    }
 
     if (btnMenos && btnMas && cantidadInput) {
         btnMenos.addEventListener('click', () => {
             let cantidad = parseInt(cantidadInput.value);
             if (cantidad > 1) {
                 cantidadInput.value = cantidad - 1;
+                actualizarEstadoBotones();
             }
         });
 
         btnMas.addEventListener('click', () => {
             let cantidad = parseInt(cantidadInput.value);
-            cantidadInput.value = cantidad + 1;
+            if (cantidad < stockDisponible) {
+                cantidadInput.value = cantidad + 1;
+                actualizarEstadoBotones();
+            } else {
+                mostrarNotificacion(`⚠️ Stock máximo disponible: ${stockDisponible} unidades`);
+            }
         });
 
         // Validar input manual
@@ -105,8 +192,15 @@ document.addEventListener("DOMContentLoaded", function() {
             let valor = parseInt(cantidadInput.value);
             if (isNaN(valor) || valor < 1) {
                 cantidadInput.value = 1;
+            } else if (valor > stockDisponible) {
+                cantidadInput.value = stockDisponible;
+                mostrarNotificacion(`⚠️ Stock máximo disponible: ${stockDisponible} unidades`);
             }
+            actualizarEstadoBotones();
         });
+        
+        // Inicializar estado de botones
+        actualizarEstadoBotones();
     }
 
     // --- Botón Agregar al Carrito ---

@@ -123,6 +123,10 @@ app.use('/api/migrate', migrateRoutes);
 const auditRoutes = require('./routes/audit');
 app.use('/api/audit', auditRoutes);
 
+// --- RUTA PARA GENERAR PÁGINA DE PRODUCTO ---
+const generarPaginaRoutes = require('./routes/generar-pagina-producto');
+app.use('/api/generar-pagina-producto', generarPaginaRoutes);
+
 // --- SOCKET.IO ---
 io.on('connection', (socket) => {
   console.log('Cliente conectado a Socket.IO');

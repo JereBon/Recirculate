@@ -105,7 +105,7 @@
             </div>
         </div>
 
-        <div class="producto-info">
+        <div class="producto-info" data-talle-disponible="M" data-stock-disponible="9">
             <div class="producto-etiquetas">
                 <span class="etiqueta-descuento">22% OFF</span>
             </div>
@@ -113,8 +113,8 @@
             <h1>Vestido Italo</h1>
             
             <p class="producto-precio">
-                <span class="precio-anterior">$177.000 ARS</span>
-                $138.000 ARS
+                <span class="precio-anterior" style="text-decoration: line-through; color: #e74c3c; font-size: 1rem; margin-right: 10px;">$177.000 ARS</span>
+                <span style="color: #27ae60; font-weight: bold;">$138.000 ARS</span>
             </p>
 
             <div class="producto-talle">
@@ -131,7 +131,7 @@
                 <h3>Cantidad:</h3>
                 <div class="cantidad-selector">
                     <button id="btn-menos" class="cantidad-btn">-</button>
-                    <input type="number" id="cantidad-input" class="cantidad-input" value="1" min="1">
+                    <input type="number" id="cantidad-input" class="cantidad-input" value="1" min="1" max="9">
                     <button id="btn-mas" class="cantidad-btn">+</button>
                 </div>
             </div>
@@ -215,7 +215,6 @@
 
 <script src="../../../assets/pages.js"></script>
 <script src="../../../assets/producto-detalle.js"></script>
-</script>
 <script src='https://cdn.jotfor.ms/agent/embedjs/019a2cafb84e7b99aae78f82f10fd7c58f53/embed.js'></script>
 </body>
 </html>

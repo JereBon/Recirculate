@@ -277,7 +277,30 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
         
-        alert('✅ Producto agregado exitosamente');
+        // Generar página HTML del producto automáticamente
+        try {
+          const generarResponse = await fetch(API_URL.replace('/productos', '/generar-pagina-producto'), {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify(data.producto || nuevo)
+          });
+          
+          const generarData = await generarResponse.json();
+          
+          if (generarResponse.ok) {
+            console.log('✅ Página HTML generada:', generarData.ruta);
+            alert(`✅ Producto agregado exitosamente\n📄 Página creada en: ${generarData.ruta}`);
+          } else {
+            console.warn('⚠️ Producto guardado pero no se pudo generar la página HTML:', generarData.error);
+            alert('✅ Producto agregado exitosamente\n⚠️ Advertencia: No se pudo crear la página HTML automáticamente');
+          }
+        } catch (err) {
+          console.error('Error al generar página HTML:', err);
+          alert('✅ Producto agregado exitosamente\n⚠️ Advertencia: No se pudo crear la página HTML automáticamente');
+        }
       } catch (err) {
         console.error('Error:', err);
         alert('❌ Error al conectar con el servidor');
