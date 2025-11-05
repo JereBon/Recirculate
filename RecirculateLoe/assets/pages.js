@@ -501,6 +501,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Funciones para mostrar/ocultar y realizar búsquedas en el sidebar
     function openSearchSidebar(keepValue = false) {
+        // Si ya está abierto y queremos mantener el valor, no hacer nada
+        if (sidebarSearch && sidebarSearch.classList.contains('open') && keepValue) {
+            return;
+        }
+        
         // Cerrar otros sidebars primero
         closeAnyOpenSidebar();
         if (sidebarSearch) {
@@ -736,10 +741,9 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
     
-    // Función de búsqueda en vivo (mientras escribes)
-    function performLiveSearch(query) {
+    // Función de búsqueda en vivo (mientras escribes) - BÚSQUEDA GLOBAL
+    async function performLiveSearch(query) {
         const searchTerm = query.toLowerCase().trim();
-        const catalog = getProductsFromPage();
         
         // Ocultar hint inicial
         const searchHint = document.getElementById('search-hint');
@@ -747,44 +751,125 @@ document.addEventListener("DOMContentLoaded", function() {
             searchHint.style.display = 'none';
         }
         
-        // Filtrar productos que coincidan con la búsqueda
-        const results = catalog.filter(item => {
-            const name = item.name.toLowerCase();
-            // Buscar coincidencias en el nombre
-            return name.includes(searchTerm) || 
-                   // Buscar por palabras individuales
-                   searchTerm.split(' ').every(word => name.includes(word));
-        });
-        
-        // Limitar a 8 resultados para no saturar
-        const limitedResults = results.slice(0, 8);
-        
-        if (limitedResults.length > 0) {
-            renderSearchResults(limitedResults);
-            openSearchSidebar();
-        } else {
-            // Mostrar mensaje de "no resultados" solo si hay al menos 3 caracteres
-            if (searchTerm.length >= 3) {
-                if (searchResultsContainer) {
-                    searchResultsContainer.innerHTML = `
-                        <div class="no-results">
-                            <p>No se encontraron productos con "<strong>${query}</strong>"</p>
-                            <p class="search-hint">Sigue escribiendo o intenta con:</p>
-                            <ul class="search-hints">
-                                <li>Otro nombre de producto</li>
-                                <li>Color o marca del producto</li>
-                                <li>Categoría (pantalones, remeras, etc.)</li>
-                            </ul>
-                        </div>
-                    `;
-                    searchResultsContainer.classList.add('visible');
-                }
+        try {
+            // Buscar en la API para obtener TODOS los productos
+            const API_URL = 'https://recirculate-api.onrender.com/api/productos';
+            const response = await fetch(API_URL);
+            
+            if (!response.ok) {
+                throw new Error('Error al buscar productos');
+            }
+            
+            const productos = await response.json();
+            
+            // Filtrar productos que coincidan con la búsqueda
+            const results = productos
+                .filter(producto => {
+                    const nombre = (producto.nombre || '').toLowerCase();
+                    const categoria = (producto.categoria || '').toLowerCase();
+                    const genero = (producto.genero || '').toLowerCase();
+                    
+                    // Buscar en nombre, categoría y género
+                    return nombre.includes(searchTerm) || 
+                           categoria.includes(searchTerm) ||
+                           genero.includes(searchTerm) ||
+                           // Buscar por palabras individuales en el nombre
+                           searchTerm.split(' ').every(word => nombre.includes(word));
+                })
+                .slice(0, 8) // Limitar a 8 resultados
+                .map(producto => {
+                    // Generar slug del producto
+                    const normalizedName = (producto.nombre || '').replace(/B&N/gi, 'BN');
+                    const productSlug = normalizedName
+                        .toLowerCase()
+                        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                        .replace(/[^a-z0-9]+/g, '-')
+                        .replace(/^-+|-+$/g, '');
+                    
+                    // Determinar ruta según categoría y género
+                    let productPath = '';
+                    const categoria = (producto.categoria || '').toLowerCase();
+                    const genero = (producto.genero || '').toLowerCase();
+                    
+                    if (genero === 'mujer') {
+                        if (categoria.includes('vestido') || categoria.includes('mono')) {
+                            productPath = `../../productos/mujer/vestidos-monos/${productSlug}.html`;
+                        } else if (categoria.includes('remera') || categoria.includes('top')) {
+                            productPath = `../../productos/mujer/remeras-tops/${productSlug}.html`;
+                        } else if (categoria.includes('pollera') || categoria.includes('short')) {
+                            productPath = `../../productos/mujer/polleras-shorts/${productSlug}.html`;
+                        } else {
+                            productPath = `../../productos/mujer/vestidos-monos/${productSlug}.html`;
+                        }
+                    } else if (genero === 'hombre') {
+                        if (categoria.includes('pantalon') || categoria.includes('jean')) {
+                            productPath = `../../productos/hombre/pantalones/${productSlug}.html`;
+                        } else if (categoria.includes('remera')) {
+                            productPath = `../../productos/hombre/remeras/${productSlug}.html`;
+                        } else if (categoria.includes('buzo') || categoria.includes('hoodie')) {
+                            productPath = `../../productos/hombre/buzos/${productSlug}.html`;
+                        } else if (categoria.includes('campera') || categoria.includes('jacket')) {
+                            productPath = `../../productos/hombre/camperas/${productSlug}.html`;
+                        } else if (categoria.includes('camisa')) {
+                            productPath = `../../productos/hombre/camisas/${productSlug}.html`;
+                        } else {
+                            productPath = `../../productos/hombre/pantalones/${productSlug}.html`;
+                        }
+                    } else if (genero === 'unisex') {
+                        productPath = `../../productos/unisex/${productSlug}.html`;
+                    } else {
+                        productPath = `../../productos/${productSlug}.html`;
+                    }
+                    
+                    return {
+                        name: producto.nombre,
+                        url: productPath,
+                        img: producto.imagen_principal || '',
+                        price: `$${producto.precio?.toLocaleString('es-AR')} ARS`
+                    };
+                });
+            
+            if (results.length > 0) {
+                renderSearchResults(results);
             } else {
-                // Si hay menos de 3 caracteres, limpiar resultados
-                if (searchResultsContainer) {
-                    searchResultsContainer.innerHTML = '';
-                    searchResultsContainer.classList.remove('visible');
+                // Mostrar mensaje de "no resultados" solo si hay al menos 3 caracteres
+                if (searchTerm.length >= 3) {
+                    if (searchResultsContainer) {
+                        searchResultsContainer.innerHTML = `
+                            <div class="no-results">
+                                <p>No se encontraron productos con "<strong>${query}</strong>"</p>
+                                <p class="search-hint">Intenta buscar por:</p>
+                                <ul class="search-hints">
+                                    <li>Nombre del producto (ej: "buzo", "remera")</li>
+                                    <li>Categoría (ej: "pantalones", "vestidos")</li>
+                                    <li>Género (ej: "mujer", "hombre", "unisex")</li>
+                                </ul>
+                            </div>
+                        `;
+                        searchResultsContainer.classList.add('visible');
+                    }
+                } else {
+                    // Si hay menos de 3 caracteres, limpiar resultados
+                    if (searchResultsContainer) {
+                        searchResultsContainer.innerHTML = '';
+                        searchResultsContainer.classList.remove('visible');
+                    }
                 }
+            }
+        } catch (error) {
+            console.error('Error en búsqueda:', error);
+            // Fallback: buscar en la página actual si falla la API
+            const catalog = getProductsFromPage();
+            const results = catalog
+                .filter(item => {
+                    const name = item.name.toLowerCase();
+                    return name.includes(searchTerm) || 
+                           searchTerm.split(' ').every(word => name.includes(word));
+                })
+                .slice(0, 8);
+            
+            if (results.length > 0) {
+                renderSearchResults(results);
             }
         }
     }
