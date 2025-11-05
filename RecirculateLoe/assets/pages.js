@@ -506,29 +506,25 @@ document.addEventListener("DOMContentLoaded", function() {
         if (sidebarSearch) {
             sidebarSearch.classList.add('open');
             body.classList.add('sidebar-active');
-            if (searchResultsContainer) { searchResultsContainer.innerHTML = ''; searchResultsContainer.classList.remove('visible'); }
-            if (searchSuggestionsContainer) { searchSuggestionsContainer.innerHTML = ''; searchSuggestionsContainer.classList.remove('visible'); }
+            if (searchResultsContainer) searchResultsContainer.innerHTML = '';
+            if (searchSuggestionsContainer) searchSuggestionsContainer.classList.remove('visible');
             
             // Mostrar hint inicial solo si no hay valor
             const searchHint = document.getElementById('search-hint');
             if (searchHint && !keepValue) {
                 searchHint.style.display = 'flex';
-            } else if (searchHint && keepValue) {
+            } else if (searchHint) {
                 searchHint.style.display = 'none';
             }
             
-            if (searchSidebarInput) { 
-                // Solo limpiar si keepValue es false
-                if (!keepValue) {
-                    searchSidebarInput.value = ''; 
-                }
-                setTimeout(() => searchSidebarInput.focus(), 50); 
+            if (searchSidebarInput && !keepValue) {
+                // Solo limpiar y hacer focus si NO estamos manteniendo el valor
+                searchSidebarInput.value = '';
+                searchSidebarInput.focus();
             }
             // avoid changing overlay z-index here
         }
-    }
-
-    function closeSearchSidebar() {
+    }    function closeSearchSidebar() {
         if (sidebarSearch) {
             sidebarSearch.classList.remove('open');
             body.classList.remove('sidebar-active');
@@ -727,21 +723,10 @@ document.addEventListener("DOMContentLoaded", function() {
             const query = e.target.value.trim();
             
             if (query.length >= 2) {
-                // Abrir sidebar solo si no está abierto
-                if (!sidebarSearch.classList.contains('open')) {
-                    // Cerrar otros sidebars primero
-                    closeAnyOpenSidebar();
-                    sidebarSearch.classList.add('open');
-                    body.classList.add('sidebar-active');
-                    
-                    // Ocultar hint inicial
-                    const searchHint = document.getElementById('search-hint');
-                    if (searchHint) {
-                        searchHint.style.display = 'none';
-                    }
-                }
+                // Abrir sidebar usando la función (con keepValue=true)
+                openSearchSidebar(true);
                 
-                // Actualizar el input del sidebar
+                // Actualizar el input del sidebar SIN cambiar el foco
                 if (searchSidebarInput) {
                     searchSidebarInput.value = query;
                 }
