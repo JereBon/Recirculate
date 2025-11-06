@@ -123,11 +123,11 @@ class UserMenuManager {
         } else if (currentPath.includes('/pages/')) {
             homeUrl = '../home/home.html';
              // /RecirculateLoe/pages/buzos/buzos.html -> ../../../index.html (Sube 3, va al index principal)
-            adminUrl = '../../../index.html';
+            adminUrl = '../../index.html';
         } else if (currentPath.includes('/productos/')) {
             homeUrl = '../../../home/home.html';
              // /RecirculateLoe/pages/buzos/productos/item.html -> ../../../../../index.html (Sube 5, va al index principal)
-            adminUrl = '../../../../../index.html'; 
+            adminUrl = '../../../index.html'; 
         } else if (currentPath.includes('/carrito/')) {
             homeUrl = '../home/home.html';
             // /RecirculateLoe/carrito/carrito.html -> ../../index.html (Sube 2, va al index principal)
