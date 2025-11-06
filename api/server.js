@@ -40,6 +40,15 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'welcome.html'));
 });
 
+// --- HEALTH CHECK ENDPOINT (para keep-alive) ---
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 // --- RUTA PARA EL SISTEMA COMPLETO ---
 app.get('/app', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'index.html'));
@@ -457,6 +466,25 @@ app.get('/api/pagos/usuario/historial', verifyToken, async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+
+// --- KEEP-ALIVE: Evitar que Render ponga el servidor en sleep ---
+const KEEP_ALIVE_INTERVAL = 40000; // 40 segundos
+const KEEP_ALIVE_URL = process.env.RENDER_EXTERNAL_URL || 'http://localhost:' + PORT;
+
+if (process.env.NODE_ENV !== 'development') {
+  setInterval(() => {
+    const https = require('https');
+    const url = KEEP_ALIVE_URL + '/api/health';
+    
+    https.get(url, (res) => {
+      console.log(`🏓 Keep-alive ping: ${res.statusCode}`);
+    }).on('error', (err) => {
+      console.log('⚠️ Keep-alive ping falló:', err.message);
+    });
+  }, KEEP_ALIVE_INTERVAL);
+  
+  console.log(`⏰ Keep-alive activado cada ${KEEP_ALIVE_INTERVAL / 1000}s`);
+}
 
 server.listen(PORT, () => {
   console.log(`✅ Recirculate API v4.2 - Puerto ${PORT}`);
