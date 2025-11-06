@@ -162,6 +162,71 @@
     
     <!-- Scripts para el menú desplegable -->
     <script src="../assets/pages.js"></script>
-    <script src="../../auth/login.js"></script>
+    <script>
+        // login.js inline - Funcionalidad del formulario de login
+        const API_BASE_URL = 'https://recirculate-api.onrender.com/api';
+
+        // Manejar envío del formulario
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            
+            // Validaciones básicas
+            if (!email || !password) {
+                alert('Por favor, completa todos los campos');
+                return;
+            }
+            
+            // Mostrar loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Iniciando...';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Guardar token y datos del usuario
+                    localStorage.setItem('authToken', data.data.token);
+                    localStorage.setItem('userData', JSON.stringify(data.data.user));
+                    
+                    alert('¡Login exitoso! Redirigiendo...');
+                    
+                    // Redirigir según el rol del usuario
+                    setTimeout(() => {
+                        if (data.data.user.rol === 'admin') {
+                            // Si es admin, ir al panel de administración
+                            window.location.href = '../../index.html';
+                        } else {
+                            // Si es cliente, ir a la tienda pública
+                            window.location.href = '../home/home.html';
+                        }
+                    }, 500);
+                    
+                } else {
+                    alert(data.message || 'Credenciales incorrectas');
+                }
+                
+            } catch (error) {
+                console.error('Error en login:', error);
+                alert('Error de conexión. Intenta nuevamente.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Ingresar';
+            }
+        });
+    </script>
 </body>
 </html>
