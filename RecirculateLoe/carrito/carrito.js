@@ -129,24 +129,8 @@ crearItemHTML(item, index) {
       });
     }
 
-    // Funcionalidad del menú desplegable (categorías)
-    const categoryHeaders = document.querySelectorAll('.sidebar-category-header');
-    categoryHeaders.forEach(header => {
-      header.addEventListener('click', () => {
-        const parentCategory = header.closest('.sidebar-category');
-        
-        // Cerrar todos los demás submenús
-        document.querySelectorAll('.sidebar-category').forEach(cat => {
-          if (cat !== parentCategory) {
-            cat.classList.remove('active');
-          }
-        });
-        
-        // Abrir o cerrar el submenú actual
-        parentCategory.classList.toggle('active');
-      });
-    });
-
+    // La funcionalidad del menú desplegable (categorías) y del buscador
+    // ya está manejada por pages.js - no duplicar aquí
     // Funcionalidad del buscador: usar el buscador unificado de pages.js
     // El archivo pages.js ya maneja toda la lógica del buscador global
     // No necesitamos código adicional aquí
